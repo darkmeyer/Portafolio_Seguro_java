@@ -6,66 +6,51 @@
 package Entidades;
 
 import java.io.Serializable;
-import java.util.Collection;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author DarKMeYeR
  */
 @Entity
-@Table(name = "ENCARGADO")
+@Table(name = "ADMINISTRADOR")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Encargado.findAll", query = "SELECT e FROM Encargado e"),
-    @NamedQuery(name = "Encargado.findByIdEncargado", query = "SELECT e FROM Encargado e WHERE e.idEncargado = :idEncargado")})
-public class Encargado implements Serializable {
+    @NamedQuery(name = "Administrador.findAll", query = "SELECT a FROM Administrador a"),
+    @NamedQuery(name = "Administrador.findByIdAdministrador", query = "SELECT a FROM Administrador a WHERE a.idAdministrador = :idAdministrador")})
+public class Administrador implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "ID_ENCARGADO")
-    private String idEncargado;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "encargadoIdEncargado")
-    private Collection<Taller> tallerCollection;
+    @Column(name = "ID_ADMINISTRADOR")
+    private String idAdministrador;
     @JoinColumn(name = "EMPLEADO_ID_EMPLEADO", referencedColumnName = "ID_EMPLEADO")
     @OneToOne(optional = false)
     private Empleado empleadoIdEmpleado;
 
-    public Encargado() {
+    public Administrador() {
     }
 
-    public Encargado(String idEncargado) {
-        this.idEncargado = idEncargado;
+    public Administrador(String idAdministrador) {
+        this.idAdministrador = idAdministrador;
     }
 
-    public String getIdEncargado() {
-        return idEncargado;
+    public String getIdAdministrador() {
+        return idAdministrador;
     }
 
-    public void setIdEncargado(String idEncargado) {
-        this.idEncargado = idEncargado;
-    }
-
-    @XmlTransient
-    public Collection<Taller> getTallerCollection() {
-        return tallerCollection;
-    }
-
-    public void setTallerCollection(Collection<Taller> tallerCollection) {
-        this.tallerCollection = tallerCollection;
+    public void setIdAdministrador(String idAdministrador) {
+        this.idAdministrador = idAdministrador;
     }
 
     public Empleado getEmpleadoIdEmpleado() {
@@ -79,18 +64,18 @@ public class Encargado implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idEncargado != null ? idEncargado.hashCode() : 0);
+        hash += (idAdministrador != null ? idAdministrador.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Encargado)) {
+        if (!(object instanceof Administrador)) {
             return false;
         }
-        Encargado other = (Encargado) object;
-        if ((this.idEncargado == null && other.idEncargado != null) || (this.idEncargado != null && !this.idEncargado.equals(other.idEncargado))) {
+        Administrador other = (Administrador) object;
+        if ((this.idAdministrador == null && other.idAdministrador != null) || (this.idAdministrador != null && !this.idAdministrador.equals(other.idAdministrador))) {
             return false;
         }
         return true;
@@ -98,7 +83,7 @@ public class Encargado implements Serializable {
 
     @Override
     public String toString() {
-        return "Entidades.Encargado[ idEncargado=" + idEncargado + " ]";
+        return "Entidades.Administrador[ idAdministrador=" + idAdministrador + " ]";
     }
     
 }

@@ -14,6 +14,7 @@ import java.util.logging.Logger;
  *
  * @author DarKMeYeR
  */
+
 public class FafricaConexion {
     
     private Connection conexion;
@@ -34,7 +35,7 @@ public class FafricaConexion {
         conexion= DriverManager.getConnection(BaseDeDatos,"SEGURO","1234");
         if(conexion!=null)
         {
-            System.out.println("Conexion exitosa a esquema HR");
+            System.out.println("Conexion exitosa a esquema seguro");
         }
             else{System.out.println("Conexion fallida");}
         }

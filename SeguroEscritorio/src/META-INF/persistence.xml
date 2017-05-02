@@ -16,6 +16,8 @@
     <class>Entidades.Vehiculo</class>
     <class>Entidades.Ciudad</class>
     <class>Entidades.Movimiento</class>
+    <class>Entidades.Administrador</class>
+    <class>Entidades.Empleado</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:1521:XE"/>
       <property name="javax.persistence.jdbc.password" value="1234"/>

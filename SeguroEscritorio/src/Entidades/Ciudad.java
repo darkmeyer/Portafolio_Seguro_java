@@ -43,7 +43,7 @@ public class Ciudad implements Serializable {
     @Column(name = "NOMBRE")
     private String nombre;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "ciudadIdCiudad")
-    private Collection<Ejecutivo> ejecutivoCollection;
+    private Collection<Empleado> empleadoCollection;
     @JoinColumn(name = "REGION_ID_REGION", referencedColumnName = "ID_REGION")
     @ManyToOne(optional = false)
     private Region regionIdRegion;
@@ -51,10 +51,6 @@ public class Ciudad implements Serializable {
     private Collection<Taller> tallerCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "ciudadIdCiudad")
     private Collection<Cliente> clienteCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "ciudadIdCiudad")
-    private Collection<Encargado> encargadoCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "ciudadIdCiudad")
-    private Collection<Liquidador> liquidadorCollection;
 
     public Ciudad() {
     }
@@ -85,12 +81,12 @@ public class Ciudad implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Ejecutivo> getEjecutivoCollection() {
-        return ejecutivoCollection;
+    public Collection<Empleado> getEmpleadoCollection() {
+        return empleadoCollection;
     }
 
-    public void setEjecutivoCollection(Collection<Ejecutivo> ejecutivoCollection) {
-        this.ejecutivoCollection = ejecutivoCollection;
+    public void setEmpleadoCollection(Collection<Empleado> empleadoCollection) {
+        this.empleadoCollection = empleadoCollection;
     }
 
     public Region getRegionIdRegion() {
@@ -117,24 +113,6 @@ public class Ciudad implements Serializable {
 
     public void setClienteCollection(Collection<Cliente> clienteCollection) {
         this.clienteCollection = clienteCollection;
-    }
-
-    @XmlTransient
-    public Collection<Encargado> getEncargadoCollection() {
-        return encargadoCollection;
-    }
-
-    public void setEncargadoCollection(Collection<Encargado> encargadoCollection) {
-        this.encargadoCollection = encargadoCollection;
-    }
-
-    @XmlTransient
-    public Collection<Liquidador> getLiquidadorCollection() {
-        return liquidadorCollection;
-    }
-
-    public void setLiquidadorCollection(Collection<Liquidador> liquidadorCollection) {
-        this.liquidadorCollection = liquidadorCollection;
     }
 
     @Override
