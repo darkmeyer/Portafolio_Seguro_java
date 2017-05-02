@@ -23,11 +23,13 @@ import org.mindrot.jbcrypt.BCrypt;
  * @author DarKMeYeR
  */
 public class SeguroEscritorio {
-
+       
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {        
+        
+        
         
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SeguroEscritorioPU");
         EntityManager em = emf.createEntityManager();
