@@ -5,15 +5,27 @@
  */
 package presentacion;
 
+import Entidades.*;
+import java.sql.*;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
+import javax.swing.DefaultComboBoxModel;
+import Datos.FafricaConexion;
+import java.awt.event.KeyEvent;
+import javax.swing.JFrame;
+import oracle.jdbc.OracleTypes;
+
 /**
  *
  * @author Felipe
  */
-public class GruaMantenedor extends javax.swing.JPanel {
+public class GruaMantenedor extends javax.swing.JFrame {
 
-    /**
-     * Creates new form GruaMantenedor
-     */
+    EntityManagerFactory emf = Persistence.createEntityManagerFactory(SeguroEscritorioPU);
+    EntityManager em = emf.createEntityManager();
     public GruaMantenedor() {
         initComponents();
     }
