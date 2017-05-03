@@ -45,8 +45,8 @@ public class TallerMantenedor extends javax.swing.JPanel {
         txtEncargado = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
         btnAgregar = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnActualizar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtMensajeIngreso = new javax.swing.JTextArea();
 
@@ -93,10 +93,10 @@ public class TallerMantenedor extends javax.swing.JPanel {
 
         btnAgregar.setText("Agregar");
 
-        jButton1.setText("Actualizar");
+        btnActualizar.setText("Actualizar");
 
-        jButton2.setText("Eliminar");
-        jButton2.setToolTipText("");
+        btnEliminar.setText("Eliminar");
+        btnEliminar.setToolTipText("");
 
         txtMensajeIngreso.setColumns(20);
         txtMensajeIngreso.setRows(5);
@@ -110,9 +110,9 @@ public class TallerMantenedor extends javax.swing.JPanel {
                 .addGap(31, 31, 31)
                 .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 65, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(63, 63, 63)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(34, 34, 34))
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
@@ -125,8 +125,8 @@ public class TallerMantenedor extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAgregar)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(btnActualizar)
+                    .addComponent(btnEliminar))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(27, Short.MAX_VALUE))
@@ -256,11 +256,11 @@ public class TallerMantenedor extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnBuscarTaller;
+    private javax.swing.JButton btnEliminar;
     private javax.swing.JComboBox<String> cbRegion;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
