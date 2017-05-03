@@ -59,8 +59,7 @@ public class SeguroEscritorio {
             emp.setApellidos("Meyer Fernandez");
             emp.setCorreo("mau.meyer@alumnos.duoc.cl");
             emp.setFono("569-50265040");
-            Date sd = new Date("05/01/1990");
-            emp.setFechaNacimiento(sd);
+            emp.setFechaNacimiento("05/01/1990");
             emp.setDireccion("Esquina blanca 893, Maipu");
             emp.setCiudadIdCiudad(listaCiudad.get(0));
             emp.setCargo("administrador");

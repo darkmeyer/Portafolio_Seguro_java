@@ -5,9 +5,15 @@
  */
 package presentacion;
 
+import Datos.FafricaConexion;
 import Entidades.Ciudad;
 import Entidades.Empleado;
 import Entidades.Region;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.Types;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -182,6 +188,11 @@ public class EmpleadoMantenedor extends javax.swing.JFrame {
         jPanel3.setBackground(new java.awt.Color(102, 102, 102));
 
         btnIngresar.setText("INGRESAR");
+        btnIngresar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnIngresarActionPerformed(evt);
+            }
+        });
 
         btnActualizar.setText("ACTUALZIAR");
 
@@ -396,7 +407,7 @@ public class EmpleadoMantenedor extends javax.swing.JFrame {
                     txtNombres.setText(listEmp.get(0).getNombres());
                     txtApellidos.setText(listEmp.get(0).getApellidos());
                     txtCorreo.setText(listEmp.get(0).getCorreo());
-                    txtFono.setText(listEmp.get(0).getFono());
+                    txtFono.setText(listEmp.get(0).getFono());                    
                     txtFecha.setText(listEmp.get(0).getFechaNacimiento().toString());
                     txtDireccion.setText(listEmp.get(0).getDireccion());                    
                     cbRegion.setSelectedItem(listEmp.get(0).getCiudadIdCiudad().getRegionIdRegion().getIdRegion()+ " " + listEmp.get(0).getCiudadIdCiudad().getRegionIdRegion().getNombre());
@@ -421,6 +432,68 @@ public class EmpleadoMantenedor extends javax.swing.JFrame {
             lblMensajeBuscar.setText("Error");
         }
     }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
+        try
+        {
+            if(!txtRut.getText().isEmpty() && 
+                    !txtPass.getText().isEmpty() && 
+                    !txtNombres.getText().isEmpty() && 
+                    !txtApellidos.getText().isEmpty() && 
+                    !txtCorreo.getText().isEmpty() && 
+                    !txtFono.getText().isEmpty() && 
+                    !txtFecha.getText().isEmpty() && 
+                    !txtDireccion.getText().isEmpty()
+                    )
+            {
+                String rut = txtRut.getText();
+                String pass = BCrypt.hashpw(txtPass.getText(),BCrypt.gensalt());
+                String nombres = txtNombres.getText();
+                String apellidos = txtApellidos.getText();
+                String correo = txtCorreo.getText();
+                String fono = txtFono.getText();
+                String fecha = txtFecha.getText();
+                String direccion = txtDireccion.getText();
+                
+                String item = cbCiudad.getSelectedItem().toString();
+                String[] itemSplit = item.split("\\s+");
+                int idCiudad = Integer.parseInt(itemSplit[0]);
+                
+                String cargo = cbCargo.getSelectedItem().toString();
+                
+                Connection cn = new FafricaConexion().Conectar();
+                try {
+
+                    CallableStatement cs = cn.prepareCall("{call ? := F_INSERT_EMPLEADO(?,?,?,?,?,?,?,?,?,?)}");
+                    cs.registerOutParameter(1, Types.VARCHAR);
+                    
+                    cs.setString(2, rut);
+                    cs.setString(3, pass);
+                    cs.setString(4, nombres);
+                    cs.setString(5, apellidos);
+                    cs.setString(6, correo);
+                    cs.setString(7, fono);
+                    cs.setString(8, fecha);
+                    cs.setString(9, direccion);
+                    cs.setInt(10, idCiudad);
+                    cs.setString(11, cargo);
+                    cs.executeUpdate();
+                    String mensaje = cs.getString(1);
+                    txaMensaje.setText(mensaje);
+                } catch (Exception e) {
+                    txaMensaje.setText("Error");
+                }
+            }
+            else
+            {
+                txaMensaje.setText("Llene los campos");
+            }
+        }
+        catch(Exception e)
+        {
+            txaMensaje.setText("Error");
+        }
+    }//GEN-LAST:event_btnIngresarActionPerformed
     
     
     private List<Empleado> buscarEmpleado(int id)
@@ -467,7 +540,7 @@ public class EmpleadoMantenedor extends javax.swing.JFrame {
         if(listRegion.size() > 0)
         {
             for (Ciudad ciudad : listRegion.get(0).getCiudadCollection()) {
-                cbCiudad.addItem(ciudad.getNombre());
+                cbCiudad.addItem(ciudad.getIdCiudad() +" "+ ciudad.getNombre());
             }
         }
         else

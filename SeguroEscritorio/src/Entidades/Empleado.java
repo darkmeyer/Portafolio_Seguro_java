@@ -6,7 +6,6 @@
 package Entidades;
 
 import java.io.Serializable;
-import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,8 +17,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -68,8 +65,7 @@ public class Empleado implements Serializable {
     private String fono;
     @Basic(optional = false)
     @Column(name = "FECHA_NACIMIENTO")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaNacimiento;
+    private String fechaNacimiento;
     @Basic(optional = false)
     @Column(name = "DIRECCION")
     private String direccion;
@@ -95,7 +91,7 @@ public class Empleado implements Serializable {
         this.idEmpleado = idEmpleado;
     }
 
-    public Empleado(String idEmpleado, String rut, String pass, String nombres, String apellidos, String correo, String fono, Date fechaNacimiento, String direccion, String cargo) {
+    public Empleado(String idEmpleado, String rut, String pass, String nombres, String apellidos, String correo, String fono, String fechaNacimiento, String direccion, String cargo) {
         this.idEmpleado = idEmpleado;
         this.rut = rut;
         this.pass = pass;
@@ -164,11 +160,11 @@ public class Empleado implements Serializable {
         this.fono = fono;
     }
 
-    public Date getFechaNacimiento() {
+    public String getFechaNacimiento() {
         return fechaNacimiento;
     }
 
-    public void setFechaNacimiento(Date fechaNacimiento) {
+    public void setFechaNacimiento(String fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
     }
 
