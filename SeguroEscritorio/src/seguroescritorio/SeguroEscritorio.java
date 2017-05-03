@@ -63,7 +63,7 @@ public class SeguroEscritorio {
             emp.setFechaNacimiento(sd);
             emp.setDireccion("Esquina blanca 893, Maipu");
             emp.setCiudadIdCiudad(listaCiudad.get(0));
-            emp.setCargo("Administrador");
+            emp.setCargo("administrador");
             emp.getAdministrador().setIdAdministrador("1a");
             emp.getAdministrador().setEmpleadoIdEmpleado(emp);
             

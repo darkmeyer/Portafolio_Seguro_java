@@ -104,6 +104,11 @@ public class RegionCiudadMantenedor extends javax.swing.JFrame {
                 txtIdCiudadActionPerformed(evt);
             }
         });
+        txtIdCiudad.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtIdCiudadKeyTyped(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel4.setText("CIUDAD:");
@@ -132,12 +137,32 @@ public class RegionCiudadMantenedor extends javax.swing.JFrame {
         });
 
         btnBorrarRegion.setText("Borrar");
+        btnBorrarRegion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBorrarRegionActionPerformed(evt);
+            }
+        });
 
         btnIngresarCiudad.setText("Ingresar");
+        btnIngresarCiudad.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnIngresarCiudadActionPerformed(evt);
+            }
+        });
 
         btnActualizarCiudad.setText("Actualizar");
+        btnActualizarCiudad.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActualizarCiudadActionPerformed(evt);
+            }
+        });
 
         btnBorrarCiudad.setText("Borrar");
+        btnBorrarCiudad.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBorrarCiudadActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -147,9 +172,25 @@ public class RegionCiudadMantenedor extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(12, 12, 12)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel3))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addComponent(txtIdRegion, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(btnBuscarRegion))
+                                            .addComponent(txtNombreRegion, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(lblBuscarRegion, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                         .addComponent(jLabel6)
@@ -169,23 +210,7 @@ public class RegionCiudadMantenedor extends javax.swing.JFrame {
                                         .addComponent(cbRegion, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                     .addGap(46, 46, 46)
-                                    .addComponent(jLabel4)))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel3))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addComponent(txtIdRegion, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(btnBuscarRegion))
-                                            .addComponent(txtNombreRegion, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(lblBuscarRegion, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                    .addComponent(jLabel4)))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(btnIngresarCiudad)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -286,130 +311,343 @@ public class RegionCiudadMantenedor extends javax.swing.JFrame {
     }//GEN-LAST:event_txtIdRegionActionPerformed
 
     private void btnBuscarRegionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarRegionActionPerformed
-        if(!txtIdRegion.getText().isEmpty())
+        try
         {
-            int idRegion = Integer.parseInt(txtIdRegion.getText());  
-            List<Region> lista = buscarRegion(idRegion);
-            if(lista != null)
+            if(!txtIdRegion.getText().isEmpty())
             {
-                txtNombreRegion.setText(lista.get(0).getNombre());
-                lblBuscarRegion.setText("ID encontrada");
+                int idRegion = Integer.parseInt(txtIdRegion.getText());  
+                List<Region> lista = buscarRegion(idRegion);
+                if(lista != null)
+                {
+                    txtNombreRegion.setText(lista.get(0).getNombre());
+                    lblBuscarRegion.setText("ID encontrada");
+                }
+                else
+                {
+                    lblBuscarRegion.setText("ID no encontrada");
+                }
             }
             else
             {
-                lblBuscarRegion.setText("ID no encontrada");
+                lblBuscarRegion.setText("Ingrese ID");
             }
         }
-        else
+        catch(Exception e)
         {
-            lblBuscarRegion.setText("Ingrese ID");
+            lblBuscarRegion.setText("Error");
         }
     }//GEN-LAST:event_btnBuscarRegionActionPerformed
 
     private void btnBuscarCiudadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarCiudadActionPerformed
-        if(!txtIdCiudad.getText().isEmpty())
+        try
         {
-            int idCiudad = Integer.parseInt(txtIdCiudad.getText());
-            TypedQuery consulta = em.createNamedQuery("Ciudad.findByIdCiudad", Ciudad.class);
-            List<Ciudad> listCiudad = consulta.setParameter("idCiudad", idCiudad).getResultList();
-            
-            if(listCiudad.size() > 0)
+            if(!txtIdCiudad.getText().isEmpty())
             {
-                txtNombreCiudad.setText(listCiudad.get(0).getNombre());
-                cbRegion.setSelectedItem(listCiudad.get(0).getRegionIdRegion().getNombre());
-                lblBuscarCiudad.setText("ID encontrada");
+                int idCiudad = Integer.parseInt(txtIdCiudad.getText());
+                List<Ciudad> listCiudad = buscarCiudad(idCiudad);
+                if(listCiudad != null)
+                {
+                    txtNombreCiudad.setText(listCiudad.get(0).getNombre());
+                    cbRegion.setSelectedItem(listCiudad.get(0).getRegionIdRegion().getIdRegion()+" "+listCiudad.get(0).getRegionIdRegion().getNombre());
+                    lblBuscarCiudad.setText("ID encontrada");
+                }
+                else
+                {
+                    lblBuscarCiudad.setText("ID no encontrada");
+                }
             }
             else
             {
-                lblBuscarCiudad.setText("ID no encontrada");
+                lblBuscarCiudad.setText("Ingrese ID");
             }
         }
-        else
+        catch(Exception e)
         {
-            lblBuscarCiudad.setText("Ingrese ID");
+            lblBuscarCiudad.setText("Error");
         }
     }//GEN-LAST:event_btnBuscarCiudadActionPerformed
 
     private void btnIngresarRegionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarRegionActionPerformed
-        if(!txtIdRegion.getText().isEmpty() && !txtNombreRegion.getText().isEmpty())
+        try
         {
-            int id = Integer.parseInt(txtIdRegion.getText());
-            String nombre = txtNombreRegion.getText();
-            Connection cn = new FafricaConexion().Conectar();
-            try {
+            if(!txtIdRegion.getText().isEmpty() && !txtNombreRegion.getText().isEmpty())
+            {
+                int id = Integer.parseInt(txtIdRegion.getText());
+                String nombre = txtNombreRegion.getText();
+                Connection cn = new FafricaConexion().Conectar();
+                try {
 
-                CallableStatement cs = cn.prepareCall("{call ? := F_INSERT_REGION(?,?)}");
-                cs.registerOutParameter(1, Types.VARCHAR);
-                cs.setInt(2, id);
-                cs.setString(3, nombre);
-                cs.executeUpdate();
-                String mensaje = cs.getString(1);
-                lblMensajeRegion.setText(mensaje);
-            } catch (Exception e) {
+                    CallableStatement cs = cn.prepareCall("{call ? := F_INSERT_REGION(?,?)}");
+                    cs.registerOutParameter(1, Types.VARCHAR);
+                    cs.setInt(2, id);
+                    cs.setString(3, nombre);
+                    cs.executeUpdate();
+                    String mensaje = cs.getString(1);
+                    lblMensajeRegion.setText(mensaje);
+                    llenarComboBoxRegiones();
+                } catch (Exception e) {
+                }
+            }
+            else
+            {
+                lblMensajeRegion.setText("Llene los campos");
             }
         }
-        else
+        catch(Exception e)
         {
-            lblMensajeRegion.setText("Llene los campos");
+            lblMensajeRegion.setText("Error");
         }
     }//GEN-LAST:event_btnIngresarRegionActionPerformed
 
     private void txtIdRegionKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIdRegionKeyTyped
+        TextFieldNumber(evt);
+    }//GEN-LAST:event_txtIdRegionKeyTyped
+
+    private void btnActualizarRegionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarRegionActionPerformed
+        try
+        {
+            if(!txtIdRegion.getText().isEmpty() && !txtNombreRegion.getText().isEmpty())
+            {
+                short id = Short.parseShort(txtIdRegion.getText());
+                String nombre = txtNombreRegion.getText();            
+                Connection cn = new FafricaConexion().Conectar();
+                try {
+                    if(buscarRegion(id) != null)
+                    {
+                        Region reg = new Region();
+                        reg.setIdRegion(id);
+                        reg.setNombre(nombre);
+
+                        em.getTransaction().begin();
+                        em.merge(reg);
+                        em.getTransaction().commit();
+
+                        /*
+                        CallableStatement cs = cn.prepareCall("{call ? := F_UPDATE_REGION(?,?)}");
+                        cs.registerOutParameter(1, Types.VARCHAR);
+                        cs.setInt(2, id);
+                        cs.setString(3, nombre);
+                        cs.executeUpdate();
+                        String mensaje = cs.getString(1);
+                        */
+                        lblMensajeRegion.setText("Region Actualizada");
+                        llenarComboBoxRegiones();
+                    }
+                    else
+                    {
+                        lblMensajeRegion.setText("ID Region no existe");
+                    }
+                } catch (Exception e) {
+                }
+            }
+            else
+            {
+                lblMensajeRegion.setText("Llene los campos");
+            }
+        }
+        catch(Exception e)
+        {
+            lblMensajeRegion.setText("Error");
+        }
+    }//GEN-LAST:event_btnActualizarRegionActionPerformed
+
+    private void btnBorrarRegionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarRegionActionPerformed
+        try
+        {
+            if(!txtIdRegion.getText().isEmpty())
+            {    
+                int id = Integer.parseInt(txtIdRegion.getText());
+                List<Region> listReg = buscarRegion(id);
+                if(listReg != null)
+                {
+                    em.getTransaction().begin();
+                    em.remove(listReg.get(0));
+                    em.getTransaction().commit();
+                    lblMensajeRegion.setText("Region Eliminada");
+                    llenarComboBoxRegiones();
+                    txtIdRegion.setText("");
+                    txtNombreRegion.setText("");
+                }
+                else
+                {
+                    lblMensajeRegion.setText("Region No existe");
+                }
+            }
+            else
+            {
+                lblMensajeRegion.setText("Ingrese la ID");
+            } 
+        }
+        catch(Exception e)
+        {
+            lblMensajeRegion.setText("Error");
+        }
+    }//GEN-LAST:event_btnBorrarRegionActionPerformed
+
+    private void btnIngresarCiudadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarCiudadActionPerformed
+        try
+        {
+            if(!txtIdCiudad.getText().isEmpty() && !txtNombreCiudad.getText().isEmpty())
+            {
+                int id = Integer.parseInt(txtIdCiudad.getText());
+                String nombre = txtNombreCiudad.getText();
+                String item = cbRegion.getSelectedItem().toString();
+                String[] itemSplit = item.split("\\s+");
+                int idRegion = Integer.parseInt(itemSplit[0]);
+                Connection cn = new FafricaConexion().Conectar();
+                try {
+
+                    CallableStatement cs = cn.prepareCall("{call ? := F_INSERT_CIUDAD(?,?,?)}");
+                    cs.registerOutParameter(1, Types.VARCHAR);
+                    cs.setInt(2, id);
+                    cs.setString(3, nombre);
+                    cs.setInt(4, idRegion);
+                    cs.executeUpdate();
+                    String mensaje = cs.getString(1);
+                    lblMensajeCiudad.setText(mensaje);
+                    llenarComboBoxRegiones();
+                } catch (Exception e) {
+                }
+            }
+            else
+            {
+                lblMensajeCiudad.setText("Llene los campos");
+            }
+        }
+        catch(Exception e)
+        {
+            lblMensajeCiudad.setText("Error");
+        }
+    }//GEN-LAST:event_btnIngresarCiudadActionPerformed
+
+    private void btnActualizarCiudadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarCiudadActionPerformed
+        try
+        {
+            if(!txtIdCiudad.getText().isEmpty() && !txtNombreCiudad.getText().isEmpty())
+            {
+                short id = Short.parseShort(txtIdCiudad.getText());
+                String nombre = txtNombreCiudad.getText();
+                String item = cbRegion.getSelectedItem().toString();
+                String[] itemSplit = item.split("\\s+");
+                short idRegion = Short.parseShort(itemSplit[0]);        
+                Connection cn = new FafricaConexion().Conectar();
+                try {
+                    if(buscarCiudad(id) != null)
+                    {
+                        Ciudad ciudad = new Ciudad();
+                        ciudad.setIdCiudad(id);
+                        ciudad.setNombre(nombre);
+                        Region reg = new Region();
+                        reg.setIdRegion(idRegion);
+                        ciudad.setRegionIdRegion(reg);
+                        em.getTransaction().begin();
+                        em.merge(ciudad);
+                        em.getTransaction().commit();
+
+                        /*
+                        CallableStatement cs = cn.prepareCall("{call ? := F_UPDATE_REGION(?,?)}");
+                        cs.registerOutParameter(1, Types.VARCHAR);
+                        cs.setInt(2, id);
+                        cs.setString(3, nombre);
+                        cs.executeUpdate();
+                        String mensaje = cs.getString(1);
+                        */
+                        lblMensajeCiudad.setText("Ciudad Actualizada");
+                    }
+                    else
+                    {
+                        lblMensajeCiudad.setText("ID Ciudad no existe");
+                    }
+                } catch (Exception e) {
+                }
+            }
+            else
+            {
+                lblMensajeCiudad.setText("Llene los campos");
+            }
+        }
+        catch(Exception e)
+        {
+            lblMensajeCiudad.setText("Llene los campos");
+        }
+    }//GEN-LAST:event_btnActualizarCiudadActionPerformed
+
+    private void btnBorrarCiudadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarCiudadActionPerformed
+        try
+        {
+            if(!txtIdCiudad.getText().isEmpty())
+            {    
+                int id = Integer.parseInt(txtIdCiudad.getText());
+                List<Ciudad> listCiudad = buscarCiudad(id);
+                if(listCiudad != null)
+                {
+                    em.getTransaction().begin();
+                    em.remove(listCiudad.get(0));
+                    em.getTransaction().commit();
+                    lblMensajeCiudad.setText("Ciudad Eliminada");
+                    txtIdCiudad.setText("");
+                    txtNombreCiudad.setText("");
+                }
+                else
+                {
+                    lblMensajeCiudad.setText("Ciudad No existe");
+                }
+            }
+            else
+            {
+                lblMensajeCiudad.setText("Ingrese la ID");
+            }
+        }
+        catch(Exception e)
+        {
+            lblMensajeCiudad.setText("Error");
+        }
+    }//GEN-LAST:event_btnBorrarCiudadActionPerformed
+
+    private void txtIdCiudadKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIdCiudadKeyTyped
+        TextFieldNumber(evt);
+    }//GEN-LAST:event_txtIdCiudadKeyTyped
+    
+    
+    private void TextFieldNumber(java.awt.event.KeyEvent evt) {
         char vchar = evt.getKeyChar();
         if(!(Character.isDigit(vchar))
             || (vchar == KeyEvent.VK_BACK_SPACE)
             || (vchar == KeyEvent.VK_DELETE)){
         evt.consume();
         }
+    }
     
-    }//GEN-LAST:event_txtIdRegionKeyTyped
-
-    private void btnActualizarRegionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarRegionActionPerformed
-        if(!txtIdRegion.getText().isEmpty() && !txtNombreRegion.getText().isEmpty())
-        {
-            short id = Short.parseShort(txtIdRegion.getText());
-            String nombre = txtNombreRegion.getText();            
-            Connection cn = new FafricaConexion().Conectar();
-            try {
-                /*
-                Region reg = new Region();
-                reg.setIdRegion(id);
-                reg.setNombre(nombre);
-                
-                em.getTransaction().begin();
-                em.merge(reg);
-                em.getTransaction().commit();
-                */                
-                CallableStatement cs = cn.prepareCall("{call ? := F_UPDATE_REGION(?,?)}");
-                cs.registerOutParameter(1, Types.VARCHAR);
-                cs.setInt(2, id);
-                cs.setString(3, nombre);
-                cs.executeUpdate();
-                String mensaje = cs.getString(1);
-                lblMensajeRegion.setText(mensaje);
-            } catch (Exception e) {
-            }
-        }
-        else
-        {
-            lblMensajeRegion.setText("Llene los campos");
-        }
-        
-    }//GEN-LAST:event_btnActualizarRegionActionPerformed
-
+    
     private void llenarComboBoxRegiones()
     {
         TypedQuery consulta = em.createNamedQuery("Region.findAll", Region.class);
         List<Region> listRegion = consulta.getResultList();
+        cbRegion.removeAllItems();
         if(listRegion.size() > 0)
         {
             for (Region region : listRegion) {
-                cbRegion.addItem(region.getNombre());
+                cbRegion.addItem(region.getIdRegion()+" "+region.getNombre());
             }
         }
     }
     
-    private List<Region> buscarRegion( int id)
+    private List<Ciudad> buscarCiudad(int id)
+    {
+        TypedQuery consulta = em.createNamedQuery("Ciudad.findByIdCiudad", Ciudad.class);
+        List<Ciudad> listCiudad = consulta.setParameter("idCiudad", id).getResultList();
+
+        if(listCiudad.size() > 0)
+        {
+            return listCiudad;
+        }
+        else
+        {
+            return null;
+        }
+    }
+    
+    private List<Region> buscarRegion(int id)
     {
         TypedQuery consulta = em.createNamedQuery("Region.findByIdRegion", Region.class);
         List<Region> listRegion = consulta.setParameter("idRegion", id).getResultList();
@@ -482,4 +720,6 @@ public class RegionCiudadMantenedor extends javax.swing.JFrame {
     private javax.swing.JTextField txtNombreCiudad;
     private javax.swing.JTextField txtNombreRegion;
     // End of variables declaration//GEN-END:variables
+
+    
 }
