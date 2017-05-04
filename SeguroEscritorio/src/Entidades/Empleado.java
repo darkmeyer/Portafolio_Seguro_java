@@ -6,6 +6,7 @@
 package Entidades;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,9 +16,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -36,8 +38,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Empleado.findByCorreo", query = "SELECT e FROM Empleado e WHERE e.correo = :correo"),
     @NamedQuery(name = "Empleado.findByFono", query = "SELECT e FROM Empleado e WHERE e.fono = :fono"),
     @NamedQuery(name = "Empleado.findByFechaNacimiento", query = "SELECT e FROM Empleado e WHERE e.fechaNacimiento = :fechaNacimiento"),
-    @NamedQuery(name = "Empleado.findByDireccion", query = "SELECT e FROM Empleado e WHERE e.direccion = :direccion"),
-    @NamedQuery(name = "Empleado.findByCargo", query = "SELECT e FROM Empleado e WHERE e.cargo = :cargo")})
+    @NamedQuery(name = "Empleado.findByDireccion", query = "SELECT e FROM Empleado e WHERE e.direccion = :direccion")})
 public class Empleado implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -69,20 +70,16 @@ public class Empleado implements Serializable {
     @Basic(optional = false)
     @Column(name = "DIRECCION")
     private String direccion;
-    @Basic(optional = false)
-    @Column(name = "CARGO")
-    private String cargo;
     @JoinColumn(name = "CIUDAD_ID_CIUDAD", referencedColumnName = "ID_CIUDAD")
     @ManyToOne(optional = false)
     private Ciudad ciudadIdCiudad;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "empleadoIdEmpleado")
-    private Ejecutivo ejecutivo;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "empleadoIdEmpleado")
-    private Encargado encargado;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "empleadoIdEmpleado")
-    private Liquidador liquidador;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "empleadoIdEmpleado")
-    private Administrador administrador;
+    @JoinColumn(name = "CARGO_ID_CARGO", referencedColumnName = "ID_CARGO")
+    @ManyToOne(optional = false)
+    private Cargo cargoIdCargo;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "empleadoIdEmpleado")
+    private Collection<Taller> tallerCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "empleadoIdEmpleado")
+    private Collection<Siniestro> siniestroCollection;
 
     public Empleado() {
     }
@@ -91,7 +88,7 @@ public class Empleado implements Serializable {
         this.idEmpleado = idEmpleado;
     }
 
-    public Empleado(String idEmpleado, String rut, String pass, String nombres, String apellidos, String correo, String fono, String fechaNacimiento, String direccion, String cargo) {
+    public Empleado(String idEmpleado, String rut, String pass, String nombres, String apellidos, String correo, String fono, String fechaNacimiento, String direccion) {
         this.idEmpleado = idEmpleado;
         this.rut = rut;
         this.pass = pass;
@@ -101,7 +98,6 @@ public class Empleado implements Serializable {
         this.fono = fono;
         this.fechaNacimiento = fechaNacimiento;
         this.direccion = direccion;
-        this.cargo = cargo;
     }
 
     public String getIdEmpleado() {
@@ -176,14 +172,6 @@ public class Empleado implements Serializable {
         this.direccion = direccion;
     }
 
-    public String getCargo() {
-        return cargo;
-    }
-
-    public void setCargo(String cargo) {
-        this.cargo = cargo;
-    }
-
     public Ciudad getCiudadIdCiudad() {
         return ciudadIdCiudad;
     }
@@ -192,36 +180,30 @@ public class Empleado implements Serializable {
         this.ciudadIdCiudad = ciudadIdCiudad;
     }
 
-    public Ejecutivo getEjecutivo() {
-        return ejecutivo;
+    public Cargo getCargoIdCargo() {
+        return cargoIdCargo;
     }
 
-    public void setEjecutivo(Ejecutivo ejecutivo) {
-        this.ejecutivo = ejecutivo;
+    public void setCargoIdCargo(Cargo cargoIdCargo) {
+        this.cargoIdCargo = cargoIdCargo;
     }
 
-    public Encargado getEncargado() {
-        return encargado;
+    @XmlTransient
+    public Collection<Taller> getTallerCollection() {
+        return tallerCollection;
     }
 
-    public void setEncargado(Encargado encargado) {
-        this.encargado = encargado;
+    public void setTallerCollection(Collection<Taller> tallerCollection) {
+        this.tallerCollection = tallerCollection;
     }
 
-    public Liquidador getLiquidador() {
-        return liquidador;
+    @XmlTransient
+    public Collection<Siniestro> getSiniestroCollection() {
+        return siniestroCollection;
     }
 
-    public void setLiquidador(Liquidador liquidador) {
-        this.liquidador = liquidador;
-    }
-
-    public Administrador getAdministrador() {
-        return administrador;
-    }
-
-    public void setAdministrador(Administrador administrador) {
-        this.administrador = administrador;
+    public void setSiniestroCollection(Collection<Siniestro> siniestroCollection) {
+        this.siniestroCollection = siniestroCollection;
     }
 
     @Override

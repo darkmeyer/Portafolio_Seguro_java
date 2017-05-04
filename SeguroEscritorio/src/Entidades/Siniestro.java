@@ -38,8 +38,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Siniestro.findByFechaTermino", query = "SELECT s FROM Siniestro s WHERE s.fechaTermino = :fechaTermino"),
     @NamedQuery(name = "Siniestro.findByEstado", query = "SELECT s FROM Siniestro s WHERE s.estado = :estado"),
     @NamedQuery(name = "Siniestro.findByDeducibleUf", query = "SELECT s FROM Siniestro s WHERE s.deducibleUf = :deducibleUf"),
-    @NamedQuery(name = "Siniestro.findByCosteReparacion", query = "SELECT s FROM Siniestro s WHERE s.costeReparacion = :costeReparacion"),
-    @NamedQuery(name = "Siniestro.findByEjecutivoIdEjecutivo", query = "SELECT s FROM Siniestro s WHERE s.ejecutivoIdEjecutivo = :ejecutivoIdEjecutivo")})
+    @NamedQuery(name = "Siniestro.findByCosteReparacion", query = "SELECT s FROM Siniestro s WHERE s.costeReparacion = :costeReparacion")})
 public class Siniestro implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -62,12 +61,9 @@ public class Siniestro implements Serializable {
     private short deducibleUf;
     @Column(name = "COSTE_REPARACION")
     private Long costeReparacion;
-    @Basic(optional = false)
-    @Column(name = "EJECUTIVO_ID_EJECUTIVO")
-    private String ejecutivoIdEjecutivo;
-    @JoinColumn(name = "LIQUIDADOR_ID_LIQUIDADOR", referencedColumnName = "ID_LIQUIDADOR")
+    @JoinColumn(name = "EMPLEADO_ID_EMPLEADO", referencedColumnName = "ID_EMPLEADO")
     @ManyToOne(optional = false)
-    private Liquidador liquidadorIdLiquidador;
+    private Empleado empleadoIdEmpleado;
     @JoinColumn(name = "CLIENTE_ID_CLIENTE", referencedColumnName = "ID_CLIENTE")
     @ManyToOne(optional = false)
     private Cliente clienteIdCliente;
@@ -81,12 +77,11 @@ public class Siniestro implements Serializable {
         this.idSiniestro = idSiniestro;
     }
 
-    public Siniestro(String idSiniestro, Date fecha, String estado, short deducibleUf, String ejecutivoIdEjecutivo) {
+    public Siniestro(String idSiniestro, Date fecha, String estado, short deducibleUf) {
         this.idSiniestro = idSiniestro;
         this.fecha = fecha;
         this.estado = estado;
         this.deducibleUf = deducibleUf;
-        this.ejecutivoIdEjecutivo = ejecutivoIdEjecutivo;
     }
 
     public String getIdSiniestro() {
@@ -137,20 +132,12 @@ public class Siniestro implements Serializable {
         this.costeReparacion = costeReparacion;
     }
 
-    public String getEjecutivoIdEjecutivo() {
-        return ejecutivoIdEjecutivo;
+    public Empleado getEmpleadoIdEmpleado() {
+        return empleadoIdEmpleado;
     }
 
-    public void setEjecutivoIdEjecutivo(String ejecutivoIdEjecutivo) {
-        this.ejecutivoIdEjecutivo = ejecutivoIdEjecutivo;
-    }
-
-    public Liquidador getLiquidadorIdLiquidador() {
-        return liquidadorIdLiquidador;
-    }
-
-    public void setLiquidadorIdLiquidador(Liquidador liquidadorIdLiquidador) {
-        this.liquidadorIdLiquidador = liquidadorIdLiquidador;
+    public void setEmpleadoIdEmpleado(Empleado empleadoIdEmpleado) {
+        this.empleadoIdEmpleado = empleadoIdEmpleado;
     }
 
     public Cliente getClienteIdCliente() {

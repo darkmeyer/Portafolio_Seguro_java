@@ -42,9 +42,9 @@ public class Taller implements Serializable {
     @Basic(optional = false)
     @Column(name = "DIRECCION")
     private String direccion;
-    @JoinColumn(name = "ENCARGADO_ID_ENCARGADO", referencedColumnName = "ID_ENCARGADO")
+    @JoinColumn(name = "EMPLEADO_ID_EMPLEADO", referencedColumnName = "ID_EMPLEADO")
     @ManyToOne(optional = false)
-    private Encargado encargadoIdEncargado;
+    private Empleado empleadoIdEmpleado;
     @JoinColumn(name = "CIUDAD_ID_CIUDAD", referencedColumnName = "ID_CIUDAD")
     @ManyToOne(optional = false)
     private Ciudad ciudadIdCiudad;
@@ -86,12 +86,12 @@ public class Taller implements Serializable {
         this.direccion = direccion;
     }
 
-    public Encargado getEncargadoIdEncargado() {
-        return encargadoIdEncargado;
+    public Empleado getEmpleadoIdEmpleado() {
+        return empleadoIdEmpleado;
     }
 
-    public void setEncargadoIdEncargado(Encargado encargadoIdEncargado) {
-        this.encargadoIdEncargado = encargadoIdEncargado;
+    public void setEmpleadoIdEmpleado(Empleado empleadoIdEmpleado) {
+        this.empleadoIdEmpleado = empleadoIdEmpleado;
     }
 
     public Ciudad getCiudadIdCiudad() {

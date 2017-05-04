@@ -69,8 +69,6 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
-        lblMensaje.setText("jLabel4");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -111,7 +109,7 @@ public class Login extends javax.swing.JFrame {
                 .addComponent(btnEntrar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lblMensaje)
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         pack();
@@ -124,26 +122,33 @@ public class Login extends javax.swing.JFrame {
     private void btnEntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEntrarActionPerformed
         try
         {
-            String rut = txtRut.getText();
-            String pass = txtPass.getText();
-
-            TypedQuery consulta = em.createNamedQuery("Empleado.findByRut", Empleado.class);
-            List<Empleado> listEmp = consulta.setParameter("rut", rut).getResultList();
-
-            if(listEmp.size() > 0)
+            if(!txtRut.getText().isEmpty() || !txtPass.getText().isEmpty())
             {
-                if(BCrypt.checkpw(pass, listEmp.get(0).getPass()))
+                String rut = txtRut.getText();
+                String pass = txtPass.getText();
+
+                TypedQuery consulta = em.createNamedQuery("Empleado.findByRut", Empleado.class);
+                List<Empleado> listEmp = consulta.setParameter("rut", rut).getResultList();
+
+                if(listEmp.size() > 0)
                 {
-                    lblMensaje.setText("Bienvenido "+listEmp.get(0).getCargo()+" "+listEmp.get(0).getNombres());
+                    if(BCrypt.checkpw(pass, listEmp.get(0).getPass()) && listEmp.get(0).getCargoIdCargo().getNombre().equalsIgnoreCase("Administrador"))
+                    {
+                        lblMensaje.setText("Bienvenido "+listEmp.get(0).getNombres()+" "+listEmp.get(0).getApellidos());
+                    }
+                    else
+                    {
+                        lblMensaje.setText("Contraseña Incorrecta");
+                    }
                 }
                 else
                 {
-                    lblMensaje.setText("Contraseña Incorrecta");
+                    lblMensaje.setText("Empleado no registrado");
                 }
             }
             else
             {
-                lblMensaje.setText("Empleado no registrado");
+                lblMensaje.setText("Llene los campos");
             }
         }
         catch(Exception e)

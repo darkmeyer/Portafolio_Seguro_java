@@ -6,6 +6,7 @@
 package presentacion;
 
 import Datos.FafricaConexion;
+import Entidades.Cargo;
 import Entidades.Ciudad;
 import Entidades.Empleado;
 import Entidades.Region;
@@ -29,9 +30,11 @@ public class EmpleadoMantenedor extends javax.swing.JFrame {
 
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("SeguroEscritorioPU");
     EntityManager em = emf.createEntityManager();
+    String mensaje = "";
     public EmpleadoMantenedor() {
         initComponents();
         llenarComboBoxRegiones();
+        llenarComboBoxCargos();
     }
 
     /**
@@ -149,7 +152,6 @@ public class EmpleadoMantenedor extends javax.swing.JFrame {
             }
         });
 
-        cbCargo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Administrador", "Ejecutivo", "Liquidador", "Encargado Taller" }));
         cbCargo.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cbCargoItemStateChanged(evt);
@@ -194,15 +196,30 @@ public class EmpleadoMantenedor extends javax.swing.JFrame {
             }
         });
 
-        btnActualizar.setText("ACTUALZIAR");
+        btnActualizar.setText("ACTUALIZAR");
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActualizarActionPerformed(evt);
+            }
+        });
 
         btnBorrar.setText("BORRAR");
+        btnBorrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBorrarActionPerformed(evt);
+            }
+        });
 
         txaMensaje.setColumns(20);
         txaMensaje.setRows(5);
         jScrollPane1.setViewportView(txaMensaje);
 
-        btnLimpiar.setText("LIMPAIR");
+        btnLimpiar.setText("LIMPIAR");
+        btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimpiarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -400,7 +417,7 @@ public class EmpleadoMantenedor extends javax.swing.JFrame {
             if(!txtId.getText().isEmpty())
             {
                 int id = Integer.parseInt(txtId.getText());
-                List<Empleado> listEmp = buscarEmpleado(id);
+                List<Empleado> listEmp = buscarEmpleadoId(id);
                 if(listEmp != null)
                 {
                     txtRut.setText(listEmp.get(0).getRut());
@@ -411,10 +428,9 @@ public class EmpleadoMantenedor extends javax.swing.JFrame {
                     txtFecha.setText(listEmp.get(0).getFechaNacimiento().toString());
                     txtDireccion.setText(listEmp.get(0).getDireccion());                    
                     cbRegion.setSelectedItem(listEmp.get(0).getCiudadIdCiudad().getRegionIdRegion().getIdRegion()+ " " + listEmp.get(0).getCiudadIdCiudad().getRegionIdRegion().getNombre());
-                    cbCiudad.setSelectedItem(listEmp.get(0).getCiudadIdCiudad().getNombre());
-                    String str = listEmp.get(0).getCargo();
-                    String cargo = str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
-                    cbCargo.setSelectedItem(cargo);
+                    cbCiudad.setSelectedItem(listEmp.get(0).getCiudadIdCiudad().getIdCiudad()+" "+listEmp.get(0).getCiudadIdCiudad().getNombre());                    
+                    cbCargo.setSelectedItem(listEmp.get(0).getCargoIdCargo().getIdCargo()+ " " + listEmp.get(0).getCargoIdCargo().getNombre());
+                    
                     lblMensajeBuscar.setText("ID encontrada");
                 }
                 else
@@ -436,15 +452,7 @@ public class EmpleadoMantenedor extends javax.swing.JFrame {
     private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
         try
         {
-            if(!txtRut.getText().isEmpty() && 
-                    !txtPass.getText().isEmpty() && 
-                    !txtNombres.getText().isEmpty() && 
-                    !txtApellidos.getText().isEmpty() && 
-                    !txtCorreo.getText().isEmpty() && 
-                    !txtFono.getText().isEmpty() && 
-                    !txtFecha.getText().isEmpty() && 
-                    !txtDireccion.getText().isEmpty()
-                    )
+            if(camposVacios())
             {
                 String rut = txtRut.getText();
                 String pass = BCrypt.hashpw(txtPass.getText(),BCrypt.gensalt());
@@ -459,7 +467,9 @@ public class EmpleadoMantenedor extends javax.swing.JFrame {
                 String[] itemSplit = item.split("\\s+");
                 int idCiudad = Integer.parseInt(itemSplit[0]);
                 
-                String cargo = cbCargo.getSelectedItem().toString();
+                String item2 = cbCargo.getSelectedItem().toString();
+                itemSplit = item2.split("\\s+");
+                int idCargo = Integer.parseInt(itemSplit[0]);
                 
                 Connection cn = new FafricaConexion().Conectar();
                 try {
@@ -476,27 +486,156 @@ public class EmpleadoMantenedor extends javax.swing.JFrame {
                     cs.setString(8, fecha);
                     cs.setString(9, direccion);
                     cs.setInt(10, idCiudad);
-                    cs.setString(11, cargo);
+                    cs.setInt(11, idCargo);
                     cs.executeUpdate();
-                    String mensaje = cs.getString(1);
+                    String mensaje2 = cs.getString(1);
+                    mensaje += mensaje2+" \n";
                     txaMensaje.setText(mensaje);
                 } catch (Exception e) {
-                    txaMensaje.setText("Error");
+                    mensaje += "Error \n";
+                    txaMensaje.setText(mensaje);
                 }
             }
             else
             {
-                txaMensaje.setText("Llene los campos");
+                mensaje += "Llene todos los campos \n";
+                txaMensaje.setText(mensaje);
             }
         }
         catch(Exception e)
         {
-            txaMensaje.setText("Error");
+            mensaje += "Error \n";
+            txaMensaje.setText(mensaje);
         }
     }//GEN-LAST:event_btnIngresarActionPerformed
+
+    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
+        try
+        {
+            if(camposVacios())
+            {
+                String id = txtId.getText()+"e";
+                String rut = txtRut.getText();
+                String pass = BCrypt.hashpw(txtPass.getText(),BCrypt.gensalt());
+                String nombres = txtNombres.getText();
+                String apellidos = txtApellidos.getText();
+                String correo = txtCorreo.getText();
+                String fono = txtFono.getText();
+                String fecha = txtFecha.getText();
+                String direccion = txtDireccion.getText(); 
+                
+                String item = cbCargo.getSelectedItem().toString();
+                String[] itemSplit = item.split("\\s+");
+                short idCargo = Short.parseShort(itemSplit[0]);
+                Cargo cargo = new Cargo();
+                cargo.setIdCargo(idCargo);
+                
+                String item2 = cbCiudad.getSelectedItem().toString();
+                itemSplit = item2.split("\\s+");
+                short idCiudad = Short.parseShort(itemSplit[0]);
+                Ciudad ciudad = new Ciudad();
+                ciudad.setIdCiudad(idCiudad);
+                
+                try {
+                        
+                        Empleado emp = new Empleado();
+                        emp.setIdEmpleado(id);
+                        emp.setRut(rut);
+                        emp.setPass(pass);
+                        emp.setNombres(nombres);
+                        emp.setApellidos(apellidos);
+                        emp.setCorreo(correo);
+                        emp.setFono(fono);
+                        emp.setFechaNacimiento(fecha);
+                        emp.setDireccion(direccion);
+                        emp.setCiudadIdCiudad(ciudad);
+                        emp.setCargoIdCargo(cargo);                        
+                        
+                        
+                        em.getTransaction().begin();
+                        em.merge(emp);
+                        em.getTransaction().commit();
+
+                        mensaje += "Empleado Actualizado \n";
+                        txaMensaje.setText(mensaje);
+                    
+                } catch (Exception e) {
+                    mensaje += "Rut Empleado ya existe \n";
+                    txaMensaje.setText(mensaje);
+                }
+            }
+            else
+            {
+                mensaje += "Llene todos los campos \n";
+                txaMensaje.setText(mensaje);
+            }
+        }
+        catch(Exception e)
+        {
+            mensaje += "Datos no validos \n";
+            txaMensaje.setText(mensaje);
+        }
+    }//GEN-LAST:event_btnActualizarActionPerformed
+
+    private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
+        try
+        {
+            if(!txtId.getText().isEmpty())
+            {    
+                int id = Integer.parseInt(txtId.getText());
+                List<Empleado> listEmp = buscarEmpleadoId(id);
+                if(listEmp != null)
+                {
+                    em.getTransaction().begin();
+                    em.remove(listEmp.get(0));
+                    em.getTransaction().commit();
+                    mensaje += "Empleado Eliminado \n";
+                    txaMensaje.setText(mensaje);
+                }
+                else
+                {
+                    mensaje += "Empleado No existe \n";
+                    txaMensaje.setText(mensaje);
+                }
+            }
+            else
+            {
+                mensaje += "Ingrese la ID \n";
+                txaMensaje.setText(mensaje);
+            }
+        }
+        catch(Exception e)
+        {
+            mensaje += "Error \n";
+            txaMensaje.setText(mensaje);
+        }
+    }//GEN-LAST:event_btnBorrarActionPerformed
+
+    private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
+        mensaje = "";
+        txaMensaje.setText(mensaje);
+    }//GEN-LAST:event_btnLimpiarActionPerformed
     
+    public boolean camposVacios()
+    {
+        if(!txtRut.getText().isEmpty() && 
+            !txtPass.getText().isEmpty() && 
+            !txtNombres.getText().isEmpty() && 
+            !txtApellidos.getText().isEmpty() && 
+            !txtCorreo.getText().isEmpty() && 
+            !txtFono.getText().isEmpty() && 
+            !txtFecha.getText().isEmpty() && 
+            !txtDireccion.getText().isEmpty())
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
     
-    private List<Empleado> buscarEmpleado(int id)
+    private List<Empleado> buscarEmpleadoId(int id)
     {
         try {
             TypedQuery consulta = em.createNamedQuery("Empleado.findByIdEmpleado", Empleado.class);
@@ -512,6 +651,42 @@ public class EmpleadoMantenedor extends javax.swing.JFrame {
             }
         } catch (Exception e) {
             return null;
+        }
+    }
+    
+    private List<Empleado> buscarEmpleadoRut(String rut)
+    {
+        try {
+            TypedQuery consulta = em.createNamedQuery("Empleado.findByRut", Empleado.class);
+            List<Empleado> listEmp = consulta.setParameter("rut", rut).getResultList();
+            
+            if(listEmp.size() > 0)
+            {
+                return listEmp;
+            }
+            else
+            {
+                return null;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    private void llenarComboBoxCargos()
+    {
+        TypedQuery consulta = em.createNamedQuery("Cargo.findAll", Cargo.class);
+        List<Cargo> listCargo = consulta.getResultList();
+        cbCargo.removeAllItems();
+        if(listCargo.size() > 0)
+        {
+            for (Cargo cargo : listCargo) {
+                cbCargo.addItem(cargo.getIdCargo()+" "+cargo.getNombre());
+            }
+        }
+        else
+        {
+            cbCargo.addItem("Sin Datos");
         }
     }
     
@@ -548,9 +723,7 @@ public class EmpleadoMantenedor extends javax.swing.JFrame {
             cbCiudad.addItem("Sin Datos");
         }
     }
-    /**
-     * @param args the command line arguments
-     */
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -565,13 +738,13 @@ public class EmpleadoMantenedor extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(EmpleadoMantenedor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(EmpleadoMantenedor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(EmpleadoMantenedor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(EmpleadoMantenedor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 

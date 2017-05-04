@@ -42,19 +42,12 @@ public class SeguroEscritorio {
                 System.out.println("Ciudad: "+ciudad1.getNombre());
             }
             
-            consulta = em.createNamedQuery("Empleado.findByCargo", Empleado.class);
-            List<Empleado> listaEmp = consulta.setParameter("cargo", "liquidador").getResultList();
-            for (Empleado empleado : listaEmp) {
-                System.out.println("Empleado: "+empleado.getRut());
-            }
-            
-            String pass = "1234";
-            Administrador admin = new Administrador();
+                       
+            String pass = BCrypt.hashpw("1234", BCrypt.gensalt());
             Empleado emp = new Empleado();
-            emp.setAdministrador(admin);
             emp.setIdEmpleado("1e");
             emp.setRut("17256155-1");
-            emp.setPass(BCrypt.hashpw(pass, BCrypt.gensalt()));
+            emp.setPass(pass);
             emp.setNombres("Mauricio Hans");
             emp.setApellidos("Meyer Fernandez");
             emp.setCorreo("mau.meyer@alumnos.duoc.cl");
@@ -62,19 +55,15 @@ public class SeguroEscritorio {
             emp.setFechaNacimiento("05/01/1990");
             emp.setDireccion("Esquina blanca 893, Maipu");
             emp.setCiudadIdCiudad(listaCiudad.get(0));
-            emp.setCargo("administrador");
-            emp.getAdministrador().setIdAdministrador("1a");
-            emp.getAdministrador().setEmpleadoIdEmpleado(emp);
+            Cargo cargo = new Cargo();
+            short idCargo = 1;
+            cargo.setIdCargo(idCargo);
+            emp.setCargoIdCargo(cargo);
             
             em.getTransaction().begin();
             em.persist(emp);
-            em.getTransaction().commit();
-        
-            consulta = em.createNamedQuery("Administrador.findAll", Empleado.class);
-            List<Administrador> listaAdm = consulta.getResultList();
-            if(listaAdm != null){
-                System.out.println(listaAdm.get(0).getEmpleadoIdEmpleado().getRut());
-            }
+            em.getTransaction().commit();        
+            
             
         }
         catch(Exception e)
