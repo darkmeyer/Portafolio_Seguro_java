@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Taller.findAll", query = "SELECT t FROM Taller t"),
     @NamedQuery(name = "Taller.findByIdTaller", query = "SELECT t FROM Taller t WHERE t.idTaller = :idTaller"),
+    @NamedQuery(name = "Taller.findByNombre", query = "SELECT t FROM Taller t WHERE t.nombre = :nombre"),
     @NamedQuery(name = "Taller.findByFono", query = "SELECT t FROM Taller t WHERE t.fono = :fono"),
     @NamedQuery(name = "Taller.findByDireccion", query = "SELECT t FROM Taller t WHERE t.direccion = :direccion")})
 public class Taller implements Serializable {
@@ -36,6 +37,9 @@ public class Taller implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID_TALLER")
     private String idTaller;
+    @Basic(optional = false)
+    @Column(name = "NOMBRE")
+    private String nombre;
     @Basic(optional = false)
     @Column(name = "FONO")
     private String fono;
@@ -56,8 +60,9 @@ public class Taller implements Serializable {
         this.idTaller = idTaller;
     }
 
-    public Taller(String idTaller, String fono, String direccion) {
+    public Taller(String idTaller, String nombre, String fono, String direccion) {
         this.idTaller = idTaller;
+        this.nombre = nombre;
         this.fono = fono;
         this.direccion = direccion;
     }
@@ -68,6 +73,14 @@ public class Taller implements Serializable {
 
     public void setIdTaller(String idTaller) {
         this.idTaller = idTaller;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     public String getFono() {
