@@ -356,7 +356,10 @@ public class GruaMantenedor extends javax.swing.JFrame {
         {
             if(!txtRut.getText().isEmpty())
             {
-                List<Grua> listGrua = buscarGruaRut(txtRut.getText());
+                String rut = txtRut.getText();
+                rut = rut.replace(".","");
+                rut = rut.replace("-","");
+                List<Grua> listGrua = buscarGruaRut(rut);
                 if(listGrua != null)
                 {
                     txtId.setText(listGrua.get(0).getIdGrua().toString());
@@ -455,8 +458,6 @@ public class GruaMantenedor extends javax.swing.JFrame {
                 String[] itemSplit = item.split("\\s+");
                 short idCiudad = Short.parseShort(itemSplit[0]);
                 short id = Short.parseShort(txtId.getText());
-                String rut = txtRut.getText();
-                
                 
                 if(buscarGruaId(id) != null)
                 {   
@@ -551,6 +552,8 @@ public class GruaMantenedor extends javax.swing.JFrame {
             {    
                 short id = !txtId.getText().isEmpty() ? Short.parseShort(txtId.getText()) : 0;
                 String rut = txtRut.getText();
+                rut = rut.replace(".","");
+                rut = rut.replace("-","");
                 List<Grua> listGrua = !txtId.getText().isEmpty() ? buscarGruaId(id) : buscarGruaRut(rut);
                 
                 if(listGrua != null)

@@ -390,7 +390,8 @@ public class TallerMantenedor extends javax.swing.JFrame {
                 int idCiudad = Integer.parseInt(itemSplit[0]);
                 
                 String rut = txtRut.getText();
-                
+                rut = rut.replace(".","");
+                rut = rut.replace("-","");
                 List<Empleado> listEmp = buscarEmpleadoRut(rut);
                 if(listEmp != null)
                 {
@@ -459,7 +460,9 @@ public class TallerMantenedor extends javax.swing.JFrame {
                 short idCiudad = Short.parseShort(itemSplit[0]);
                 String id = txtIdTaller.getText();
                 
-                String rut = txtRut.getText();                
+                String rut = txtRut.getText();
+                rut = rut.replace(".","");
+                rut = rut.replace("-","");
                 if(buscarTaller(id+"t") != null)
                 {
                     List<Empleado> listEmp = buscarEmpleadoRut(rut);
@@ -571,8 +574,11 @@ public class TallerMantenedor extends javax.swing.JFrame {
         try
         {
             if(!txtRut.getText().isEmpty())
-            {
-                String id = buscarTallerRut(txtRut.getText());
+            {   
+                String rut = txtRut.getText();
+                rut = rut.replace(".","");
+                rut = rut.replace("-","");
+                String id = buscarTallerRut(rut);
                 List<Taller> listTaller = !(id.equals("-1")) ? buscarTaller(id) : null;
                 if(listTaller != null)
                 {

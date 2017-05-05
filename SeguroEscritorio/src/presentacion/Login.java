@@ -128,32 +128,40 @@ public class Login extends javax.swing.JFrame {
             {
                 String rut = txtRut.getText();
                 String pass = txtPass.getText();
-
-                TypedQuery consulta = em.createNamedQuery("Empleado.findByRut", Empleado.class);
-                List<Empleado> listEmp = consulta.setParameter("rut", rut).getResultList();
-
-                if(listEmp.size() > 0)
+                rut = rut.replace(".","");
+                rut = rut.replace("-","");
+                if(Validaciones.validarRut(rut)) 
                 {
-                    if(BCrypt.checkpw(pass, listEmp.get(0).getPass()))
+                    TypedQuery consulta = em.createNamedQuery("Empleado.findByRut", Empleado.class);
+                    List<Empleado> listEmp = consulta.setParameter("rut", rut).getResultList();
+
+                    if(listEmp.size() > 0)
                     {
-                        if(listEmp.get(0).getCargoIdCargo().getNombre().equalsIgnoreCase("Administrador"))
+                        if(BCrypt.checkpw(pass, listEmp.get(0).getPass()))
                         {
-                            new Menu(listEmp.get(0).getNombres()+" "+listEmp.get(0).getApellidos()).setVisible(true);
-                            dispose();
+                            if(listEmp.get(0).getCargoIdCargo().getNombre().equalsIgnoreCase("Administrador"))
+                            {
+                                new Menu(listEmp.get(0).getNombres()+" "+listEmp.get(0).getApellidos()).setVisible(true);
+                                dispose();
+                            }
+                            else
+                            {
+                                lblMensaje.setText("Usted no es Administrador");
+                            }
                         }
                         else
                         {
-                            lblMensaje.setText("Usted no es Administrador");
+                            lblMensaje.setText("Contraseña Incorrecta");
                         }
                     }
                     else
                     {
-                        lblMensaje.setText("Contraseña Incorrecta");
+                        lblMensaje.setText("Empleado no registrado");
                     }
                 }
                 else
                 {
-                    lblMensaje.setText("Empleado no registrado");
+                    lblMensaje.setText("Rut Invalido");
                 }
             }
             else

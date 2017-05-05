@@ -42,12 +42,11 @@ public class SeguroEscritorio {
                 System.out.println("Ciudad: "+ciudad1.getNombre());
             }
             
-                       
-            String pass = BCrypt.hashpw("1234", BCrypt.gensalt());
+            
             Empleado emp = new Empleado();
             emp.setIdEmpleado("1e");
             emp.setRut("17256155-1");
-            emp.setPass(pass);
+            emp.setPass("1234");
             emp.setNombres("Mauricio Hans");
             emp.setApellidos("Meyer Fernandez");
             emp.setCorreo("mau.meyer@alumnos.duoc.cl");

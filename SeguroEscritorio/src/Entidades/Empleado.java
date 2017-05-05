@@ -117,7 +117,8 @@ public class Empleado implements Serializable {
     }
 
     public void setRut(String rut) throws Exception {
-        rut = rut.replace(".","");       
+        rut = rut.replace(".","");
+        rut = rut.replace("-","");
         if(Validaciones.validarRut(rut) && rut.length() >= 8){
                 this.rut = rut;
         }else
