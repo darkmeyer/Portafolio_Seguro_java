@@ -11,6 +11,7 @@ import Entidades.Empleado;
 import Entidades.Grua;
 import Entidades.Region;
 import Entidades.Taller;
+import java.awt.event.KeyEvent;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -19,6 +20,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
 
 /**
@@ -179,6 +181,12 @@ public class GruaMantenedor extends javax.swing.JFrame {
         btnBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBuscarActionPerformed(evt);
+            }
+        });
+
+        txtId.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtIdKeyTyped(evt);
             }
         });
 
@@ -381,35 +389,36 @@ public class GruaMantenedor extends javax.swing.JFrame {
         try
         {
             if(!camposVacios())
-            {
-                String rut = txtRut.getText();
-                String nombre = txtNombre.getText();
-                String apellido = txtApellido.getText();
-                String fono = txtFono.getText();
-                String direccion = txtDireccion.getText();
-                
+            {                
                 String item = cbCiudad.getSelectedItem().toString();
                 String[] itemSplit = item.split("\\s+");
                 int idCiudad = Integer.parseInt(itemSplit[0]);
                 
                 Connection cn = new FafricaConexion().Conectar();
                 try {
+                    
+                    Grua grua = new Grua();
+                    grua.setRut(txtRut.getText());
+                    grua.setNombre(txtNombre.getText());
+                    grua.setApellido(txtApellido.getText());
+                    grua.setFono(txtFono.getText());
+                    grua.setDireccion(txtDireccion.getText());
 
                     CallableStatement cs = cn.prepareCall("{call ? := F_INSERT_GRUA(?,?,?,?,?,?)}");
                     cs.registerOutParameter(1, Types.VARCHAR);
                     
-                    cs.setString(2, rut);
-                    cs.setString(3, nombre);
-                    cs.setString(4, apellido);
-                    cs.setString(5, fono);
-                    cs.setString(6, direccion);
+                    cs.setString(2, grua.getRut());
+                    cs.setString(3, grua.getNombre());
+                    cs.setString(4, grua.getApellido());
+                    cs.setString(5, grua.getFono());
+                    cs.setString(6, grua.getDireccion());
                     cs.setInt(7, idCiudad);
                     cs.executeUpdate();
                     String mensaje2 = cs.getString(1);
                     mensaje += mensaje2+" \n";
                     txaMensaje.setText(mensaje);
                 } catch (Exception e) {
-                    mensaje += "Error \n";
+                    mensaje += e.getMessage()+"\n";
                     txaMensaje.setText(mensaje);
                 }           
             }
@@ -446,25 +455,21 @@ public class GruaMantenedor extends javax.swing.JFrame {
                 String[] itemSplit = item.split("\\s+");
                 short idCiudad = Short.parseShort(itemSplit[0]);
                 short id = Short.parseShort(txtId.getText());
-                String nombre = txtNombre.getText();
-                String apellido = txtApellido.getText();
-                String fono = txtFono.getText();
-                String direccion = txtDireccion.getText();
                 String rut = txtRut.getText();
                 
-                List<Grua> listGrua = buscarGruaId(id);
-                if(listGrua != null)
-                {                    
+                
+                if(buscarGruaId(id) != null)
+                {   
                     try {
                         Ciudad ciudad = new Ciudad();
                         ciudad.setIdCiudad(idCiudad);
                         Grua grua = new Grua();
                         grua.setIdGrua(id);
-                        grua.setRut(rut);
-                        grua.setNombre(nombre);
-                        grua.setApellido(apellido);
-                        grua.setFono(fono);
-                        grua.setDireccion(direccion);
+                        grua.setRut(txtRut.getText());
+                        grua.setNombre(txtNombre.getText());
+                        grua.setApellido(txtApellido.getText());
+                        grua.setFono(txtFono.getText());
+                        grua.setDireccion(txtDireccion.getText());
                         grua.setCiudadIdCiudad(ciudad);
                         
                         em.getTransaction().begin();
@@ -473,8 +478,14 @@ public class GruaMantenedor extends javax.swing.JFrame {
 
                         mensaje += "Grua Actualizado \n";
                         txaMensaje.setText(mensaje);
-                    } catch (Exception e) {
-                        mensaje += "No puede actualizar a un rut que ya esta registrado \n";
+                    }
+                    catch(RollbackException s)
+                    {
+                        mensaje += "No puede actualizar a un rut en uso\n";
+                        txaMensaje.setText(mensaje);
+                    }
+                    catch (Exception e) {
+                        mensaje += e.getMessage()+"\n";
                         txaMensaje.setText(mensaje);
                     }
                     
@@ -568,6 +579,16 @@ public class GruaMantenedor extends javax.swing.JFrame {
             txaMensaje.setText(mensaje);
         }
     }//GEN-LAST:event_btnBorrarActionPerformed
+
+    private void txtIdKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIdKeyTyped
+        
+        char vchar = evt.getKeyChar();
+        if(!(Character.isDigit(vchar))
+            || (vchar == KeyEvent.VK_BACK_SPACE)
+            || (vchar == KeyEvent.VK_DELETE)){
+        evt.consume();
+        }
+    }//GEN-LAST:event_txtIdKeyTyped
 
     private void llenarComboBoxRegiones()
     {

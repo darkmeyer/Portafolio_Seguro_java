@@ -10,8 +10,11 @@ import Entidades.Cargo;
 import Entidades.Ciudad;
 import Entidades.Empleado;
 import Entidades.Region;
+import java.awt.event.KeyEvent;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.sql.SQLTransientConnectionException;
 import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,6 +22,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -178,6 +182,12 @@ public class EmpleadoMantenedor extends javax.swing.JFrame {
         jLabel14.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel14.setForeground(new java.awt.Color(255, 255, 255));
         jLabel14.setText("PASS:");
+
+        txtId.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtIdKeyTyped(evt);
+            }
+        });
 
         btnBuscar.setText("BUSCAR");
         btnBuscar.addActionListener(new java.awt.event.ActionListener() {
@@ -481,46 +491,55 @@ public class EmpleadoMantenedor extends javax.swing.JFrame {
         try
         {
             if(camposVacios())
-            {
-                String rut = txtRut.getText();
-                String pass = BCrypt.hashpw(txtPass.getText(),BCrypt.gensalt());
-                String nombres = txtNombres.getText();
-                String apellidos = txtApellidos.getText();
-                String correo = txtCorreo.getText();
-                String fono = txtFono.getText();
-                String fecha = txtFecha.getText();
-                String direccion = txtDireccion.getText();
-                
-                String item = cbCiudad.getSelectedItem().toString();
-                String[] itemSplit = item.split("\\s+");
-                int idCiudad = Integer.parseInt(itemSplit[0]);
-                
-                String item2 = cbCargo.getSelectedItem().toString();
-                itemSplit = item2.split("\\s+");
-                int idCargo = Integer.parseInt(itemSplit[0]);
-                
+            {                
                 Connection cn = new FafricaConexion().Conectar();
                 try {
+                    String item = cbCargo.getSelectedItem().toString();
+                    String[] itemSplit = item.split("\\s+");
+                    short idCargo = Short.parseShort(itemSplit[0]);
+                    Cargo cargo = new Cargo();
+                    cargo.setIdCargo(idCargo);
 
+                    String item2 = cbCiudad.getSelectedItem().toString();
+                    itemSplit = item2.split("\\s+");
+                    short idCiudad = Short.parseShort(itemSplit[0]);
+                    Ciudad ciudad = new Ciudad();
+                    ciudad.setIdCiudad(idCiudad);
+
+                    Empleado emp = new Empleado();
+                    emp.setIdEmpleado(txtId.getText()+"e");
+                    emp.setRut(txtRut.getText());
+                    emp.setPass(txtPass.getText());
+                    emp.setNombres(txtNombres.getText());
+                    emp.setApellidos(txtApellidos.getText());
+                    emp.setCorreo(txtCorreo.getText());
+                    emp.setFono(txtFono.getText());
+                    emp.setFechaNacimiento(txtFecha.getText());
+                    emp.setDireccion(txtDireccion.getText());
+                    emp.setCiudadIdCiudad(ciudad);
+                    emp.setCargoIdCargo(cargo);  
+                    
                     CallableStatement cs = cn.prepareCall("{call ? := F_INSERT_EMPLEADO(?,?,?,?,?,?,?,?,?,?)}");
                     cs.registerOutParameter(1, Types.VARCHAR);
                     
-                    cs.setString(2, rut);
-                    cs.setString(3, pass);
-                    cs.setString(4, nombres);
-                    cs.setString(5, apellidos);
-                    cs.setString(6, correo);
-                    cs.setString(7, fono);
-                    cs.setString(8, fecha);
-                    cs.setString(9, direccion);
+                    cs.setString(2, emp.getRut());
+                    cs.setString(3, emp.getPass());
+                    cs.setString(4, emp.getNombres());
+                    cs.setString(5, emp.getApellidos());
+                    cs.setString(6, emp.getCorreo());
+                    cs.setString(7, emp.getFono());
+                    cs.setString(8, emp.getFechaNacimiento());
+                    cs.setString(9, emp.getDireccion());
                     cs.setInt(10, idCiudad);
                     cs.setInt(11, idCargo);
                     cs.executeUpdate();
                     String mensaje2 = cs.getString(1);
                     mensaje += mensaje2+" \n";
                     txaMensaje.setText(mensaje);
-                } catch (Exception e) {
-                    mensaje += "Error \n";
+                    
+                } 
+                catch(Exception e){
+                    mensaje += e.getMessage()+"\n";
                     txaMensaje.setText(mensaje);
                 }
             }
@@ -532,7 +551,7 @@ public class EmpleadoMantenedor extends javax.swing.JFrame {
         }
         catch(Exception e)
         {
-            mensaje += "Error \n";
+            mensaje += e.getMessage()+"\n";
             txaMensaje.setText(mensaje);
         }
     }//GEN-LAST:event_btnIngresarActionPerformed
@@ -541,41 +560,32 @@ public class EmpleadoMantenedor extends javax.swing.JFrame {
         try
         {
             if(camposVacios())
-            {
-                String id = txtId.getText()+"e";
-                String rut = txtRut.getText();
-                String pass = BCrypt.hashpw(txtPass.getText(),BCrypt.gensalt());
-                String nombres = txtNombres.getText();
-                String apellidos = txtApellidos.getText();
-                String correo = txtCorreo.getText();
-                String fono = txtFono.getText();
-                String fecha = txtFecha.getText();
-                String direccion = txtDireccion.getText(); 
-                
-                String item = cbCargo.getSelectedItem().toString();
-                String[] itemSplit = item.split("\\s+");
-                short idCargo = Short.parseShort(itemSplit[0]);
-                Cargo cargo = new Cargo();
-                cargo.setIdCargo(idCargo);
-                
-                String item2 = cbCiudad.getSelectedItem().toString();
-                itemSplit = item2.split("\\s+");
-                short idCiudad = Short.parseShort(itemSplit[0]);
-                Ciudad ciudad = new Ciudad();
-                ciudad.setIdCiudad(idCiudad);
-                
+            {  
                 try {
+                    if(buscarEmpleadoId(Integer.parseInt(txtId.getText())) != null)
+                    {
+                        String item = cbCargo.getSelectedItem().toString();
+                        String[] itemSplit = item.split("\\s+");
+                        short idCargo = Short.parseShort(itemSplit[0]);
+                        Cargo cargo = new Cargo();
+                        cargo.setIdCargo(idCargo);
+
+                        String item2 = cbCiudad.getSelectedItem().toString();
+                        itemSplit = item2.split("\\s+");
+                        short idCiudad = Short.parseShort(itemSplit[0]);
+                        Ciudad ciudad = new Ciudad();
+                        ciudad.setIdCiudad(idCiudad);
                         
                         Empleado emp = new Empleado();
-                        emp.setIdEmpleado(id);
-                        emp.setRut(rut);
-                        emp.setPass(pass);
-                        emp.setNombres(nombres);
-                        emp.setApellidos(apellidos);
-                        emp.setCorreo(correo);
-                        emp.setFono(fono);
-                        emp.setFechaNacimiento(fecha);
-                        emp.setDireccion(direccion);
+                        emp.setIdEmpleado(txtId.getText()+"e");
+                        emp.setRut(txtRut.getText());
+                        emp.setPass(txtPass.getText());
+                        emp.setNombres(txtNombres.getText());
+                        emp.setApellidos(txtApellidos.getText());
+                        emp.setCorreo(txtCorreo.getText());
+                        emp.setFono(txtFono.getText());
+                        emp.setFechaNacimiento(txtFecha.getText());
+                        emp.setDireccion(txtDireccion.getText());
                         emp.setCiudadIdCiudad(ciudad);
                         emp.setCargoIdCargo(cargo);                        
                         
@@ -586,9 +596,21 @@ public class EmpleadoMantenedor extends javax.swing.JFrame {
 
                         mensaje += "Empleado Actualizado \n";
                         txaMensaje.setText(mensaje);
-                    
-                } catch (Exception e) {
-                    mensaje += "Rut Empleado ya existe \n";
+                    }
+                    else
+                    {
+                        mensaje += "Empleado No Existe \n";
+                        txaMensaje.setText(mensaje);
+                    }
+                }
+                catch(RollbackException s)
+                {
+                    mensaje += "No puede actualizar a un rut en uso\n";
+                    txaMensaje.setText(mensaje);
+                }
+                catch(Exception e)
+                {
+                    mensaje += e.getMessage()+"\n";
                     txaMensaje.setText(mensaje);
                 }
             }
@@ -682,6 +704,16 @@ public class EmpleadoMantenedor extends javax.swing.JFrame {
             lblMensajeBuscarRut.setText("Error");
         }
     }//GEN-LAST:event_btnBuscarRutActionPerformed
+
+    private void txtIdKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIdKeyTyped
+        
+        char vchar = evt.getKeyChar();
+        if(!(Character.isDigit(vchar))
+            || (vchar == KeyEvent.VK_BACK_SPACE)
+            || (vchar == KeyEvent.VK_DELETE)){
+        evt.consume();
+        }
+    }//GEN-LAST:event_txtIdKeyTyped
     
     public boolean camposVacios()
     {

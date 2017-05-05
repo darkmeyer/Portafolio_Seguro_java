@@ -228,6 +228,7 @@
             <Component class="javax.swing.JTextField" name="txtIdTaller">
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtIdTallerActionPerformed"/>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtIdTallerKeyTyped"/>
               </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnBuscarTaller">

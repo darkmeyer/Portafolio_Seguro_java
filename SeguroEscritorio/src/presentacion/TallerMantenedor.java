@@ -10,6 +10,7 @@ import Entidades.Ciudad;
 import Entidades.Empleado;
 import Entidades.Region;
 import Entidades.Taller;
+import java.awt.event.KeyEvent;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -18,6 +19,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -92,6 +94,11 @@ public class TallerMantenedor extends javax.swing.JFrame {
         txtIdTaller.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtIdTallerActionPerformed(evt);
+            }
+        });
+        txtIdTaller.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtIdTallerKeyTyped(evt);
             }
         });
 
@@ -382,9 +389,6 @@ public class TallerMantenedor extends javax.swing.JFrame {
                 String[] itemSplit = item.split("\\s+");
                 int idCiudad = Integer.parseInt(itemSplit[0]);
                 
-                String nombre = txtNombre.getText();
-                String fono = txtFono.getText();
-                String direccion = txtDireccion.getText();
                 String rut = txtRut.getText();
                 
                 List<Empleado> listEmp = buscarEmpleadoRut(rut);
@@ -395,13 +399,18 @@ public class TallerMantenedor extends javax.swing.JFrame {
                         
                         Connection cn = new FafricaConexion().Conectar();
                         try {
+                            
+                            Taller taller = new Taller();
+                            taller.setNombre(txtNombre.getText());
+                            taller.setFono(txtFono.getText());
+                            taller.setDireccion(txtDireccion.getText());
 
                             CallableStatement cs = cn.prepareCall("{call ? := F_INSERT_TALLER(?,?,?,?,?)}");
                             cs.registerOutParameter(1, Types.VARCHAR);
 
-                            cs.setString(2, nombre);
-                            cs.setString(3, fono);
-                            cs.setString(4, direccion);
+                            cs.setString(2, taller.getNombre());
+                            cs.setString(3, taller.getFono());
+                            cs.setString(4, taller.getDireccion());
                             cs.setInt(5, idCiudad);
                             cs.setString(6, listEmp.get(0).getIdEmpleado());
                             cs.executeUpdate();
@@ -409,7 +418,7 @@ public class TallerMantenedor extends javax.swing.JFrame {
                             mensaje += mensaje2+" \n";
                             txaMensaje.setText(mensaje);
                         } catch (Exception e) {
-                            mensaje += "Error \n";
+                            mensaje += e.getMessage()+"\n";
                             txaMensaje.setText(mensaje);
                         }
                     }
@@ -449,11 +458,8 @@ public class TallerMantenedor extends javax.swing.JFrame {
                 String[] itemSplit = item.split("\\s+");
                 short idCiudad = Short.parseShort(itemSplit[0]);
                 String id = txtIdTaller.getText();
-                String nombre = txtNombre.getText();
-                String fono = txtFono.getText();
-                String direccion = txtDireccion.getText();
-                String rut = txtRut.getText();
                 
+                String rut = txtRut.getText();                
                 if(buscarTaller(id+"t") != null)
                 {
                     List<Empleado> listEmp = buscarEmpleadoRut(rut);
@@ -465,10 +471,10 @@ public class TallerMantenedor extends javax.swing.JFrame {
                                 Ciudad ciudad = new Ciudad();
                                 ciudad.setIdCiudad(idCiudad);
                                 Taller taller = new Taller();
-                                taller.setIdTaller(id+"t");
-                                taller.setNombre(nombre);
-                                taller.setFono(fono);
-                                taller.setDireccion(direccion);
+                                taller.setIdTaller(txtIdTaller.getText()+"t");
+                                taller.setNombre(txtNombre.getText());
+                                taller.setFono(txtFono.getText());
+                                taller.setDireccion(txtDireccion.getText());
                                 taller.setCiudadIdCiudad(ciudad);
                                 taller.setEmpleadoIdEmpleado(listEmp.get(0));
 
@@ -478,8 +484,15 @@ public class TallerMantenedor extends javax.swing.JFrame {
 
                                 mensaje += "Taller Actualizado \n";
                                 txaMensaje.setText(mensaje);
-                            } catch (Exception e) {
-                                mensaje += "No puede actualizar a un rut que ya esta usado \n";
+                            }
+                            catch(RollbackException s)
+                            {
+                                mensaje += "No puede actualizar a un rut en uso\n";
+                                txaMensaje.setText(mensaje);
+                            }
+                            catch(Exception e)
+                            {
+                                mensaje += e.getMessage()+"\n";
                                 txaMensaje.setText(mensaje);
                             }
                         }
@@ -587,6 +600,17 @@ public class TallerMantenedor extends javax.swing.JFrame {
             lblMensajeBuscarRut.setText("Error");
         }
     }//GEN-LAST:event_btnBuscarTallerRutActionPerformed
+
+    private void txtIdTallerKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIdTallerKeyTyped
+        
+        char vchar = evt.getKeyChar();
+        if(!(Character.isDigit(vchar))
+            || (vchar == KeyEvent.VK_BACK_SPACE)
+            || (vchar == KeyEvent.VK_DELETE)){
+        evt.consume();
+        }
+    
+    }//GEN-LAST:event_txtIdTallerKeyTyped
     
     private String buscarTallerRut(String rut) throws SQLException
     {

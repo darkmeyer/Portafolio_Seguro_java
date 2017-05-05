@@ -20,6 +20,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  *
@@ -104,72 +105,100 @@ public class Empleado implements Serializable {
         return idEmpleado;
     }
 
-    public void setIdEmpleado(String idEmpleado) {
-        this.idEmpleado = idEmpleado;
+    public void setIdEmpleado(String idEmpleado) throws Exception {        
+        if(idEmpleado.length() > 10)            
+            throw new Exception("Error ID mayor a largo 10.");
+        else
+            this.idEmpleado = idEmpleado;        
     }
 
     public String getRut() {
         return rut;
     }
 
-    public void setRut(String rut) {
-        this.rut = rut;
+    public void setRut(String rut) throws Exception {
+        rut = rut.replace(".","");       
+        if(Validaciones.validarRut(rut) && rut.length() >= 8){
+                this.rut = rut;
+        }else
+            throw new Exception("Rut Invalido.");
     }
 
     public String getPass() {
         return pass;
     }
 
-    public void setPass(String pass) {
-        this.pass = pass;
+    public void setPass(String pass) throws Exception {
+        if(pass.length() > 10)
+            throw new Exception("Password no puede superar los 10 Caracteres.");
+        else
+            this.pass = BCrypt.hashpw(pass, BCrypt.gensalt());
     }
 
     public String getNombres() {
         return nombres;
     }
 
-    public void setNombres(String nombres) {
-        this.nombres = nombres;
+    public void setNombres(String nombres) throws Exception {
+        if(nombres.length() > 50)
+            throw new Exception("Nombres maximo 50 caracteres");
+        else
+            this.nombres = nombres;
     }
 
     public String getApellidos() {
         return apellidos;
     }
 
-    public void setApellidos(String apellidos) {
-        this.apellidos = apellidos;
+    public void setApellidos(String apellidos) throws Exception {
+        if(apellidos.length() > 50)
+            throw new Exception("Apellidos maximo 50 caracteres");
+        else
+            this.apellidos = apellidos;
     }
 
     public String getCorreo() {
         return correo;
     }
 
-    public void setCorreo(String correo) {
-        this.correo = correo;
+    public void setCorreo(String correo) throws Exception {
+        if(correo.length() > 50)
+            throw new Exception("Correo maximo 50 caracteres");
+        else
+            this.correo = correo;
     }
 
     public String getFono() {
         return fono;
     }
 
-    public void setFono(String fono) {
-        this.fono = fono;
+    public void setFono(String fono) throws Exception {
+        if(fono.length() > 15)
+            throw new Exception("Fono maximo 15 Numeros");
+        else
+            this.fono = fono;
     }
 
     public String getFechaNacimiento() {
         return fechaNacimiento;
     }
 
-    public void setFechaNacimiento(String fechaNacimiento) {
-        this.fechaNacimiento = fechaNacimiento;
+    public void setFechaNacimiento(String fechaNacimiento) throws Exception {
+        if(fechaNacimiento.length() > 10)
+            throw new Exception("fecha excede maximo de largo");
+        else
+            this.fechaNacimiento = fechaNacimiento;
     }
 
     public String getDireccion() {
         return direccion;
     }
 
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
+    public void setDireccion(String direccion) throws Exception {
+        if(direccion.length() > 100)
+            throw new Exception("Nombres maximo 50 caracteres");
+        else
+            this.direccion = direccion;
     }
 
     public Ciudad getCiudadIdCiudad() {

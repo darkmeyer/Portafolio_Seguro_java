@@ -86,40 +86,56 @@ public class Grua implements Serializable {
         return rut;
     }
 
-    public void setRut(String rut) {
-        this.rut = rut;
+    public void setRut(String rut) throws Exception {
+        rut = rut.replace(".","");       
+        if(Validaciones.validarRut(rut) && rut.length() >= 8){
+                this.rut = rut;
+        }else
+            throw new Exception("Rut Invalido.");
     }
 
     public String getNombre() {
         return nombre;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setNombre(String nombre) throws Exception {
+        if(nombre.length() > 50)
+            throw new Exception("Nombre no puede superar largo 50");
+        else
+            this.nombre = nombre;
     }
 
     public String getApellido() {
         return apellido;
     }
 
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
+    public void setApellido(String apellido) throws Exception {
+        if(apellido.length() > 50)
+            throw new Exception("Apallido no puede superar largo 50");
+        else
+            this.apellido = apellido;
     }
 
     public String getFono() {
         return fono;
     }
 
-    public void setFono(String fono) {
-        this.fono = fono;
+    public void setFono(String fono) throws Exception {
+        if(fono.length() > 15)
+            throw new Exception("Fono no puede superar largo 15");
+        else
+            this.fono = fono;
     }
 
     public String getDireccion() {
         return direccion;
     }
 
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
+    public void setDireccion(String direccion) throws Exception {
+        if(direccion.length() > 50)
+            throw new Exception("Direccion no puede superar largo 100");
+        else
+            this.direccion = direccion;
     }
 
     public Ciudad getCiudadIdCiudad() {

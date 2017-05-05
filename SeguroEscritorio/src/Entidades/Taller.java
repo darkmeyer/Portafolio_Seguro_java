@@ -71,32 +71,44 @@ public class Taller implements Serializable {
         return idTaller;
     }
 
-    public void setIdTaller(String idTaller) {
-        this.idTaller = idTaller;
+    public void setIdTaller(String idTaller) throws Exception {
+        if(idTaller.length() > 10)
+            throw new Exception("Id no puede superar el largo 10");
+        else
+            this.idTaller = idTaller;
     }
 
     public String getNombre() {
         return nombre;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setNombre(String nombre) throws Exception {
+        if(nombre.length() > 50)
+            throw new Exception("Nombre no puede superar el largo 50");
+        else
+            this.nombre = nombre;
     }
 
     public String getFono() {
         return fono;
     }
 
-    public void setFono(String fono) {
-        this.fono = fono;
+    public void setFono(String fono) throws Exception {
+        if(fono.length() > 15)
+            throw new Exception("Fono no puede superar el largo 15");
+        else
+            this.fono = fono;
     }
 
     public String getDireccion() {
         return direccion;
     }
 
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
+    public void setDireccion(String direccion) throws Exception {
+        if(direccion.length() > 50)
+            throw new Exception("Direccion no puede superar el largo 50");
+        else
+            this.direccion = direccion;
     }
 
     public Empleado getEmpleadoIdEmpleado() {

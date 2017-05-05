@@ -362,6 +362,9 @@
         <Component class="javax.swing.JLabel" name="lblMensajeBuscarRut">
         </Component>
         <Component class="javax.swing.JTextField" name="txtId">
+          <Events>
+            <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtIdKeyTyped"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="Rut1">
           <Properties>

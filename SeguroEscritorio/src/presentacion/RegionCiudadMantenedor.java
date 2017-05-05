@@ -26,6 +26,7 @@ public class RegionCiudadMantenedor extends javax.swing.JFrame {
 
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("SeguroEscritorioPU");
     EntityManager em = emf.createEntityManager();
+    String mensaje = "";
     public RegionCiudadMantenedor() {
         initComponents();
         llenarComboBoxRegiones();
@@ -374,19 +375,20 @@ public class RegionCiudadMantenedor extends javax.swing.JFrame {
             if(!txtIdRegion.getText().isEmpty() && !txtNombreRegion.getText().isEmpty())
             {
                 int id = Integer.parseInt(txtIdRegion.getText());
-                String nombre = txtNombreRegion.getText();
                 Connection cn = new FafricaConexion().Conectar();
                 try {
-
+                    Region reg = new Region();
+                    reg.setNombre(txtNombreRegion.getText());
                     CallableStatement cs = cn.prepareCall("{call ? := F_INSERT_REGION(?,?)}");
                     cs.registerOutParameter(1, Types.VARCHAR);
                     cs.setInt(2, id);
-                    cs.setString(3, nombre);
+                    cs.setString(3, reg.getNombre());
                     cs.executeUpdate();
                     String mensaje = cs.getString(1);
                     lblMensajeRegion.setText(mensaje);
                     llenarComboBoxRegiones();
                 } catch (Exception e) {
+                    
                 }
             }
             else
@@ -409,15 +411,14 @@ public class RegionCiudadMantenedor extends javax.swing.JFrame {
         {
             if(!txtIdRegion.getText().isEmpty() && !txtNombreRegion.getText().isEmpty())
             {
-                short id = Short.parseShort(txtIdRegion.getText());
-                String nombre = txtNombreRegion.getText();            
+                short id = Short.parseShort(txtIdRegion.getText());       
                 Connection cn = new FafricaConexion().Conectar();
                 try {
                     if(buscarRegion(id) != null)
                     {
                         Region reg = new Region();
                         reg.setIdRegion(id);
-                        reg.setNombre(nombre);
+                        reg.setNombre(txtNombreRegion.getText());
 
                         em.getTransaction().begin();
                         em.merge(reg);
@@ -439,6 +440,7 @@ public class RegionCiudadMantenedor extends javax.swing.JFrame {
                         lblMensajeRegion.setText("ID Region no existe");
                     }
                 } catch (Exception e) {
+                    
                 }
             }
             else
