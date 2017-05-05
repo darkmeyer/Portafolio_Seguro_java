@@ -44,6 +44,8 @@ public class Ciudad implements Serializable {
     private String nombre;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "ciudadIdCiudad")
     private Collection<Empleado> empleadoCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "ciudadIdCiudad")
+    private Collection<Grua> gruaCollection;
     @JoinColumn(name = "REGION_ID_REGION", referencedColumnName = "ID_REGION")
     @ManyToOne(optional = false)
     private Region regionIdRegion;
@@ -87,6 +89,15 @@ public class Ciudad implements Serializable {
 
     public void setEmpleadoCollection(Collection<Empleado> empleadoCollection) {
         this.empleadoCollection = empleadoCollection;
+    }
+
+    @XmlTransient
+    public Collection<Grua> getGruaCollection() {
+        return gruaCollection;
+    }
+
+    public void setGruaCollection(Collection<Grua> gruaCollection) {
+        this.gruaCollection = gruaCollection;
     }
 
     public Region getRegionIdRegion() {

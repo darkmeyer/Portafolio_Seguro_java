@@ -12,6 +12,7 @@ import Entidades.Region;
 import Entidades.Taller;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -32,6 +33,7 @@ public class TallerMantenedor extends javax.swing.JFrame {
     public TallerMantenedor() {
         initComponents();
         llenarComboBoxRegiones();
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -69,8 +71,11 @@ public class TallerMantenedor extends javax.swing.JFrame {
         jLabel15 = new javax.swing.JLabel();
         txtNombre = new javax.swing.JTextField();
         lblMensajeBuscar = new javax.swing.JLabel();
+        btnBuscarTallerRut = new javax.swing.JButton();
+        lblMensajeBuscarRut = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Mantenedor Taller");
 
         jPanel2.setBackground(new java.awt.Color(204, 204, 204));
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -156,7 +161,7 @@ public class TallerMantenedor extends javax.swing.JFrame {
                 .addComponent(jScrollPane2)
                 .addContainerGap())
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(225, 225, 225)
+                .addGap(232, 232, 232)
                 .addComponent(btnLimpiar)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -185,6 +190,13 @@ public class TallerMantenedor extends javax.swing.JFrame {
 
         jLabel15.setText("Nombre");
 
+        btnBuscarTallerRut.setText("Buscar");
+        btnBuscarTallerRut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarTallerRutActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -192,7 +204,30 @@ public class TallerMantenedor extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(167, 167, 167)
+                        .addContainerGap()
+                        .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(165, 165, 165)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel13)
+                            .addComponent(jLabel9))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(txtIdTaller, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnBuscarTaller)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblMensajeBuscar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(txtRut, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnBuscarTallerRut)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblMensajeBuscarRut, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addComponent(jLabel14)
@@ -200,42 +235,38 @@ public class TallerMantenedor extends javax.swing.JFrame {
                                 .addComponent(cbCiudad, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel13)
                                     .addComponent(jLabel12)
                                     .addComponent(jLabel10)
                                     .addComponent(jLabel11)
                                     .addComponent(jLabel15))
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtRut)
                                     .addComponent(txtFono)
                                     .addComponent(txtDireccion)
-                                    .addGroup(jPanel5Layout.createSequentialGroup()
-                                        .addComponent(jLabel9)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(txtIdTaller, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(btnBuscarTaller))
                                     .addComponent(cbRegion, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(txtNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblMensajeBuscar)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(140, 140, 140)))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGap(18, 18, 18)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel9)
-                    .addComponent(txtIdTaller, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnBuscarTaller)
-                    .addComponent(lblMensajeBuscar))
-                .addGap(15, 15, 15)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel9)
+                        .addComponent(txtIdTaller, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnBuscarTaller))
+                    .addComponent(lblMensajeBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtRut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel13))
+                        .addComponent(btnBuscarTallerRut, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(lblMensajeBuscarRut, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel15)
                     .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -255,11 +286,7 @@ public class TallerMantenedor extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cbCiudad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel14))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtRut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel13))
-                .addGap(38, 38, 38)
+                .addGap(52, 52, 52)
                 .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(26, 26, 26))
         );
@@ -277,7 +304,7 @@ public class TallerMantenedor extends javax.swing.JFrame {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
+                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -311,7 +338,7 @@ public class TallerMantenedor extends javax.swing.JFrame {
         {
             if(!txtIdTaller.getText().isEmpty())
             {
-                List<Taller> listTaller = buscarTaller(txtIdTaller.getText());
+                List<Taller> listTaller = buscarTaller(txtIdTaller.getText()+"t");
                 if(listTaller != null)
                 {
                     txtNombre.setText(listTaller.get(0).getNombre());
@@ -421,51 +448,58 @@ public class TallerMantenedor extends javax.swing.JFrame {
                 String item = cbCiudad.getSelectedItem().toString();
                 String[] itemSplit = item.split("\\s+");
                 short idCiudad = Short.parseShort(itemSplit[0]);
-                String id = txtIdTaller.getText()+"t";
+                String id = txtIdTaller.getText();
                 String nombre = txtNombre.getText();
                 String fono = txtFono.getText();
                 String direccion = txtDireccion.getText();
                 String rut = txtRut.getText();
                 
-                List<Empleado> listEmp = buscarEmpleadoRut(rut);
-                if(listEmp != null)
+                if(buscarTaller(id+"t") != null)
                 {
-                    if(listEmp.get(0).getCargoIdCargo().getNombre().equalsIgnoreCase("encargado taller"))
+                    List<Empleado> listEmp = buscarEmpleadoRut(rut);
+                    if(listEmp != null)
                     {
-                        try {
-                            Ciudad ciudad = new Ciudad();
-                            ciudad.setIdCiudad(idCiudad);
-                            Taller taller = new Taller();
-                            taller.setIdTaller(id);
-                            taller.setNombre(nombre);
-                            taller.setFono(fono);
-                            taller.setDireccion(direccion);
-                            taller.setCiudadIdCiudad(ciudad);
-                            taller.setEmpleadoIdEmpleado(listEmp.get(0));
-                            
-                            em.getTransaction().begin();
-                            em.merge(taller);
-                            em.getTransaction().commit();
-                            
-                            mensaje += "Taller Actualizado \n";
-                            txaMensaje.setText(mensaje);
-                        } catch (Exception e) {
-                            mensaje += "Error \n";
-                            txaMensaje.setText(mensaje);
+                        if(listEmp.get(0).getCargoIdCargo().getNombre().equalsIgnoreCase("encargado taller"))
+                        {
+                            try {
+                                Ciudad ciudad = new Ciudad();
+                                ciudad.setIdCiudad(idCiudad);
+                                Taller taller = new Taller();
+                                taller.setIdTaller(id+"t");
+                                taller.setNombre(nombre);
+                                taller.setFono(fono);
+                                taller.setDireccion(direccion);
+                                taller.setCiudadIdCiudad(ciudad);
+                                taller.setEmpleadoIdEmpleado(listEmp.get(0));
+
+                                em.getTransaction().begin();
+                                em.merge(taller);
+                                em.getTransaction().commit();
+
+                                mensaje += "Taller Actualizado \n";
+                                txaMensaje.setText(mensaje);
+                            } catch (Exception e) {
+                                mensaje += "No puede actualizar a un rut que ya esta usado \n";
+                                txaMensaje.setText(mensaje);
+                            }
+                        }
+                        else
+                        {
+                            mensaje += "Este Rut no pertenece a un Encargado Taller \n";
+                            txaMensaje.setText(mensaje); 
                         }
                     }
                     else
                     {
-                        mensaje += "Este Rut no pertenece a un Encargado Taller \n";
+                        mensaje += "Encargado no Registrado \n";
                         txaMensaje.setText(mensaje); 
                     }
                 }
                 else
                 {
-                    mensaje += "Encargado no Registrado \n";
+                    mensaje += "ID Taller no existe \n";
                     txaMensaje.setText(mensaje); 
                 }
-                
                 
             }
             else
@@ -487,7 +521,7 @@ public class TallerMantenedor extends javax.swing.JFrame {
             if(!txtIdTaller.getText().isEmpty())
             {    
                 String id = txtIdTaller.getText();
-                List<Taller> listTaller = buscarTaller(id);
+                List<Taller> listTaller = buscarTaller(id+"t");
                 if(listTaller != null)
                 {
                     em.getTransaction().begin();
@@ -520,6 +554,51 @@ public class TallerMantenedor extends javax.swing.JFrame {
         txaMensaje.setText(mensaje);
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
+    private void btnBuscarTallerRutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarTallerRutActionPerformed
+        try
+        {
+            if(!txtRut.getText().isEmpty())
+            {
+                String id = buscarTallerRut(txtRut.getText());
+                List<Taller> listTaller = !(id.equals("-1")) ? buscarTaller(id) : null;
+                if(listTaller != null)
+                {
+                    txtNombre.setText(listTaller.get(0).getNombre());
+                    txtFono.setText(listTaller.get(0).getFono());
+                    txtDireccion.setText(listTaller.get(0).getDireccion());
+                    txtIdTaller.setText(listTaller.get(0).getIdTaller().substring(0 , listTaller.get(0).getIdTaller().length()-1));
+                    cbRegion.setSelectedItem(listTaller.get(0).getCiudadIdCiudad().getRegionIdRegion().getIdRegion()+ " " + listTaller.get(0).getCiudadIdCiudad().getRegionIdRegion().getNombre());
+                    cbCiudad.setSelectedItem(listTaller.get(0).getCiudadIdCiudad().getIdCiudad()+" "+listTaller.get(0).getCiudadIdCiudad().getNombre()); 
+                    
+                    lblMensajeBuscarRut.setText("Rut encontrada");
+                }
+                else
+                {
+                    lblMensajeBuscarRut.setText("Rut no encontrada");
+                }
+            }
+            else
+            {
+                lblMensajeBuscarRut.setText("Ingrese Rut");
+            }
+        }
+        catch(Exception e)
+        {
+            lblMensajeBuscarRut.setText("Error");
+        }
+    }//GEN-LAST:event_btnBuscarTallerRutActionPerformed
+    
+    private String buscarTallerRut(String rut) throws SQLException
+    {
+        Connection cn = new FafricaConexion().Conectar();
+        CallableStatement cs = cn.prepareCall("{call ? := F_BUSCAR_TALLER_RUT(?)}");
+        cs.registerOutParameter(1, Types.VARCHAR);
+        
+        cs.setString(2, rut);
+        cs.executeUpdate();
+        String salida = cs.getString(1);
+        return salida;
+    }
     private List<Empleado> buscarEmpleadoRut(String rut)
     {
         try {
@@ -555,7 +634,7 @@ public class TallerMantenedor extends javax.swing.JFrame {
     {
         try {
             TypedQuery consulta = em.createNamedQuery("Taller.findByIdTaller", Taller.class);
-            List<Taller> listTaller = consulta.setParameter("idTaller", id+"t").getResultList();
+            List<Taller> listTaller = consulta.setParameter("idTaller", id).getResultList();
             
             if(listTaller.size() > 0)
             {
@@ -603,46 +682,13 @@ public class TallerMantenedor extends javax.swing.JFrame {
             cbCiudad.addItem("Sin Datos");
         }
     }
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TallerMantenedor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TallerMantenedor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TallerMantenedor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TallerMantenedor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TallerMantenedor().setVisible(true);
-            }
-        });
-    }
+     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnBorrar;
     private javax.swing.JButton btnBuscarTaller;
+    private javax.swing.JButton btnBuscarTallerRut;
     private javax.swing.JButton btnIngresar;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JComboBox<String> cbCiudad;
@@ -660,6 +706,7 @@ public class TallerMantenedor extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblMensajeBuscar;
+    private javax.swing.JLabel lblMensajeBuscarRut;
     private javax.swing.JTextArea txaMensaje;
     private javax.swing.JTextField txtDireccion;
     private javax.swing.JTextField txtFono;

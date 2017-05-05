@@ -24,6 +24,7 @@ public class Login extends javax.swing.JFrame {
     
     public Login() {
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -69,6 +70,8 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
+        lblMensaje.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -84,13 +87,12 @@ public class Login extends javax.swing.JFrame {
                             .addComponent(jLabel1)
                             .addComponent(jLabel2))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblMensaje)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(btnEntrar)
-                                .addComponent(txtRut)
-                                .addComponent(txtPass, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)))))
-                .addContainerGap(109, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnEntrar)
+                            .addComponent(txtRut, javax.swing.GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE)
+                            .addComponent(txtPass))))
+                .addContainerGap(86, Short.MAX_VALUE))
+            .addComponent(lblMensaje, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -107,9 +109,9 @@ public class Login extends javax.swing.JFrame {
                     .addComponent(txtPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(btnEntrar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblMensaje)
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblMensaje, javax.swing.GroupLayout.DEFAULT_SIZE, 19, Short.MAX_VALUE)
+                .addGap(16, 16, 16))
         );
 
         pack();
@@ -132,9 +134,17 @@ public class Login extends javax.swing.JFrame {
 
                 if(listEmp.size() > 0)
                 {
-                    if(BCrypt.checkpw(pass, listEmp.get(0).getPass()) && listEmp.get(0).getCargoIdCargo().getNombre().equalsIgnoreCase("Administrador"))
+                    if(BCrypt.checkpw(pass, listEmp.get(0).getPass()))
                     {
-                        lblMensaje.setText("Bienvenido "+listEmp.get(0).getNombres()+" "+listEmp.get(0).getApellidos());
+                        if(listEmp.get(0).getCargoIdCargo().getNombre().equalsIgnoreCase("Administrador"))
+                        {
+                            new Menu(listEmp.get(0).getNombres()+" "+listEmp.get(0).getApellidos()).setVisible(true);
+                            dispose();
+                        }
+                        else
+                        {
+                            lblMensaje.setText("Usted no es Administrador");
+                        }
                     }
                     else
                     {
