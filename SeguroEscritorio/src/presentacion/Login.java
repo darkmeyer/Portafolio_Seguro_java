@@ -139,7 +139,7 @@ public class Login extends javax.swing.JFrame {
                     {
                         if(BCrypt.checkpw(pass, listEmp.get(0).getPass()))
                         {
-                            new Menu(listEmp.get(0).getNombres()+" "+listEmp.get(0).getApellidos(), listEmp.get(0).getCargoIdCargo().getNombre()).setVisible(true);
+                            new Menu(listEmp.get(0)).setVisible(true);
                             dispose();                                                    
                         }
                         else

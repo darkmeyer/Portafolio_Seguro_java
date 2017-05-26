@@ -5,11 +5,14 @@
  */
 package presentacion;
 
+import Entidades.Empleado;
+import Entidades.Siniestro;
 import presentacion.Admin.EmpleadoMantenedor;
 import presentacion.Admin.GruaMantenedor;
 import presentacion.Admin.RegionCiudadMantenedor;
 import presentacion.Admin.TallerMantenedor;
 import presentacion.Ejecutivo.ClienteMantenedor;
+import presentacion.Ejecutivo.SiniestroMantenedor;
 import presentacion.Login;
 
 /**
@@ -17,13 +20,14 @@ import presentacion.Login;
  * @author DarKMeYeR
  */
 public class Menu extends javax.swing.JFrame {
-
     
+    public static Empleado emp = new Empleado();
     
-    public Menu(String nombre, String cargo) {
+    public Menu(Empleado emp) {
         initComponents();
-        MenuCargo(cargo);
-        bienvenida(nombre);
+        MenuCargo(emp.getCargoIdCargo().getNombre());
+        bienvenida(emp.getNombres()+" "+emp.getApellidos());
+        this.emp = emp;
         setLocationRelativeTo(null);
     }
 
@@ -101,6 +105,11 @@ public class Menu extends javax.swing.JFrame {
         jMenu1.add(itemCliente);
 
         itemSiniestro.setText("Siniestro");
+        itemSiniestro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemSiniestroActionPerformed(evt);
+            }
+        });
         jMenu1.add(itemSiniestro);
 
         itemMovimientos.setText("Movimientos");
@@ -151,6 +160,10 @@ public class Menu extends javax.swing.JFrame {
     private void itemClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemClienteActionPerformed
         new ClienteMantenedor().setVisible(true);
     }//GEN-LAST:event_itemClienteActionPerformed
+
+    private void itemSiniestroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSiniestroActionPerformed
+        new SiniestroMantenedor().setVisible(true);
+    }//GEN-LAST:event_itemSiniestroActionPerformed
 
     private void bienvenida(String nombre) {
         

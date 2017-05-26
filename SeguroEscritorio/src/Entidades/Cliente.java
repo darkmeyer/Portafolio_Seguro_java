@@ -6,7 +6,9 @@
 package Entidades;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -14,8 +16,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import org.mindrot.jbcrypt.BCrypt;
 
 /**
@@ -38,6 +42,9 @@ import org.mindrot.jbcrypt.BCrypt;
     @NamedQuery(name = "Cliente.findByActivo", query = "SELECT c FROM Cliente c WHERE c.activo = :activo"),
     @NamedQuery(name = "Cliente.findByDireccion", query = "SELECT c FROM Cliente c WHERE c.direccion = :direccion")})
 public class Cliente implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "clienteIdCliente")
+    private Collection<Siniestro> siniestroCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -254,6 +261,15 @@ public class Cliente implements Serializable {
     @Override
     public String toString() {
         return "Entidades.Cliente[ idCliente=" + idCliente + " ]";
+    }
+
+    @XmlTransient
+    public Collection<Siniestro> getSiniestroCollection() {
+        return siniestroCollection;
+    }
+
+    public void setSiniestroCollection(Collection<Siniestro> siniestroCollection) {
+        this.siniestroCollection = siniestroCollection;
     }
     
 }

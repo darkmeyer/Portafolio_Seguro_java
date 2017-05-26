@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -41,6 +42,9 @@ import org.mindrot.jbcrypt.BCrypt;
     @NamedQuery(name = "Empleado.findByFechaNacimiento", query = "SELECT e FROM Empleado e WHERE e.fechaNacimiento = :fechaNacimiento"),
     @NamedQuery(name = "Empleado.findByDireccion", query = "SELECT e FROM Empleado e WHERE e.direccion = :direccion")})
 public class Empleado implements Serializable {
+
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "empleadoIdEmpleado")
+    private Taller taller;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -259,6 +263,14 @@ public class Empleado implements Serializable {
     @Override
     public String toString() {
         return "Entidades.Empleado[ idEmpleado=" + idEmpleado + " ]";
+    }
+
+    public Taller getTaller() {
+        return taller;
+    }
+
+    public void setTaller(Taller taller) {
+        this.taller = taller;
     }
     
 }

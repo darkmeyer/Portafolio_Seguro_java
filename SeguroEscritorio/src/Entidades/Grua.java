@@ -6,7 +6,9 @@
 package Entidades;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -14,8 +16,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -33,6 +37,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Grua.findByFono", query = "SELECT g FROM Grua g WHERE g.fono = :fono"),
     @NamedQuery(name = "Grua.findByDireccion", query = "SELECT g FROM Grua g WHERE g.direccion = :direccion")})
 public class Grua implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gruaIdGrua")
+    private Collection<Siniestro> siniestroCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -170,6 +177,15 @@ public class Grua implements Serializable {
     @Override
     public String toString() {
         return "Entidades.Grua[ idGrua=" + idGrua + " ]";
+    }
+
+    @XmlTransient
+    public Collection<Siniestro> getSiniestroCollection() {
+        return siniestroCollection;
+    }
+
+    public void setSiniestroCollection(Collection<Siniestro> siniestroCollection) {
+        this.siniestroCollection = siniestroCollection;
     }
     
 }

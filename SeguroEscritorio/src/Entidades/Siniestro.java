@@ -41,24 +41,40 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Siniestro.findByCosteReparacion", query = "SELECT s FROM Siniestro s WHERE s.costeReparacion = :costeReparacion")})
 public class Siniestro implements Serializable {
 
+    @Column(name = "DEDUCIBLE_UF")
+    private Short deducibleUf;
+
+    @Basic(optional = false)
+    @Column(name = "FECHA")
+    private String fecha;
+    @Basic(optional = false)
+    @Column(name = "FECHA_TERMINO")
+    private String fechaTermino;
+
+    @JoinColumn(name = "TALLER_ID_TALLER", referencedColumnName = "ID_TALLER")
+    @ManyToOne(optional = false)
+    private Taller tallerIdTaller;
+
+    @JoinColumn(name = "GRUA_ID_GRUA", referencedColumnName = "ID_GRUA")
+    @ManyToOne(optional = false)
+    private Grua gruaIdGrua;
+
+    @JoinColumn(name = "CIUDAD_ID_CIUDAD", referencedColumnName = "ID_CIUDAD")
+    @ManyToOne(optional = false)
+    private Ciudad ciudadIdCiudad;
+
+    @Basic(optional = false)
+    @Column(name = "DIRECCION")
+    private String direccion;
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @Column(name = "ID_SINIESTRO")
     private String idSiniestro;
     @Basic(optional = false)
-    @Column(name = "FECHA")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date fecha;
-    @Column(name = "FECHA_TERMINO")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaTermino;
-    @Basic(optional = false)
     @Column(name = "ESTADO")
     private String estado;
-    @Basic(optional = false)
-    @Column(name = "DEDUCIBLE_UF")
-    private short deducibleUf;
     @Column(name = "COSTE_REPARACION")
     private Long costeReparacion;
     @JoinColumn(name = "EMPLEADO_ID_EMPLEADO", referencedColumnName = "ID_EMPLEADO")
@@ -77,7 +93,7 @@ public class Siniestro implements Serializable {
         this.idSiniestro = idSiniestro;
     }
 
-    public Siniestro(String idSiniestro, Date fecha, String estado, short deducibleUf) {
+    public Siniestro(String idSiniestro, String fecha, String estado, short deducibleUf) {
         this.idSiniestro = idSiniestro;
         this.fecha = fecha;
         this.estado = estado;
@@ -92,19 +108,12 @@ public class Siniestro implements Serializable {
         this.idSiniestro = idSiniestro;
     }
 
-    public Date getFecha() {
-        return fecha;
-    }
 
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
-    }
-
-    public Date getFechaTermino() {
+    public String getFechaTermino() {
         return fechaTermino;
     }
 
-    public void setFechaTermino(Date fechaTermino) {
+    public void setFechaTermino(String fechaTermino) {
         this.fechaTermino = fechaTermino;
     }
 
@@ -181,5 +190,44 @@ public class Siniestro implements Serializable {
     public String toString() {
         return "Entidades.Siniestro[ idSiniestro=" + idSiniestro + " ]";
     }
-    
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public Ciudad getCiudadIdCiudad() {
+        return ciudadIdCiudad;
+    }
+
+    public void setCiudadIdCiudad(Ciudad ciudadIdCiudad) {
+        this.ciudadIdCiudad = ciudadIdCiudad;
+    }
+
+    public Grua getGruaIdGrua() {
+        return gruaIdGrua;
+    }
+
+    public void setGruaIdGrua(Grua gruaIdGrua) {
+        this.gruaIdGrua = gruaIdGrua;
+    }
+
+    public Taller getTallerIdTaller() {
+        return tallerIdTaller;
+    }
+
+    public void setTallerIdTaller(Taller tallerIdTaller) {
+        this.tallerIdTaller = tallerIdTaller;
+    }
+
+    public String getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
 }
