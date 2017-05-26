@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Seguro.findAll", query = "SELECT s FROM Seguro s"),
     @NamedQuery(name = "Seguro.findByIdSeguro", query = "SELECT s FROM Seguro s WHERE s.idSeguro = :idSeguro"),
     @NamedQuery(name = "Seguro.findByValor", query = "SELECT s FROM Seguro s WHERE s.valor = :valor"),
-    @NamedQuery(name = "Seguro.findByActivo", query = "SELECT s FROM Seguro s WHERE s.activo = :activo")})
+    @NamedQuery(name = "Seguro.findByNombre", query = "SELECT s FROM Seguro s WHERE s.nombre = :nombre")})
 public class Seguro implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -44,13 +44,13 @@ public class Seguro implements Serializable {
     @Column(name = "VALOR")
     private int valor;
     @Basic(optional = false)
-    @Column(name = "ACTIVO")
-    private Character activo;
+    @Column(name = "NOMBRE")
+    private String nombre;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "seguroIdSeguro")
+    private Collection<Cliente> clienteCollection;
     @JoinColumn(name = "COBERTURA_ID_COBERTURA", referencedColumnName = "ID_COBERTURA")
     @OneToOne(optional = false)
     private Cobertura coberturaIdCobertura;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "seguroIdSeguro")
-    private Collection<Cliente> clienteCollection;
 
     public Seguro() {
     }
@@ -59,10 +59,10 @@ public class Seguro implements Serializable {
         this.idSeguro = idSeguro;
     }
 
-    public Seguro(String idSeguro, int valor, Character activo) {
+    public Seguro(String idSeguro, int valor, String nombre) {
         this.idSeguro = idSeguro;
         this.valor = valor;
-        this.activo = activo;
+        this.nombre = nombre;
     }
 
     public String getIdSeguro() {
@@ -81,20 +81,12 @@ public class Seguro implements Serializable {
         this.valor = valor;
     }
 
-    public Character getActivo() {
-        return activo;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setActivo(Character activo) {
-        this.activo = activo;
-    }
-
-    public Cobertura getCoberturaIdCobertura() {
-        return coberturaIdCobertura;
-    }
-
-    public void setCoberturaIdCobertura(Cobertura coberturaIdCobertura) {
-        this.coberturaIdCobertura = coberturaIdCobertura;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     @XmlTransient
@@ -104,6 +96,14 @@ public class Seguro implements Serializable {
 
     public void setClienteCollection(Collection<Cliente> clienteCollection) {
         this.clienteCollection = clienteCollection;
+    }
+
+    public Cobertura getCoberturaIdCobertura() {
+        return coberturaIdCobertura;
+    }
+
+    public void setCoberturaIdCobertura(Cobertura coberturaIdCobertura) {
+        this.coberturaIdCobertura = coberturaIdCobertura;
     }
 
     @Override

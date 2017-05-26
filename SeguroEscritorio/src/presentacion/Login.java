@@ -139,15 +139,8 @@ public class Login extends javax.swing.JFrame {
                     {
                         if(BCrypt.checkpw(pass, listEmp.get(0).getPass()))
                         {
-                            if(listEmp.get(0).getCargoIdCargo().getNombre().equalsIgnoreCase("Administrador"))
-                            {
-                                new Menu(listEmp.get(0).getNombres()+" "+listEmp.get(0).getApellidos()).setVisible(true);
-                                dispose();
-                            }
-                            else
-                            {
-                                lblMensaje.setText("Usted no es Administrador");
-                            }
+                            new Menu(listEmp.get(0).getNombres()+" "+listEmp.get(0).getApellidos(), listEmp.get(0).getCargoIdCargo().getNombre()).setVisible(true);
+                            dispose();                                                    
                         }
                         else
                         {

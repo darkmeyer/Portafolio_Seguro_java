@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package presentacion;
+package presentacion.Admin;
 
 import Datos.FafricaConexion;
 import Entidades.Ciudad;

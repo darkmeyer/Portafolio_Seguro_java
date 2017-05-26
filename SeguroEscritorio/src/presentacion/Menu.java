@@ -5,6 +5,13 @@
  */
 package presentacion;
 
+import presentacion.Admin.EmpleadoMantenedor;
+import presentacion.Admin.GruaMantenedor;
+import presentacion.Admin.RegionCiudadMantenedor;
+import presentacion.Admin.TallerMantenedor;
+import presentacion.Ejecutivo.ClienteMantenedor;
+import presentacion.Login;
+
 /**
  *
  * @author DarKMeYeR
@@ -13,8 +20,9 @@ public class Menu extends javax.swing.JFrame {
 
     
     
-    public Menu(String nombre) {
+    public Menu(String nombre, String cargo) {
         initComponents();
+        MenuCargo(cargo);
         bienvenida(nombre);
         setLocationRelativeTo(null);
     }
@@ -35,9 +43,12 @@ public class Menu extends javax.swing.JFrame {
         itemRegionCiudad = new javax.swing.JMenuItem();
         itemTaller = new javax.swing.JMenuItem();
         itemGrua = new javax.swing.JMenuItem();
+        itemCliente = new javax.swing.JMenuItem();
+        itemSiniestro = new javax.swing.JMenuItem();
+        itemMovimientos = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Menu Administracion");
+        setTitle("Menu Mantenedores");
 
         lblBienvenida.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         lblBienvenida.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -81,6 +92,20 @@ public class Menu extends javax.swing.JFrame {
         });
         jMenu1.add(itemGrua);
 
+        itemCliente.setText("Cliente");
+        itemCliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemClienteActionPerformed(evt);
+            }
+        });
+        jMenu1.add(itemCliente);
+
+        itemSiniestro.setText("Siniestro");
+        jMenu1.add(itemSiniestro);
+
+        itemMovimientos.setText("Movimientos");
+        jMenu1.add(itemMovimientos);
+
         jMenuBar1.add(jMenu1);
 
         setJMenuBar(jMenuBar1);
@@ -123,46 +148,52 @@ public class Menu extends javax.swing.JFrame {
         new GruaMantenedor().setVisible(true);
     }//GEN-LAST:event_itemGruaActionPerformed
 
+    private void itemClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemClienteActionPerformed
+        new ClienteMantenedor().setVisible(true);
+    }//GEN-LAST:event_itemClienteActionPerformed
+
     private void bienvenida(String nombre) {
+        
         lblBienvenida.setText("Bienvenid@ "+nombre);
     }
     
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    private void MenuCargo(String cargo)
+    {
+        itemCliente.setVisible(false);
+        itemEmpleado.setVisible(false);
+        itemGrua.setVisible(false);
+        itemMovimientos.setVisible(false);
+        itemRegionCiudad.setVisible(false);
+        itemSiniestro.setVisible(false);
+        itemTaller.setVisible(false);
+        
+        switch (cargo) {
+            case "Administrador":
+                itemEmpleado.setVisible(true);
+                itemGrua.setVisible(true);
+                itemRegionCiudad.setVisible(true);
+                itemTaller.setVisible(true);
+            break;
+            case "Ejecutivo":
+                itemSiniestro.setVisible(true);
+                itemCliente.setVisible(true);
+            break;
+            case "Liquidador":
+                
+            break;
+            case "Encargado Taller":
+                
+            break;
         }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Menu("").setVisible(true);
-            }
-        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem itemCliente;
     private javax.swing.JMenuItem itemEmpleado;
     private javax.swing.JMenuItem itemGrua;
+    private javax.swing.JMenuItem itemMovimientos;
     private javax.swing.JMenuItem itemRegionCiudad;
+    private javax.swing.JMenuItem itemSiniestro;
     private javax.swing.JMenuItem itemTaller;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;

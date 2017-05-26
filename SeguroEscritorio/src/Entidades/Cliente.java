@@ -6,10 +6,7 @@
 package Entidades;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -17,12 +14,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  *
@@ -41,6 +35,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Cliente.findByCorreo", query = "SELECT c FROM Cliente c WHERE c.correo = :correo"),
     @NamedQuery(name = "Cliente.findByFono", query = "SELECT c FROM Cliente c WHERE c.fono = :fono"),
     @NamedQuery(name = "Cliente.findByFechaNacimiento", query = "SELECT c FROM Cliente c WHERE c.fechaNacimiento = :fechaNacimiento"),
+    @NamedQuery(name = "Cliente.findByActivo", query = "SELECT c FROM Cliente c WHERE c.activo = :activo"),
     @NamedQuery(name = "Cliente.findByDireccion", query = "SELECT c FROM Cliente c WHERE c.direccion = :direccion")})
 public class Cliente implements Serializable {
 
@@ -69,13 +64,13 @@ public class Cliente implements Serializable {
     private String fono;
     @Basic(optional = false)
     @Column(name = "FECHA_NACIMIENTO")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaNacimiento;
+    private String fechaNacimiento;
+    @Basic(optional = false)
+    @Column(name = "ACTIVO")
+    private String activo;
     @Basic(optional = false)
     @Column(name = "DIRECCION")
     private String direccion;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "clienteIdCliente")
-    private Collection<Siniestro> siniestroCollection;
     @JoinColumn(name = "VEHICULO_ID_VEHICULO", referencedColumnName = "ID_VEHICULO")
     @ManyToOne(optional = false)
     private Vehiculo vehiculoIdVehiculo;
@@ -93,7 +88,7 @@ public class Cliente implements Serializable {
         this.idCliente = idCliente;
     }
 
-    public Cliente(String idCliente, String rut, String pass, String nombres, String apellidos, String correo, String fono, Date fechaNacimiento, String direccion) {
+    public Cliente(String idCliente, String rut, String pass, String nombres, String apellidos, String correo, String fono, String fechaNacimiento, String activo, String direccion) {
         this.idCliente = idCliente;
         this.rut = rut;
         this.pass = pass;
@@ -102,6 +97,7 @@ public class Cliente implements Serializable {
         this.correo = correo;
         this.fono = fono;
         this.fechaNacimiento = fechaNacimiento;
+        this.activo = activo;
         this.direccion = direccion;
     }
 
@@ -117,73 +113,98 @@ public class Cliente implements Serializable {
         return rut;
     }
 
-    public void setRut(String rut) {
-        this.rut = rut;
+    public void setRut(String rut) throws Exception {
+        rut = rut.replace(".","");
+        rut = rut.replace("-","");
+        if(Validaciones.validarRut(rut) && rut.length() >= 8){
+                this.rut = rut;
+        }else
+            throw new Exception("Rut Invalido.");
     }
 
     public String getPass() {
         return pass;
     }
 
-    public void setPass(String pass) {
-        this.pass = pass;
+    public void setPass(String pass) throws Exception {
+        if(pass.length() > 10)
+            throw new Exception("Password no puede superar los 10 Caracteres.");
+        else
+            this.pass = BCrypt.hashpw(pass, BCrypt.gensalt());
     }
 
     public String getNombres() {
         return nombres;
     }
 
-    public void setNombres(String nombres) {
-        this.nombres = nombres;
+    public void setNombres(String nombres) throws Exception {
+        if(nombres.length() > 50)
+            throw new Exception("Nombres maximo 50 caracteres");
+        else
+            this.nombres = nombres;
     }
 
     public String getApellidos() {
         return apellidos;
     }
 
-    public void setApellidos(String apellidos) {
-        this.apellidos = apellidos;
+    public void setApellidos(String apellidos) throws Exception {
+        if(apellidos.length() > 50)
+            throw new Exception("Apellidos maximo 50 caracteres");
+        else
+            this.apellidos = apellidos;
     }
 
     public String getCorreo() {
         return correo;
     }
 
-    public void setCorreo(String correo) {
-        this.correo = correo;
+    public void setCorreo(String correo) throws Exception {
+        if(correo.length() > 50)
+            throw new Exception("Correo maximo 50 caracteres");
+        else
+            this.correo = correo;
     }
 
     public String getFono() {
         return fono;
     }
 
-    public void setFono(String fono) {
-        this.fono = fono;
+    public void setFono(String fono) throws Exception {
+        if(fono.length() > 15)
+            throw new Exception("Fono maximo 15 Numeros");
+        else
+            this.fono = fono;
     }
 
-    public Date getFechaNacimiento() {
+    public String getFechaNacimiento() {
         return fechaNacimiento;
     }
 
-    public void setFechaNacimiento(Date fechaNacimiento) {
-        this.fechaNacimiento = fechaNacimiento;
+    public void setFechaNacimiento(String fechaNacimiento) throws Exception {
+        if(fechaNacimiento.length() > 10)
+            throw new Exception("fecha excede maximo de largo");
+        else
+            this.fechaNacimiento = fechaNacimiento;
     }
-
+    
+    public String getActivo() {
+        return activo;
+    }
+    
+    public void setActivo(String activo) {
+        this.activo = activo;
+    }
+    
     public String getDireccion() {
         return direccion;
     }
 
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
-    @XmlTransient
-    public Collection<Siniestro> getSiniestroCollection() {
-        return siniestroCollection;
-    }
-
-    public void setSiniestroCollection(Collection<Siniestro> siniestroCollection) {
-        this.siniestroCollection = siniestroCollection;
+    public void setDireccion(String direccion) throws Exception {
+        if(direccion.length() > 100)
+            throw new Exception("Nombres maximo 50 caracteres");
+        else
+            this.direccion = direccion;
     }
 
     public Vehiculo getVehiculoIdVehiculo() {
