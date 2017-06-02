@@ -7,13 +7,13 @@ package Entidades;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -28,7 +28,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Cobertura.findAll", query = "SELECT c FROM Cobertura c"),
     @NamedQuery(name = "Cobertura.findByIdCobertura", query = "SELECT c FROM Cobertura c WHERE c.idCobertura = :idCobertura"),
     @NamedQuery(name = "Cobertura.findByPerdidaTotal", query = "SELECT c FROM Cobertura c WHERE c.perdidaTotal = :perdidaTotal"),
-    @NamedQuery(name = "Cobertura.findByDanoTerceros", query = "SELECT c FROM Cobertura c WHERE c.danoTerceros = :danoTerceros")})
+    @NamedQuery(name = "Cobertura.findByDanoTerceros", query = "SELECT c FROM Cobertura c WHERE c.danoTerceros = :danoTerceros"),
+    @NamedQuery(name = "Cobertura.findByRoboTotal", query = "SELECT c FROM Cobertura c WHERE c.roboTotal = :roboTotal")})
 public class Cobertura implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -42,8 +43,12 @@ public class Cobertura implements Serializable {
     @Basic(optional = false)
     @Column(name = "DANO_TERCEROS")
     private Character danoTerceros;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "coberturaIdCobertura")
-    private Seguro seguro;
+    @Basic(optional = false)
+    @Column(name = "ROBO_TOTAL")
+    private Character roboTotal;
+    @JoinColumn(name = "VEHICULO_ID_VEHICULO", referencedColumnName = "ID_VEHICULO")
+    @ManyToOne(optional = false)
+    private Vehiculo vehiculoIdVehiculo;
 
     public Cobertura() {
     }
@@ -52,10 +57,11 @@ public class Cobertura implements Serializable {
         this.idCobertura = idCobertura;
     }
 
-    public Cobertura(String idCobertura, Character perdidaTotal, Character danoTerceros) {
+    public Cobertura(String idCobertura, Character perdidaTotal, Character danoTerceros, Character roboTotal) {
         this.idCobertura = idCobertura;
         this.perdidaTotal = perdidaTotal;
         this.danoTerceros = danoTerceros;
+        this.roboTotal = roboTotal;
     }
 
     public String getIdCobertura() {
@@ -82,12 +88,20 @@ public class Cobertura implements Serializable {
         this.danoTerceros = danoTerceros;
     }
 
-    public Seguro getSeguro() {
-        return seguro;
+    public Character getRoboTotal() {
+        return roboTotal;
     }
 
-    public void setSeguro(Seguro seguro) {
-        this.seguro = seguro;
+    public void setRoboTotal(Character roboTotal) {
+        this.roboTotal = roboTotal;
+    }
+
+    public Vehiculo getVehiculoIdVehiculo() {
+        return vehiculoIdVehiculo;
+    }
+
+    public void setVehiculoIdVehiculo(Vehiculo vehiculoIdVehiculo) {
+        this.vehiculoIdVehiculo = vehiculoIdVehiculo;
     }
 
     @Override

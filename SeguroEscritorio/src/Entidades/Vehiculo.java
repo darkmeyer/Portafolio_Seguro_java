@@ -51,10 +51,15 @@ public class Vehiculo implements Serializable {
     @Column(name = "VALOR_FISCAL")
     private int valorFiscal;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "vehiculoIdVehiculo")
-    private Collection<Cliente> clienteCollection;
+    private Collection<Seguro> seguroCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "vehiculoIdVehiculo")
+    private Collection<Cobertura> coberturaCollection;
     @JoinColumn(name = "MODELO_ID_MODELO", referencedColumnName = "ID_MODELO")
     @ManyToOne(optional = false)
     private Modelo modeloIdModelo;
+    @JoinColumn(name = "CLIENTE_ID_CLIENTE", referencedColumnName = "ID_CLIENTE")
+    @ManyToOne(optional = false)
+    private Cliente clienteIdCliente;
 
     public Vehiculo() {
     }
@@ -103,12 +108,21 @@ public class Vehiculo implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Cliente> getClienteCollection() {
-        return clienteCollection;
+    public Collection<Seguro> getSeguroCollection() {
+        return seguroCollection;
     }
 
-    public void setClienteCollection(Collection<Cliente> clienteCollection) {
-        this.clienteCollection = clienteCollection;
+    public void setSeguroCollection(Collection<Seguro> seguroCollection) {
+        this.seguroCollection = seguroCollection;
+    }
+
+    @XmlTransient
+    public Collection<Cobertura> getCoberturaCollection() {
+        return coberturaCollection;
+    }
+
+    public void setCoberturaCollection(Collection<Cobertura> coberturaCollection) {
+        this.coberturaCollection = coberturaCollection;
     }
 
     public Modelo getModeloIdModelo() {
@@ -117,6 +131,14 @@ public class Vehiculo implements Serializable {
 
     public void setModeloIdModelo(Modelo modeloIdModelo) {
         this.modeloIdModelo = modeloIdModelo;
+    }
+
+    public Cliente getClienteIdCliente() {
+        return clienteIdCliente;
+    }
+
+    public void setClienteIdCliente(Cliente clienteIdCliente) {
+        this.clienteIdCliente = clienteIdCliente;
     }
 
     @Override

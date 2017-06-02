@@ -6,20 +6,16 @@
 package Entidades;
 
 import java.io.Serializable;
-import java.util.Collection;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -31,8 +27,8 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Seguro.findAll", query = "SELECT s FROM Seguro s"),
     @NamedQuery(name = "Seguro.findByIdSeguro", query = "SELECT s FROM Seguro s WHERE s.idSeguro = :idSeguro"),
-    @NamedQuery(name = "Seguro.findByValor", query = "SELECT s FROM Seguro s WHERE s.valor = :valor"),
-    @NamedQuery(name = "Seguro.findByNombre", query = "SELECT s FROM Seguro s WHERE s.nombre = :nombre")})
+    @NamedQuery(name = "Seguro.findByDeducible", query = "SELECT s FROM Seguro s WHERE s.deducible = :deducible"),
+    @NamedQuery(name = "Seguro.findByPrima", query = "SELECT s FROM Seguro s WHERE s.prima = :prima")})
 public class Seguro implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -41,16 +37,14 @@ public class Seguro implements Serializable {
     @Column(name = "ID_SEGURO")
     private String idSeguro;
     @Basic(optional = false)
-    @Column(name = "VALOR")
-    private int valor;
+    @Column(name = "DEDUCIBLE")
+    private long deducible;
     @Basic(optional = false)
-    @Column(name = "NOMBRE")
-    private String nombre;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "seguroIdSeguro")
-    private Collection<Cliente> clienteCollection;
-    @JoinColumn(name = "COBERTURA_ID_COBERTURA", referencedColumnName = "ID_COBERTURA")
-    @OneToOne(optional = false)
-    private Cobertura coberturaIdCobertura;
+    @Column(name = "PRIMA")
+    private long prima;
+    @JoinColumn(name = "VEHICULO_ID_VEHICULO", referencedColumnName = "ID_VEHICULO")
+    @ManyToOne(optional = false)
+    private Vehiculo vehiculoIdVehiculo;
 
     public Seguro() {
     }
@@ -59,10 +53,10 @@ public class Seguro implements Serializable {
         this.idSeguro = idSeguro;
     }
 
-    public Seguro(String idSeguro, int valor, String nombre) {
+    public Seguro(String idSeguro, long deducible, long prima) {
         this.idSeguro = idSeguro;
-        this.valor = valor;
-        this.nombre = nombre;
+        this.deducible = deducible;
+        this.prima = prima;
     }
 
     public String getIdSeguro() {
@@ -73,37 +67,28 @@ public class Seguro implements Serializable {
         this.idSeguro = idSeguro;
     }
 
-    public int getValor() {
-        return valor;
+    public long getDeducible() {
+        return deducible;
     }
 
-    public void setValor(int valor) {
-        this.valor = valor;
+    public void setDeducible(long deducible) {
+        this.deducible = deducible;
     }
 
-    public String getNombre() {
-        return nombre;
+    public long getPrima() {
+        return prima;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setPrima(long prima) {
+        this.prima = prima;
     }
 
-    @XmlTransient
-    public Collection<Cliente> getClienteCollection() {
-        return clienteCollection;
+    public Vehiculo getVehiculoIdVehiculo() {
+        return vehiculoIdVehiculo;
     }
 
-    public void setClienteCollection(Collection<Cliente> clienteCollection) {
-        this.clienteCollection = clienteCollection;
-    }
-
-    public Cobertura getCoberturaIdCobertura() {
-        return coberturaIdCobertura;
-    }
-
-    public void setCoberturaIdCobertura(Cobertura coberturaIdCobertura) {
-        this.coberturaIdCobertura = coberturaIdCobertura;
+    public void setVehiculoIdVehiculo(Vehiculo vehiculoIdVehiculo) {
+        this.vehiculoIdVehiculo = vehiculoIdVehiculo;
     }
 
     @Override

@@ -48,7 +48,7 @@ public class Cliente implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "ID_CLIENTE")
     private String idCliente;
     @Basic(optional = false)
@@ -78,15 +78,11 @@ public class Cliente implements Serializable {
     @Basic(optional = false)
     @Column(name = "DIRECCION")
     private String direccion;
-    @JoinColumn(name = "VEHICULO_ID_VEHICULO", referencedColumnName = "ID_VEHICULO")
-    @ManyToOne(optional = false)
-    private Vehiculo vehiculoIdVehiculo;
-    @JoinColumn(name = "SEGURO_ID_SEGURO", referencedColumnName = "ID_SEGURO")
-    @ManyToOne(optional = false)
-    private Seguro seguroIdSeguro;
     @JoinColumn(name = "CIUDAD_ID_CIUDAD", referencedColumnName = "ID_CIUDAD")
     @ManyToOne(optional = false)
     private Ciudad ciudadIdCiudad;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "clienteIdCliente")
+    private Collection<Vehiculo> vehiculoCollection;
 
     public Cliente() {
     }
@@ -194,15 +190,15 @@ public class Cliente implements Serializable {
         else
             this.fechaNacimiento = fechaNacimiento;
     }
-    
+
     public String getActivo() {
         return activo;
     }
-    
+
     public void setActivo(String activo) {
         this.activo = activo;
     }
-    
+
     public String getDireccion() {
         return direccion;
     }
@@ -214,28 +210,21 @@ public class Cliente implements Serializable {
             this.direccion = direccion;
     }
 
-    public Vehiculo getVehiculoIdVehiculo() {
-        return vehiculoIdVehiculo;
-    }
-
-    public void setVehiculoIdVehiculo(Vehiculo vehiculoIdVehiculo) {
-        this.vehiculoIdVehiculo = vehiculoIdVehiculo;
-    }
-
-    public Seguro getSeguroIdSeguro() {
-        return seguroIdSeguro;
-    }
-
-    public void setSeguroIdSeguro(Seguro seguroIdSeguro) {
-        this.seguroIdSeguro = seguroIdSeguro;
-    }
-
     public Ciudad getCiudadIdCiudad() {
         return ciudadIdCiudad;
     }
 
     public void setCiudadIdCiudad(Ciudad ciudadIdCiudad) {
         this.ciudadIdCiudad = ciudadIdCiudad;
+    }
+
+    @XmlTransient
+    public Collection<Vehiculo> getVehiculoCollection() {
+        return vehiculoCollection;
+    }
+
+    public void setVehiculoCollection(Collection<Vehiculo> vehiculoCollection) {
+        this.vehiculoCollection = vehiculoCollection;
     }
 
     @Override

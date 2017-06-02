@@ -91,6 +91,7 @@ public class SiniestroMantenedor extends javax.swing.JFrame {
         lblRes = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Mantenedor Siniestro");
 
         jPanel1.setBackground(new java.awt.Color(153, 153, 153));
         jPanel1.setToolTipText("");

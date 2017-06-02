@@ -61,6 +61,23 @@ public class SeguroEscritorio {
             
             em.getTransaction().begin();
             em.persist(emp);
+            
+            Empleado emp2 = new Empleado();
+            emp2.setIdEmpleado("2e");
+            emp2.setRut("15670232-3");
+            emp2.setPass("1234");
+            emp2.setNombres("Mauricio Hans");
+            emp2.setApellidos("Meyer Fernandez");
+            emp2.setCorreo("mau.meyer@alumnos.duoc.cl");
+            emp2.setFono("569-50265040");
+            emp2.setFechaNacimiento("05/01/1990");
+            emp2.setDireccion("Esquina blanca 893, Maipu");
+            emp2.setCiudadIdCiudad(listaCiudad.get(0));
+            idCargo = 3;
+            cargo.setIdCargo(idCargo);
+            emp2.setCargoIdCargo(cargo);
+            
+            em.persist(emp2);
             em.getTransaction().commit();        
             
             

@@ -18,7 +18,10 @@ import java.util.logging.Logger;
 public class FafricaConexion {
     
     private Connection conexion;
-        
+
+    public FafricaConexion() {
+    }
+    
     public Connection getConexion() {
         return conexion;
     }
