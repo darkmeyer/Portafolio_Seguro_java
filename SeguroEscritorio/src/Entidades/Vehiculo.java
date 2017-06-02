@@ -36,6 +36,10 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Vehiculo.findByValorFiscal", query = "SELECT v FROM Vehiculo v WHERE v.valorFiscal = :valorFiscal")})
 public class Vehiculo implements Serializable {
 
+    @Basic(optional = false)
+    @Column(name = "RUT")
+    private String rut;
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -164,6 +168,14 @@ public class Vehiculo implements Serializable {
     @Override
     public String toString() {
         return "Entidades.Vehiculo[ idVehiculo=" + idVehiculo + " ]";
+    }
+
+    public String getRut() {
+        return rut;
+    }
+
+    public void setRut(String rut) {
+        this.rut = rut;
     }
     
 }

@@ -916,64 +916,84 @@ public class ClienteMantenedor extends javax.swing.JFrame {
         {
             if(camposVaciosVehiculo())
             {
-                if(ValidarCoberturas())
+                if(!txtRut.getText().isEmpty())
                 {
-                    Connection cn = new FafricaConexion().Conectar();
-                    try {
+                    if(ValidarCoberturas())
+                    {
+                        Connection cn = new FafricaConexion().Conectar();
+                        try {
+                            String rut = txtRut.getText();
+                            List<Cliente> listCliente = buscarClienteRut(rut);
+                            
+                            if(listCliente != null)
+                            {
+                                String item = cbModelo.getSelectedItem().toString();
+                                String[] itemSplit = item.split("\\s+");
+                                String idModelo = itemSplit[0];
+                                Modelo mod = new Modelo();
+                                mod.setIdModelo(idModelo);
 
-                        String item = cbModelo.getSelectedItem().toString();
-                        String[] itemSplit = item.split("\\s+");
-                        String idModelo = itemSplit[0];
-                        Modelo mod = new Modelo();
-                        mod.setIdModelo(idModelo);
+                                Cliente cli = listCliente.get(0);
 
-                        Cliente cli = new Cliente();
-                        cli.setRut(txtRut.getText());
+                                Vehiculo ve = new Vehiculo();
+                                ve.setPatente(txtPatente.getText());
+                                ve.setAno(Short.parseShort(txtAno.getText()));
+                                ve.setValorFiscal(Integer.parseInt(txtValorFiscal.getText()));
+                                ve.setClienteIdCliente(cli);
+                                ve.setRut(rut);
 
-                        Vehiculo ve = new Vehiculo();
-                        ve.setPatente(txtPatente.getText());
-                        ve.setAno(Short.parseShort(txtAno.getText()));
-                        ve.setValorFiscal(Integer.parseInt(txtValorFiscal.getText()));
-                        ve.setClienteIdCliente(cli);
+                                Cobertura cob = new Cobertura();
+                                cob.setDanoTerceros(chkTerceros.isSelected() ? 't' : 'f');
+                                cob.setRoboTotal(chkRobo.isSelected() ? 't' : 'f');
+                                cob.setPerdidaTotal(chkPerdida.isSelected() ? 't' : 'f');
+                                cob.setVehiculoIdVehiculo(ve);
 
-                        Cobertura cob = new Cobertura();
-                        cob.setDanoTerceros(chkTerceros.isSelected() ? 't' : 'f');
-                        cob.setRoboTotal(chkRobo.isSelected() ? 't' : 'f');
-                        cob.setPerdidaTotal(chkPerdida.isSelected() ? 't' : 'f');
-                        cob.setVehiculoIdVehiculo(ve);
+                                Seguro seg = new Seguro();
+                                seg.setDeducible(Long.parseLong(cbDeducible.getSelectedItem().toString()));
+                                seg.setPrima(calcularPrima());
+                                seg.setVehiculoIdVehiculo(ve);
 
-                        Seguro seg = new Seguro();
-                        seg.setDeducible(Long.parseLong(cbDeducible.getSelectedItem().toString()));
-                        seg.setPrima(calcularPrima());
-                        seg.setVehiculoIdVehiculo(ve);
 
-                        CallableStatement cs = cn.prepareCall("{call ? := F_INSERT_CLIENTE(?,?,?,?,?,?,?,?,?,?)}");
-                        cs.registerOutParameter(1, Types.VARCHAR);
+                                CallableStatement cs = cn.prepareCall("{call ? := F_INSERT_VEHICULO(?,?,?,?,?,?,?,?,?,?)}");
+                                cs.registerOutParameter(1, Types.VARCHAR);
 
-                        cs.setString(2, cli.getRut());
-                        cs.setString(3, cli.getPass());
-                        cs.setString(4, cli.getNombres());
-                        cs.setString(5, cli.getApellidos());
-                        cs.setString(6, cli.getCorreo());
-                        cs.setString(7, cli.getFono());
-                        cs.setString(8, cli.getFechaNacimiento());
-                        cs.setString(9, cli.getActivo());
-                        cs.setString(10, cli.getDireccion());
-                        cs.executeUpdate();
-                        String mensaje2 = cs.getString(1);
-                        mensaje += mensaje2+" \n";
-                        txaMensaje.setText(mensaje);
+                                cs.setString(2, ve.getRut());
+                                cs.setString(3, ve.getModeloIdModelo().getIdModelo());
+                                cs.setString(4, ve.getPatente());
+                                cs.setInt(5, ve.getAno());
+                                cs.setInt(6, ve.getValorFiscal());
+                                cs.setString(7, Character.toString(cob.getPerdidaTotal()));
+                                cs.setString(8, Character.toString(cob.getDanoTerceros()));
+                                cs.setString(9, Character.toString(cob.getRoboTotal()));
+                                cs.setLong(10, seg.getDeducible());
+                                cs.setLong(11, seg.getPrima());
+                                cs.executeUpdate();
+                                String mensaje2 = cs.getString(1);
+                                mensaje += mensaje2+" \n";
+                                txaMensaje.setText(mensaje);
+                                }
+                            else
+                            {
+                                mensaje += "Cliente No Existe \n";
+                                txaMensaje.setText(mensaje);
+                            }
 
+                        }
+                        catch(Exception e){
+                            mensaje += e.getMessage()+"\n";
+                            txaMensaje.setText(mensaje);
+                        }
                     }
-                    catch(Exception e){
-                        mensaje += e.getMessage()+"\n";
-                        txaMensaje.setText(mensaje);
+                    else
+                    {
+                        mensaje += "Seleccione almenos 1 cobertura \n";
+                        txaMensaje.setText(mensaje);  
                     }
                 }
                 else
                 {
-                    mensaje += "Seleccione almenos 1 cobertura \n";
-                    txaMensaje.setText(mensaje);  
+                    mensaje += "Ingrese Rut Cliente \n";
+                    txaMensaje.setText(mensaje);
                 }
             }
             else
@@ -990,7 +1010,36 @@ public class ClienteMantenedor extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAgregarVehiculoActionPerformed
 
     private void btnEliminarVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarVehiculoActionPerformed
-        // TODO add your handling code here:
+        try
+        {            
+            if(!txtPatente.getText().isEmpty())
+            {     
+                List<Vehiculo> listVehiculo = buscarPatente(txtPatente.getText());
+                if(listVehiculo!= null)
+                {
+                    em.getTransaction().begin();
+                    em.remove(listVehiculo.get(0));
+                    em.getTransaction().commit();
+                    mensaje += "Vehiculo Eliminado \n";
+                    txaMensaje.setText(mensaje);
+                }
+                else
+                {
+                    mensaje += "Vehiculo No Existe \n";
+                    txaMensaje.setText(mensaje);
+                }
+            }
+            else
+            {
+                mensaje += "Ingrese la Patente \n";
+                txaMensaje.setText(mensaje);
+            }
+        }
+        catch(Exception e)
+        {
+            mensaje += "Error \n";
+            txaMensaje.setText(mensaje);
+        }
     }//GEN-LAST:event_btnEliminarVehiculoActionPerformed
 
     private void cbMarcaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbMarcaActionPerformed
@@ -1102,6 +1151,44 @@ public class ClienteMantenedor extends javax.swing.JFrame {
             if(listCliente.size() > 0)
             {
                 return listCliente;
+            }
+            else
+            {
+                return null;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    private List<Vehiculo> buscarPatente(String patente)
+    {
+        try {
+            TypedQuery consulta = em.createNamedQuery("Vehiculo.findByPatente", Vehiculo.class);
+            List<Vehiculo> listVehiculo = consulta.setParameter("patente", patente).getResultList();
+            
+            if(listVehiculo.size() > 0)
+            {
+                return listVehiculo;
+            }
+            else
+            {
+                return null;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    private List<Vehiculo> buscarVehiculosRut(String rut)
+    {
+        try {
+            TypedQuery consulta = em.createNamedQuery("Vehiculo.findBy", Vehiculo.class);
+            List<Vehiculo> listVehiculo = consulta.setParameter("rut", rut).getResultList();
+            
+            if(listVehiculo.size() > 0)
+            {
+                return listVehiculo;
             }
             else
             {
