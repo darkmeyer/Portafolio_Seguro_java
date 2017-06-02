@@ -42,6 +42,7 @@ public class SiniestroMantenedor extends javax.swing.JFrame {
         llenarComboBoxLiquidador();
         llenarComboBoxGrua();
         llenarComboBoxTaller();
+        setLocationRelativeTo(null);
     }
     
     /**

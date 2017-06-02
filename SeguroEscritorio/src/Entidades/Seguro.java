@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Seguro.findAll", query = "SELECT s FROM Seguro s"),
     @NamedQuery(name = "Seguro.findByIdSeguro", query = "SELECT s FROM Seguro s WHERE s.idSeguro = :idSeguro"),
     @NamedQuery(name = "Seguro.findByDeducible", query = "SELECT s FROM Seguro s WHERE s.deducible = :deducible"),
+    @NamedQuery(name = "Seguro.findByIdVehiculo", query = "SELECT s FROM Seguro s WHERE s.vehiculoIdVehiculo = :vehiculoIdVehiculo"),
     @NamedQuery(name = "Seguro.findByPrima", query = "SELECT s FROM Seguro s WHERE s.prima = :prima")})
 public class Seguro implements Serializable {
 
