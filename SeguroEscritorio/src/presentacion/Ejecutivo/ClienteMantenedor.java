@@ -15,6 +15,7 @@ import Entidades.Region;
 import Entidades.Seguro;
 import Entidades.Validaciones;
 import Entidades.Vehiculo;
+import java.awt.event.KeyEvent;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Types;
@@ -39,6 +40,9 @@ public class ClienteMantenedor extends javax.swing.JFrame {
         initComponents();
         llenarComboBoxRegiones();
         llenarComboBoxMarcas();
+        chkPerdida.setEnabled(false);
+        chkRobo.setEnabled(false);
+        chkTerceros.setEnabled(false);
     }
 
     /**
@@ -405,15 +409,37 @@ public class ClienteMantenedor extends javax.swing.JFrame {
         jLabel21.setForeground(new java.awt.Color(255, 255, 255));
         jLabel21.setText("AÑO:");
 
+        txtValorFiscal.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        txtValorFiscal.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtValorFiscalKeyTyped(evt);
+            }
+        });
+
         jLabel22.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel22.setForeground(new java.awt.Color(255, 255, 255));
         jLabel22.setText("VALOR FISCAL:");
 
         chkTerceros.setText("Daño terceros");
+        chkTerceros.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                chkTercerosMouseClicked(evt);
+            }
+        });
 
         chkPerdida.setText("Perdida Total");
+        chkPerdida.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                chkPerdidaMouseClicked(evt);
+            }
+        });
 
         chkRobo.setText("Robo Total");
+        chkRobo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                chkRoboMouseClicked(evt);
+            }
+        });
 
         cbDeducible.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "0", "5", "10" }));
         cbDeducible.addActionListener(new java.awt.event.ActionListener() {
@@ -521,16 +547,15 @@ public class ClienteMantenedor extends javax.swing.JFrame {
                         .addComponent(jLabel26)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cbVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addContainerGap()
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(126, 126, 126)
                         .addComponent(jLabel25)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(chkPerdida)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(chkTerceros)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(chkRobo)
-                        .addGap(82, 82, 82)))
+                        .addComponent(chkRobo)))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -561,13 +586,13 @@ public class ClienteMantenedor extends javax.swing.JFrame {
                     .addComponent(jLabel23)
                     .addComponent(jLabel24)
                     .addComponent(lblPrima))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(15, 15, 15)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(chkTerceros)
                     .addComponent(chkRobo)
                     .addComponent(chkPerdida)
                     .addComponent(jLabel25))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAgregarVehiculo)
                     .addComponent(btnEliminarVehiculo))
@@ -968,7 +993,7 @@ public class ClienteMantenedor extends javax.swing.JFrame {
 
                                 Seguro seg = new Seguro();
                                 seg.setDeducible(Long.parseLong(cbDeducible.getSelectedItem().toString()));
-                                seg.setPrima(calcularPrima());
+                                seg.setPrima((int)(calcularCobertura()));
                                 seg.setVehiculoIdVehiculo(ve);
 
 
@@ -1070,7 +1095,7 @@ public class ClienteMantenedor extends javax.swing.JFrame {
     private void cbDeducibleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbDeducibleActionPerformed
         if(!txtValorFiscal.getText().isEmpty())
         {
-            lblPrima.setText(Integer.toString(calcularPrima()));
+            lblPrima.setText(Integer.toString((int)(calcularCobertura())));
         }
     }//GEN-LAST:event_cbDeducibleActionPerformed
 
@@ -1096,18 +1121,64 @@ public class ClienteMantenedor extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_cbVehiculoActionPerformed
 
-    private int calcularPrima()
+    private void txtValorFiscalKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValorFiscalKeyTyped
+        char vchar = evt.getKeyChar();
+        if(!(Character.isDigit(vchar))
+            || (vchar == KeyEvent.VK_BACK_SPACE)
+            || (vchar == KeyEvent.VK_DELETE)){
+        evt.consume();
+        }
+        else
+        {
+            chkPerdida.setEnabled(true);
+            chkRobo.setEnabled(true);
+            chkTerceros.setEnabled(true);
+        }
+    }//GEN-LAST:event_txtValorFiscalKeyTyped
+
+    private void chkPerdidaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chkPerdidaMouseClicked
+        if(txtValorFiscal.getText().isEmpty())
+        {
+            JOptionPane.showMessageDialog(this, "Debe Ingresar Valor Fiscal", "Aviso ",1);
+            chkPerdida.setSelected(false);
+        }
+        else
+        {
+            lblPrima.setText(Integer.toString((int)(calcularCobertura())));
+        }
+    }//GEN-LAST:event_chkPerdidaMouseClicked
+
+    private void chkTercerosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chkTercerosMouseClicked
+        lblPrima.setText(Double.toString(calcularCobertura()));
+    }//GEN-LAST:event_chkTercerosMouseClicked
+
+    private void chkRoboMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chkRoboMouseClicked
+        lblPrima.setText(Double.toString(calcularCobertura()));
+    }//GEN-LAST:event_chkRoboMouseClicked
+    
+    private double calcularCobertura()
+    {
+        double valor = calcularPrima();
+        double prima = 0;
+        prima += chkPerdida.isSelected() ? valor : 0;
+        prima += chkRobo.isSelected() ? valor : 0;
+        prima += chkTerceros.isSelected() ? valor / 2 : 0;        
+        
+        return prima;
+    }
+    private double calcularPrima()
     {
         int deducible = Integer.parseInt(cbDeducible.getSelectedItem().toString());
-        int valor = Integer.parseInt(txtValorFiscal.getText());
+        double valor = Double.parseDouble(txtValorFiscal.getText());        
         
         switch (deducible) {
-            case 0: valor = (((valor / 100) * 3) / 100) * 90; break;
-            case 5: valor = (((valor / 100) * 2) / 100) * 80; break;
-            case 10: valor = (((valor / 100) * 1) / 100) * 75; break;
+            case 0: valor = (valor * 0.03) * 0.9; break;
+            case 5: valor = (valor * 0.02) * 0.8; break;
+            case 10: valor = (valor * 0.01) * 0.75; break;
             default:
                 return 0;
         }
+        
         return valor;
     }
     
