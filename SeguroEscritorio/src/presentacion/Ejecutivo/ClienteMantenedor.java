@@ -105,7 +105,7 @@ public class ClienteMantenedor extends javax.swing.JFrame {
         lblPrima = new javax.swing.JLabel();
         btnAgregarVehiculo = new javax.swing.JButton();
         btnEliminarVehiculo = new javax.swing.JButton();
-        cbMarca1 = new javax.swing.JComboBox<>();
+        cbVehiculo = new javax.swing.JComboBox<>();
         jLabel26 = new javax.swing.JLabel();
         jLabel25 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
@@ -448,6 +448,12 @@ public class ClienteMantenedor extends javax.swing.JFrame {
             }
         });
 
+        cbVehiculo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbVehiculoActionPerformed(evt);
+            }
+        });
+
         jLabel26.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel26.setForeground(new java.awt.Color(255, 255, 255));
         jLabel26.setText("Vehiculos:");
@@ -514,7 +520,7 @@ public class ClienteMantenedor extends javax.swing.JFrame {
                         .addGap(204, 204, 204)
                         .addComponent(jLabel26)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbMarca1, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(cbVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jLabel25)
@@ -533,7 +539,7 @@ public class ClienteMantenedor extends javax.swing.JFrame {
                 .addComponent(jLabel4)
                 .addGap(2, 2, 2)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cbMarca1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel26))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -662,8 +668,19 @@ public class ClienteMantenedor extends javax.swing.JFrame {
                         txtDireccion.setText(listCliente.get(0).getDireccion());
                         cbRegion.setSelectedItem(listCliente.get(0).getCiudadIdCiudad().getRegionIdRegion().getIdRegion()+ " " + listCliente.get(0).getCiudadIdCiudad().getRegionIdRegion().getNombre());
                         cbCiudad.setSelectedItem(listCliente.get(0).getCiudadIdCiudad().getIdCiudad()+" "+listCliente.get(0).getCiudadIdCiudad().getNombre());
-
-
+                        
+                        cbVehiculo.removeAllItems();
+                        List<Vehiculo> listVehiculo = buscarVehiculosRut(rut); 
+                        if(listVehiculo != null)
+                        {
+                            for (Vehiculo vehiculo : listVehiculo) {
+                                cbVehiculo.addItem(vehiculo.getIdVehiculo()+" "+vehiculo.getPatente()+" "+vehiculo.getModeloIdModelo().getMarcaIdMarca().getNombre());
+                            }
+                        }
+                        else
+                        {
+                            cbVehiculo.addItem("Sin Vehiculos");
+                        }
                         lblBuscarRut.setText("Rut encontrado");
                     }
                     else
@@ -936,11 +953,12 @@ public class ClienteMantenedor extends javax.swing.JFrame {
                                 Cliente cli = listCliente.get(0);
 
                                 Vehiculo ve = new Vehiculo();
+                                ve.setModeloIdModelo(mod);
                                 ve.setPatente(txtPatente.getText());
                                 ve.setAno(Short.parseShort(txtAno.getText()));
                                 ve.setValorFiscal(Integer.parseInt(txtValorFiscal.getText()));
                                 ve.setClienteIdCliente(cli);
-                                ve.setRut(rut);
+                                ve.setRut(cli.getRut());
 
                                 Cobertura cob = new Cobertura();
                                 cob.setDanoTerceros(chkTerceros.isSelected() ? 't' : 'f');
@@ -1056,6 +1074,28 @@ public class ClienteMantenedor extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_cbDeducibleActionPerformed
 
+    private void cbVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbVehiculoActionPerformed
+        try
+        {
+            String item = cbVehiculo.getSelectedItem().toString();
+            String[] itemSplit = item.split("\\s+");
+            String id = itemSplit[0].toString();
+            List<Vehiculo> listVehiculo = buscarVehiculosId(id);
+            if(listVehiculo != null)
+            {
+                txtPatente.setText(listVehiculo.get(0).getPatente());
+                txtAno.setText(Integer.toString(listVehiculo.get(0).getAno()));
+                txtValorFiscal.setText(Integer.toString(listVehiculo.get(0).getValorFiscal()));
+                cbMarca.setSelectedItem(listVehiculo.get(0).getModeloIdModelo().getMarcaIdMarca().getIdMarca()+" "+listVehiculo.get(0).getModeloIdModelo().getMarcaIdMarca().getNombre());
+                cbModelo.setSelectedItem(listVehiculo.get(0).getModeloIdModelo().getIdModelo()+" "+listVehiculo.get(0).getModeloIdModelo().getNombre());
+            }
+        }
+        catch(Exception e)
+        {
+            
+        }
+    }//GEN-LAST:event_cbVehiculoActionPerformed
+
     private int calcularPrima()
     {
         int deducible = Integer.parseInt(cbDeducible.getSelectedItem().toString());
@@ -1140,6 +1180,44 @@ public class ClienteMantenedor extends javax.swing.JFrame {
         }
     }
     
+    private List<Cliente> buscarCoberturaIdVehiculo(int id)
+    {
+        try {
+            TypedQuery consulta = em.createNamedQuery("Cobertura.findBy", Cobertura.class);
+            List<Cliente> listCliente = consulta.setParameter("idCliente", id+"c").getResultList();
+            
+            if(listCliente.size() > 0)
+            {
+                return listCliente;
+            }
+            else
+            {
+                return null;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    private List<Cliente> buscarSeguroIdVehiculo(int id)
+    {
+        try {
+            TypedQuery consulta = em.createNamedQuery("Cliente.findByIdCliente", Cliente.class);
+            List<Cliente> listCliente = consulta.setParameter("idCliente", id+"c").getResultList();
+            
+            if(listCliente.size() > 0)
+            {
+                return listCliente;
+            }
+            else
+            {
+                return null;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
     private List<Cliente> buscarClienteRut(String rut)
     {
         try {
@@ -1183,8 +1261,29 @@ public class ClienteMantenedor extends javax.swing.JFrame {
     private List<Vehiculo> buscarVehiculosRut(String rut)
     {
         try {
-            TypedQuery consulta = em.createNamedQuery("Vehiculo.findBy", Vehiculo.class);
+            rut = rut.replace(".", "");
+            rut = rut.replace("-", "");
+            TypedQuery consulta = em.createNamedQuery("Vehiculo.findByRut", Vehiculo.class);
             List<Vehiculo> listVehiculo = consulta.setParameter("rut", rut).getResultList();
+            
+            if(listVehiculo.size() > 0)
+            {
+                return listVehiculo;
+            }
+            else
+            {
+                return null;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    private List<Vehiculo> buscarVehiculosId(String id)
+    {
+        try {
+            TypedQuery consulta = em.createNamedQuery("Vehiculo.findByIdVehiculo", Vehiculo.class);
+            List<Vehiculo> listVehiculo = consulta.setParameter("idVehiculo", id).getResultList();
             
             if(listVehiculo.size() > 0)
             {
@@ -1310,9 +1409,9 @@ public class ClienteMantenedor extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cbCiudad;
     private javax.swing.JComboBox<String> cbDeducible;
     private javax.swing.JComboBox<String> cbMarca;
-    private javax.swing.JComboBox<String> cbMarca1;
     private javax.swing.JComboBox<String> cbModelo;
     private javax.swing.JComboBox<String> cbRegion;
+    private javax.swing.JComboBox<String> cbVehiculo;
     private javax.swing.JCheckBox chkActivo;
     private javax.swing.JCheckBox chkPerdida;
     private javax.swing.JCheckBox chkRobo;

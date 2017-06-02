@@ -31,20 +31,20 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Vehiculo.findAll", query = "SELECT v FROM Vehiculo v"),
     @NamedQuery(name = "Vehiculo.findByIdVehiculo", query = "SELECT v FROM Vehiculo v WHERE v.idVehiculo = :idVehiculo"),
+    @NamedQuery(name = "Vehiculo.findByRut", query = "SELECT v FROM Vehiculo v WHERE v.rut = :rut"),
     @NamedQuery(name = "Vehiculo.findByPatente", query = "SELECT v FROM Vehiculo v WHERE v.patente = :patente"),
     @NamedQuery(name = "Vehiculo.findByAno", query = "SELECT v FROM Vehiculo v WHERE v.ano = :ano"),
     @NamedQuery(name = "Vehiculo.findByValorFiscal", query = "SELECT v FROM Vehiculo v WHERE v.valorFiscal = :valorFiscal")})
 public class Vehiculo implements Serializable {
-
-    @Basic(optional = false)
-    @Column(name = "RUT")
-    private String rut;
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @Column(name = "ID_VEHICULO")
     private String idVehiculo;
+    @Basic(optional = false)
+    @Column(name = "RUT")
+    private String rut;
     @Basic(optional = false)
     @Column(name = "PATENTE")
     private String patente;
@@ -72,8 +72,9 @@ public class Vehiculo implements Serializable {
         this.idVehiculo = idVehiculo;
     }
 
-    public Vehiculo(String idVehiculo, String patente, short ano, int valorFiscal) {
+    public Vehiculo(String idVehiculo, String rut, String patente, short ano, int valorFiscal) {
         this.idVehiculo = idVehiculo;
+        this.rut = rut;
         this.patente = patente;
         this.ano = ano;
         this.valorFiscal = valorFiscal;
@@ -85,6 +86,14 @@ public class Vehiculo implements Serializable {
 
     public void setIdVehiculo(String idVehiculo) {
         this.idVehiculo = idVehiculo;
+    }
+
+    public String getRut() {
+        return rut;
+    }
+
+    public void setRut(String rut) {
+        this.rut = rut;
     }
 
     public String getPatente() {
@@ -168,14 +177,6 @@ public class Vehiculo implements Serializable {
     @Override
     public String toString() {
         return "Entidades.Vehiculo[ idVehiculo=" + idVehiculo + " ]";
-    }
-
-    public String getRut() {
-        return rut;
-    }
-
-    public void setRut(String rut) {
-        this.rut = rut;
     }
     
 }
