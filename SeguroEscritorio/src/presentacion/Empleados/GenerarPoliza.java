@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package presentacion.Ejecutivo;
+package presentacion.Empleados;
 
 import Entidades.Cliente;
 import Entidades.Cobertura;
@@ -56,6 +56,7 @@ public class GenerarPoliza extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Poliza");
 
         txaDocumento.setColumns(20);
         txaDocumento.setRows(5);

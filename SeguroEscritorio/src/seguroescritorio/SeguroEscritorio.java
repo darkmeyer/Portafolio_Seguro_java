@@ -73,9 +73,10 @@ public class SeguroEscritorio {
             emp2.setFechaNacimiento("05/01/1990");
             emp2.setDireccion("Esquina blanca 893, Maipu");
             emp2.setCiudadIdCiudad(listaCiudad.get(0));
-            idCargo = 3;
-            cargo.setIdCargo(idCargo);
-            emp2.setCargoIdCargo(cargo);
+            Cargo cargo2 = new Cargo();
+            short idCargo2 = 3;
+            cargo2.setIdCargo(idCargo2);
+            emp2.setCargoIdCargo(cargo2);
             
             em.persist(emp2);
             em.getTransaction().commit();        

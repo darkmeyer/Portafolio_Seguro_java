@@ -7,7 +7,6 @@ package Entidades;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,8 +18,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -36,36 +33,11 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Siniestro.findByIdSiniestro", query = "SELECT s FROM Siniestro s WHERE s.idSiniestro = :idSiniestro"),
     @NamedQuery(name = "Siniestro.findByFecha", query = "SELECT s FROM Siniestro s WHERE s.fecha = :fecha"),
     @NamedQuery(name = "Siniestro.findByFechaTermino", query = "SELECT s FROM Siniestro s WHERE s.fechaTermino = :fechaTermino"),
+    @NamedQuery(name = "Siniestro.findByDireccion", query = "SELECT s FROM Siniestro s WHERE s.direccion = :direccion"),
     @NamedQuery(name = "Siniestro.findByEstado", query = "SELECT s FROM Siniestro s WHERE s.estado = :estado"),
-    @NamedQuery(name = "Siniestro.findByDeducibleUf", query = "SELECT s FROM Siniestro s WHERE s.deducibleUf = :deducibleUf"),
-    @NamedQuery(name = "Siniestro.findByCosteReparacion", query = "SELECT s FROM Siniestro s WHERE s.costeReparacion = :costeReparacion")})
+    @NamedQuery(name = "Siniestro.findByCosteReparacion", query = "SELECT s FROM Siniestro s WHERE s.costeReparacion = :costeReparacion"),
+    @NamedQuery(name = "Siniestro.findByPatente", query = "SELECT s FROM Siniestro s WHERE s.patente = :patente")})
 public class Siniestro implements Serializable {
-
-    @Column(name = "DEDUCIBLE_UF")
-    private Short deducibleUf;
-
-    @Basic(optional = false)
-    @Column(name = "FECHA")
-    private String fecha;
-    @Basic(optional = false)
-    @Column(name = "FECHA_TERMINO")
-    private String fechaTermino;
-
-    @JoinColumn(name = "TALLER_ID_TALLER", referencedColumnName = "ID_TALLER")
-    @ManyToOne(optional = false)
-    private Taller tallerIdTaller;
-
-    @JoinColumn(name = "GRUA_ID_GRUA", referencedColumnName = "ID_GRUA")
-    @ManyToOne(optional = false)
-    private Grua gruaIdGrua;
-
-    @JoinColumn(name = "CIUDAD_ID_CIUDAD", referencedColumnName = "ID_CIUDAD")
-    @ManyToOne(optional = false)
-    private Ciudad ciudadIdCiudad;
-
-    @Basic(optional = false)
-    @Column(name = "DIRECCION")
-    private String direccion;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -73,16 +45,36 @@ public class Siniestro implements Serializable {
     @Column(name = "ID_SINIESTRO")
     private String idSiniestro;
     @Basic(optional = false)
+    @Column(name = "FECHA")
+    private String fecha;
+    @Column(name = "FECHA_TERMINO")
+    private String fechaTermino;
+    @Basic(optional = false)
+    @Column(name = "DIRECCION")
+    private String direccion;
+    @Basic(optional = false)
     @Column(name = "ESTADO")
     private String estado;
     @Column(name = "COSTE_REPARACION")
     private Long costeReparacion;
+    @Basic(optional = false)
+    @Column(name = "PATENTE")
+    private String patente;
+    @JoinColumn(name = "TALLER_ID_TALLER", referencedColumnName = "ID_TALLER")
+    @ManyToOne(optional = false)
+    private Taller tallerIdTaller;
+    @JoinColumn(name = "GRUA_ID_GRUA", referencedColumnName = "ID_GRUA")
+    @ManyToOne(optional = false)
+    private Grua gruaIdGrua;
     @JoinColumn(name = "EMPLEADO_ID_EMPLEADO", referencedColumnName = "ID_EMPLEADO")
     @ManyToOne(optional = false)
     private Empleado empleadoIdEmpleado;
     @JoinColumn(name = "CLIENTE_ID_CLIENTE", referencedColumnName = "ID_CLIENTE")
     @ManyToOne(optional = false)
     private Cliente clienteIdCliente;
+    @JoinColumn(name = "CIUDAD_ID_CIUDAD", referencedColumnName = "ID_CIUDAD")
+    @ManyToOne(optional = false)
+    private Ciudad ciudadIdCiudad;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "siniestroIdSiniestro")
     private Collection<Movimiento> movimientoCollection;
 
@@ -93,11 +85,12 @@ public class Siniestro implements Serializable {
         this.idSiniestro = idSiniestro;
     }
 
-    public Siniestro(String idSiniestro, String fecha, String estado, short deducibleUf) {
+    public Siniestro(String idSiniestro, String fecha, String direccion, String estado, String patente) {
         this.idSiniestro = idSiniestro;
         this.fecha = fecha;
+        this.direccion = direccion;
         this.estado = estado;
-        this.deducibleUf = deducibleUf;
+        this.patente = patente;
     }
 
     public String getIdSiniestro() {
@@ -108,6 +101,13 @@ public class Siniestro implements Serializable {
         this.idSiniestro = idSiniestro;
     }
 
+    public String getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
 
     public String getFechaTermino() {
         return fechaTermino;
@@ -115,6 +115,14 @@ public class Siniestro implements Serializable {
 
     public void setFechaTermino(String fechaTermino) {
         this.fechaTermino = fechaTermino;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
     }
 
     public String getEstado() {
@@ -125,20 +133,36 @@ public class Siniestro implements Serializable {
         this.estado = estado;
     }
 
-    public short getDeducibleUf() {
-        return deducibleUf;
-    }
-
-    public void setDeducibleUf(short deducibleUf) {
-        this.deducibleUf = deducibleUf;
-    }
-
     public Long getCosteReparacion() {
         return costeReparacion;
     }
 
     public void setCosteReparacion(Long costeReparacion) {
         this.costeReparacion = costeReparacion;
+    }
+
+    public String getPatente() {
+        return patente;
+    }
+
+    public void setPatente(String patente) {
+        this.patente = patente;
+    }
+
+    public Taller getTallerIdTaller() {
+        return tallerIdTaller;
+    }
+
+    public void setTallerIdTaller(Taller tallerIdTaller) {
+        this.tallerIdTaller = tallerIdTaller;
+    }
+
+    public Grua getGruaIdGrua() {
+        return gruaIdGrua;
+    }
+
+    public void setGruaIdGrua(Grua gruaIdGrua) {
+        this.gruaIdGrua = gruaIdGrua;
     }
 
     public Empleado getEmpleadoIdEmpleado() {
@@ -155,6 +179,14 @@ public class Siniestro implements Serializable {
 
     public void setClienteIdCliente(Cliente clienteIdCliente) {
         this.clienteIdCliente = clienteIdCliente;
+    }
+
+    public Ciudad getCiudadIdCiudad() {
+        return ciudadIdCiudad;
+    }
+
+    public void setCiudadIdCiudad(Ciudad ciudadIdCiudad) {
+        this.ciudadIdCiudad = ciudadIdCiudad;
     }
 
     @XmlTransient
@@ -190,44 +222,5 @@ public class Siniestro implements Serializable {
     public String toString() {
         return "Entidades.Siniestro[ idSiniestro=" + idSiniestro + " ]";
     }
-
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
-    public Ciudad getCiudadIdCiudad() {
-        return ciudadIdCiudad;
-    }
-
-    public void setCiudadIdCiudad(Ciudad ciudadIdCiudad) {
-        this.ciudadIdCiudad = ciudadIdCiudad;
-    }
-
-    public Grua getGruaIdGrua() {
-        return gruaIdGrua;
-    }
-
-    public void setGruaIdGrua(Grua gruaIdGrua) {
-        this.gruaIdGrua = gruaIdGrua;
-    }
-
-    public Taller getTallerIdTaller() {
-        return tallerIdTaller;
-    }
-
-    public void setTallerIdTaller(Taller tallerIdTaller) {
-        this.tallerIdTaller = tallerIdTaller;
-    }
-
-    public String getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
-    }
+    
 }

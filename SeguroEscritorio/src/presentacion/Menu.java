@@ -11,8 +11,9 @@ import presentacion.Admin.EmpleadoMantenedor;
 import presentacion.Admin.GruaMantenedor;
 import presentacion.Admin.RegionCiudadMantenedor;
 import presentacion.Admin.TallerMantenedor;
-import presentacion.Ejecutivo.ClienteMantenedor;
-import presentacion.Ejecutivo.SiniestroMantenedor;
+import presentacion.Empleados.ClienteMantenedor;
+import presentacion.Empleados.GenerarPoliza;
+import presentacion.Empleados.SiniestroMantenedor;
 import presentacion.Login;
 
 /**
@@ -180,7 +181,7 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_itemSiniestroActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        
+        new GenerarPoliza().setVisible(true);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void bienvenida(String nombre) {

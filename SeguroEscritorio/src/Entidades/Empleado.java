@@ -43,6 +43,9 @@ import org.mindrot.jbcrypt.BCrypt;
     @NamedQuery(name = "Empleado.findByDireccion", query = "SELECT e FROM Empleado e WHERE e.direccion = :direccion")})
 public class Empleado implements Serializable {
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "empleadoIdEmpleado")
+    private Collection<Presupuesto> presupuestoCollection;
+
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "empleadoIdEmpleado")
     private Taller taller;
 
@@ -271,6 +274,15 @@ public class Empleado implements Serializable {
 
     public void setTaller(Taller taller) {
         this.taller = taller;
+    }
+
+    @XmlTransient
+    public Collection<Presupuesto> getPresupuestoCollection() {
+        return presupuestoCollection;
+    }
+
+    public void setPresupuestoCollection(Collection<Presupuesto> presupuestoCollection) {
+        this.presupuestoCollection = presupuestoCollection;
     }
     
 }

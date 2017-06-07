@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package presentacion.Ejecutivo;
+package presentacion.Empleados;
 
 import Datos.FafricaConexion;
 import Entidades.Ciudad;
@@ -118,7 +118,8 @@ public class ClienteMantenedor extends javax.swing.JFrame {
         txaMensaje = new javax.swing.JTextArea();
         btnLimpiar = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Mantenedor Cliente");
 
         jPanel1.setBackground(new java.awt.Color(153, 153, 153));
 
@@ -1107,6 +1108,8 @@ public class ClienteMantenedor extends javax.swing.JFrame {
             String[] itemSplit = item.split("\\s+");
             String id = itemSplit[0].toString();
             List<Vehiculo> listVehiculo = buscarVehiculosId(id);
+            List<Seguro> listSeguro = buscarSeguroIdVehiculo(listVehiculo.get(0));
+            List<Cobertura> listCobertura = buscarCoberturaIdVehiculo(listVehiculo.get(0));
             if(listVehiculo != null)
             {
                 txtPatente.setText(listVehiculo.get(0).getPatente());
@@ -1114,6 +1117,14 @@ public class ClienteMantenedor extends javax.swing.JFrame {
                 txtValorFiscal.setText(Integer.toString(listVehiculo.get(0).getValorFiscal()));
                 cbMarca.setSelectedItem(listVehiculo.get(0).getModeloIdModelo().getMarcaIdMarca().getIdMarca()+" "+listVehiculo.get(0).getModeloIdModelo().getMarcaIdMarca().getNombre());
                 cbModelo.setSelectedItem(listVehiculo.get(0).getModeloIdModelo().getIdModelo()+" "+listVehiculo.get(0).getModeloIdModelo().getNombre());
+                cbDeducible.setSelectedItem(Long.toString(listSeguro.get(0).getDeducible()));
+                lblPrima.setText(Long.toString(listSeguro.get(0).getPrima()));
+                chkPerdida.setEnabled(true);
+                chkRobo.setEnabled(true);
+                chkTerceros.setEnabled(true);
+                chkPerdida.setSelected(listCobertura.get(0).getPerdidaTotal().equals('t'));
+                chkRobo.setSelected(listCobertura.get(0).getRoboTotal().equals('t'));
+                chkTerceros.setSelected(listCobertura.get(0).getDanoTerceros().equals('t'));
             }
         }
         catch(Exception e)
@@ -1252,15 +1263,15 @@ public class ClienteMantenedor extends javax.swing.JFrame {
         }
     }
     
-    private List<Cliente> buscarCoberturaIdVehiculo(int id)
+    private List<Cobertura> buscarCoberturaIdVehiculo(Vehiculo ve)
     {
         try {
-            TypedQuery consulta = em.createNamedQuery("Cobertura.findBy", Cobertura.class);
-            List<Cliente> listCliente = consulta.setParameter("idCliente", id+"c").getResultList();
+            TypedQuery consulta = em.createNamedQuery("Cobertura.findByIdVehiculo", Cobertura.class);
+            List<Cobertura> listCobertura = consulta.setParameter("vehiculoIdVehiculo", ve).getResultList();
             
-            if(listCliente.size() > 0)
+            if(listCobertura.size() > 0)
             {
-                return listCliente;
+                return listCobertura;
             }
             else
             {
@@ -1271,15 +1282,15 @@ public class ClienteMantenedor extends javax.swing.JFrame {
         }
     }
     
-    private List<Cliente> buscarSeguroIdVehiculo(int id)
+    private List<Seguro> buscarSeguroIdVehiculo(Vehiculo ve)
     {
         try {
-            TypedQuery consulta = em.createNamedQuery("Cliente.findByIdCliente", Cliente.class);
-            List<Cliente> listCliente = consulta.setParameter("idCliente", id+"c").getResultList();
+            TypedQuery consulta = em.createNamedQuery("Seguro.findByIdVehiculo", Seguro.class);
+            List<Seguro> listSeguro = consulta.setParameter("vehiculoIdVehiculo", ve).getResultList();
             
-            if(listCliente.size() > 0)
+            if(listSeguro.size() > 0)
             {
-                return listCliente;
+                return listSeguro;
             }
             else
             {

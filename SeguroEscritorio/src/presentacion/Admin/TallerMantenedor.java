@@ -395,7 +395,7 @@ public class TallerMantenedor extends javax.swing.JFrame {
                 List<Empleado> listEmp = buscarEmpleadoRut(rut);
                 if(listEmp != null)
                 {
-                    if(listEmp.get(0).getCargoIdCargo().getNombre().equalsIgnoreCase("encargado taller"))
+                    if(listEmp.get(0).getCargoIdCargo().getNombre().equalsIgnoreCase("Admin Taller"))
                     {
                         
                         Connection cn = new FafricaConexion().Conectar();
