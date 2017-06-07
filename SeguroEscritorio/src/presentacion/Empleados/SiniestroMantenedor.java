@@ -14,7 +14,7 @@ import Entidades.Grua;
 import Entidades.Region;
 import Entidades.Siniestro;
 import Entidades.Taller;
-import Entidades.Validaciones;
+import Validaciones.Validaciones;
 import Entidades.Vehiculo;
 import java.sql.CallableStatement;
 import java.sql.Connection;

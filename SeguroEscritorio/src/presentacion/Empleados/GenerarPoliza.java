@@ -5,16 +5,25 @@
  */
 package presentacion.Empleados;
 
+import Datos.FafricaConexion;
 import Entidades.Cliente;
 import Entidades.Cobertura;
-import Entidades.Seguro;
+import Entidades.Poliza;
 import Entidades.Vehiculo;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Types;
+import static java.sql.Types.DATE;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -22,6 +31,7 @@ import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import oracle.sql.DATE;
 
 /**
  *
@@ -147,17 +157,21 @@ public class GenerarPoliza extends javax.swing.JFrame {
                     List<Cliente> listCliente = buscarClienteRut(rut);
                     if(listCliente != null)
                     {
+                        Poliza poliza = new Poliza();
+                        poliza.setIdPoliza(Long.parseLong(listCliente.get(0).getIdCliente().substring(0, listCliente.get(0).getIdCliente().length()-1)));
+                        poliza.setIdCliente(listCliente.get(0).getIdCliente());
+                        
+                        SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
+                        Calendar calNow = Calendar.getInstance();
+                        calNow.add(Calendar.MONTH, +1);
+                        Date date1 = calNow.getTime();
+                        String fechaActual = sdf.format(date1);
+                        poliza.setFechaVencimiento(sdf.parse(fechaActual));
+                        
+                        poliza.setAlDia("t");
                         List<Vehiculo> listVehiculos = buscarVehiculosRut(rut);                
                         if(listVehiculos != null)
                         {
-                            List<Seguro> seg = null;
-                            List<Cobertura> cob = null;
-                            for (Vehiculo listVehiculo : listVehiculos) {
-                                seg = buscarSeguroIdVehiculo(listVehiculo);
-                                listVehiculo.setSeguroCollection(seg);
-                                cob = buscarCoberturaIdVehiculo(listVehiculo);
-                                listVehiculo.setCoberturaCollection(cob);                               
-                            }
                             int total = 0;
                             listCliente.get(0).setVehiculoCollection(listVehiculos);
                             Cliente cli = listCliente.get(0);
@@ -167,6 +181,7 @@ public class GenerarPoliza extends javax.swing.JFrame {
                             doc += "                                                                                                       \n";
                             doc += "NOMBRE: "+cli.getNombres()+" "+cli.getApellidos()+"          \t \t Direccion: "+cli.getDireccion()+"\n";
                             doc += "Activo: "+activo+"                                           \t Correo: "+cli.getCorreo()+"\n";
+                            doc += "Vencimiento Pago: "+fechaActual+"\n";
                             doc += "                                                                                                      \n";
                             doc += "*******************************************************************************************************\n";
                             doc += "*******************************************VEHICULOS**********************************************\n";
@@ -176,33 +191,21 @@ public class GenerarPoliza extends javax.swing.JFrame {
                             doc += "Patente: "+ve.getPatente()+"                             \t \t Año: "+ve.getAno()+" \n";
                             doc += "Valor Fiscal : $"+ve.getValorFiscal()+"                             \n";
                             doc += "-----------------------------------------------------COBERTURAS----------------------------------------------------\n";
+                                int subtotal = 0;
                                 for (Cobertura cobertura : ve.getCoberturaCollection()) {
-                                    for (Seguro seguro : ve.getSeguroCollection()) {
-                                       double valor = calcularPrima(seguro, ve);
-                                        double prima = 0; 
-                                        int subtotal = 0;                                    
-                                        prima = cobertura.getPerdidaTotal().equals('t') ? valor : 0;
-                                        subtotal += prima;
-                                        if(prima > 0)
-                                            doc += "Perdida Total: $"+ve.getValorFiscal()+"      \t\t Deducible: "+seguro.getDeducible()+"%       Prima: $"+prima+"    \n"; 
-                                        prima = cobertura.getRoboTotal().equals('t') ? valor : 0;
-                                        subtotal += prima;
-                                        if(prima > 0)
-                                            doc += "Robo Total: $"+ve.getValorFiscal()+"         \t\t Deducible: "+seguro.getDeducible()+"%       Prima: $"+prima+"    \n"; 
-                                        prima = cobertura.getDanoTerceros().equals('t') ? valor / 2 : 0;
-                                        subtotal += prima;
-                                        if(prima > 0)
-                                            doc += "Daño Terceros: $"+ve.getValorFiscal() / 3+"  \t\t Deducible: "+seguro.getDeducible()+"%       Prima: $"+prima+"    \n"; 
-                                        doc += "SUBTOTAL: $"+subtotal+"\n";
-                                        doc += "IVA: $"+subtotal * 0.19+"\n";
-                                        doc += "TOTAL Vehiculo: $"+(subtotal + (subtotal * 0.19))+"\n";
-                                        total += (subtotal + (subtotal * 0.19));
-                                    }
-                                    doc += "******************************************************************************************************\n";
-                                }   
+                                    subtotal += cobertura.getPrima();
+                                    doc += cobertura.getNombre()+": $"+ve.getValorFiscal()+" \t Deducible: "+cobertura.getDeducible()+"%\t Prima: $"+cobertura.getPrima()+"\n";                                    
+                                }
+                                total += subtotal;
+                                doc += "SUBTOTAL: $"+subtotal+"\n";
+                                doc += "IVA: $"+subtotal*0.19+"\n";
+                                doc += "TOTAL: $"+(subtotal+(subtotal*0.19))+"\n";
+                                doc += "******************************************************************************************************\n";
                             }    
                             doc += "                                                                                                              \n";
+                            total += total * 0.19;
                             doc += "\t\t TOTAL A PAGAR: $"+total+"\n";
+                            poliza.setTotalPagar(total);
                             doc += "                                                                                                              \n";
                             doc += "                                                                                                              \n";
                             doc += "******************************************************************************************************\n";
@@ -213,6 +216,9 @@ public class GenerarPoliza extends javax.swing.JFrame {
                             doc += "                                                                                                              \n";
                             String indented = doc.replaceAll("(?m)^", "\t");
                             txaDocumento.setText(indented);
+                            
+                            Insertarpoliza(poliza);
+                            
 
                             try {
                                 String ruta=txtRuta.getText();
@@ -249,32 +255,7 @@ public class GenerarPoliza extends javax.swing.JFrame {
         }        
     }//GEN-LAST:event_btnGenerarActionPerformed
 
-    private double calcularCobertura(Cobertura cob, Seguro seg, Vehiculo ve)
-    {
-        double valor = calcularPrima(seg, ve);
-        double prima = 0;
-        prima += cob.getPerdidaTotal().equals('t') ? valor : 0;
-        prima += cob.getRoboTotal().equals('t') ? valor : 0;
-        prima += cob.getDanoTerceros().equals('t') ? valor / 2 : 0;        
         
-        return prima;
-    }
-    private double calcularPrima(Seguro seg, Vehiculo ve)
-    {
-        int deducible = (int)seg.getDeducible();
-        double valor = ve.getValorFiscal();        
-        
-        switch (deducible) {
-            case 0: valor = (valor * 0.03) * 0.9; break;
-            case 5: valor = (valor * 0.02) * 0.8; break;
-            case 10: valor = (valor * 0.01) * 0.75; break;
-            default:
-                return 0;
-        }
-        
-        return valor;
-    }
-    
     private List<Cliente> buscarClienteId(int id)
     {
         try {
@@ -303,25 +284,6 @@ public class GenerarPoliza extends javax.swing.JFrame {
             if(listCobertura.size() > 0)
             {
                 return listCobertura;
-            }
-            else
-            {
-                return null;
-            }
-        } catch (Exception e) {
-            return null;
-        }
-    }
-    
-    private List<Seguro> buscarSeguroIdVehiculo(Vehiculo ve)
-    {
-        try {
-            TypedQuery consulta = em.createNamedQuery("Seguro.findByIdVehiculo", Seguro.class);
-            List<Seguro> listSeguro = consulta.setParameter("vehiculoIdVehiculo", ve).getResultList();
-            
-            if(listSeguro.size() > 0)
-            {
-                return listSeguro;
             }
             else
             {
@@ -412,6 +374,21 @@ public class GenerarPoliza extends javax.swing.JFrame {
         }
     }
     
+    private String Insertarpoliza(Poliza poliza) throws SQLException {
+        Connection cn = new FafricaConexion().Conectar();
+            java.sql.Date sqlDate = new java.sql.Date(poliza.getFechaVencimiento().getTime());
+        
+            CallableStatement cs = cn.prepareCall("{call ? := F_INSERT_POLIZA(?,?,?,?,?)}");
+            cs.registerOutParameter(1, Types.VARCHAR);
+
+            cs.setLong(2, poliza.getIdPoliza());
+            cs.setString(3, poliza.getAlDia());
+            cs.setDate(4, sqlDate);
+            cs.setLong(5, poliza.getTotalPagar());
+            cs.setString(6, poliza.getIdCliente());
+            cs.executeUpdate();
+            return cs.getString(1);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
@@ -423,4 +400,6 @@ public class GenerarPoliza extends javax.swing.JFrame {
     private javax.swing.JTextField txtRut;
     private javax.swing.JTextField txtRuta;
     // End of variables declaration//GEN-END:variables
+
+    
 }

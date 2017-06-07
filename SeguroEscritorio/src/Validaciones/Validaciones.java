@@ -3,17 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Entidades;
-
-import java.util.ArrayList;
-import java.util.List;
+package Validaciones;
 
 /**
  *
  * @author DarKMeYeR
  */
 public class Validaciones {
-
     public static boolean validarRut(String rut) {
         boolean validacion = false;
         try {

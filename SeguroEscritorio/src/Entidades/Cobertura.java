@@ -6,6 +6,7 @@
 package Entidades;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,10 +28,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Cobertura.findAll", query = "SELECT c FROM Cobertura c"),
     @NamedQuery(name = "Cobertura.findByIdCobertura", query = "SELECT c FROM Cobertura c WHERE c.idCobertura = :idCobertura"),
-    @NamedQuery(name = "Cobertura.findByPerdidaTotal", query = "SELECT c FROM Cobertura c WHERE c.perdidaTotal = :perdidaTotal"),
-    @NamedQuery(name = "Cobertura.findByDanoTerceros", query = "SELECT c FROM Cobertura c WHERE c.danoTerceros = :danoTerceros"),
-    @NamedQuery(name = "Cobertura.findByIdVehiculo", query = "SELECT c FROM Cobertura c WHERE c.vehiculoIdVehiculo = :vehiculoIdVehiculo"),
-    @NamedQuery(name = "Cobertura.findByRoboTotal", query = "SELECT c FROM Cobertura c WHERE c.roboTotal = :roboTotal")})
+    @NamedQuery(name = "Cobertura.findByNombre", query = "SELECT c FROM Cobertura c WHERE c.nombre = :nombre"),
+    @NamedQuery(name = "Cobertura.findByDeducible", query = "SELECT c FROM Cobertura c WHERE c.deducible = :deducible"),
+    @NamedQuery(name = "Cobertura.findByPrima", query = "SELECT c FROM Cobertura c WHERE c.prima = :prima")})
 public class Cobertura implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -39,14 +39,14 @@ public class Cobertura implements Serializable {
     @Column(name = "ID_COBERTURA")
     private String idCobertura;
     @Basic(optional = false)
-    @Column(name = "PERDIDA_TOTAL")
-    private Character perdidaTotal;
+    @Column(name = "NOMBRE")
+    private String nombre;
     @Basic(optional = false)
-    @Column(name = "DANO_TERCEROS")
-    private Character danoTerceros;
+    @Column(name = "DEDUCIBLE")
+    private int deducible;
     @Basic(optional = false)
-    @Column(name = "ROBO_TOTAL")
-    private Character roboTotal;
+    @Column(name = "PRIMA")
+    private int prima;
     @JoinColumn(name = "VEHICULO_ID_VEHICULO", referencedColumnName = "ID_VEHICULO")
     @ManyToOne(optional = false)
     private Vehiculo vehiculoIdVehiculo;
@@ -58,11 +58,11 @@ public class Cobertura implements Serializable {
         this.idCobertura = idCobertura;
     }
 
-    public Cobertura(String idCobertura, Character perdidaTotal, Character danoTerceros, Character roboTotal) {
+    public Cobertura(String idCobertura, String nombre, int deducible, int prima) {
         this.idCobertura = idCobertura;
-        this.perdidaTotal = perdidaTotal;
-        this.danoTerceros = danoTerceros;
-        this.roboTotal = roboTotal;
+        this.nombre = nombre;
+        this.deducible = deducible;
+        this.prima = prima;
     }
 
     public String getIdCobertura() {
@@ -73,28 +73,28 @@ public class Cobertura implements Serializable {
         this.idCobertura = idCobertura;
     }
 
-    public Character getPerdidaTotal() {
-        return perdidaTotal;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setPerdidaTotal(Character perdidaTotal) {
-        this.perdidaTotal = perdidaTotal;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public Character getDanoTerceros() {
-        return danoTerceros;
+    public int getDeducible() {
+        return deducible;
     }
 
-    public void setDanoTerceros(Character danoTerceros) {
-        this.danoTerceros = danoTerceros;
+    public void setDeducible(int deducible) {
+        this.deducible = deducible;
     }
 
-    public Character getRoboTotal() {
-        return roboTotal;
+    public int getPrima() {
+        return prima;
     }
 
-    public void setRoboTotal(Character roboTotal) {
-        this.roboTotal = roboTotal;
+    public void setPrima(int prima) {
+        this.prima = prima;
     }
 
     public Vehiculo getVehiculoIdVehiculo() {

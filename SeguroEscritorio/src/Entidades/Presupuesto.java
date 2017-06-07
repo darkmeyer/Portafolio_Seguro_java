@@ -49,14 +49,14 @@ public class Presupuesto implements Serializable {
     @Basic(optional = false)
     @Column(name = "COMENTARIO")
     private String comentario;
+    @OneToMany(mappedBy = "presupuestoIdPresupuesto")
+    private Collection<Pieza> piezaCollection;
     @JoinColumn(name = "VEHICULO_ID_VEHICULO", referencedColumnName = "ID_VEHICULO")
     @ManyToOne(optional = false)
     private Vehiculo vehiculoIdVehiculo;
     @JoinColumn(name = "EMPLEADO_ID_EMPLEADO", referencedColumnName = "ID_EMPLEADO")
     @ManyToOne(optional = false)
     private Empleado empleadoIdEmpleado;
-    @OneToMany(mappedBy = "presupuestoIdPresupuesto")
-    private Collection<Pieza> piezaCollection;
 
     public Presupuesto() {
     }
@@ -95,6 +95,15 @@ public class Presupuesto implements Serializable {
         this.comentario = comentario;
     }
 
+    @XmlTransient
+    public Collection<Pieza> getPiezaCollection() {
+        return piezaCollection;
+    }
+
+    public void setPiezaCollection(Collection<Pieza> piezaCollection) {
+        this.piezaCollection = piezaCollection;
+    }
+
     public Vehiculo getVehiculoIdVehiculo() {
         return vehiculoIdVehiculo;
     }
@@ -109,15 +118,6 @@ public class Presupuesto implements Serializable {
 
     public void setEmpleadoIdEmpleado(Empleado empleadoIdEmpleado) {
         this.empleadoIdEmpleado = empleadoIdEmpleado;
-    }
-
-    @XmlTransient
-    public Collection<Pieza> getPiezaCollection() {
-        return piezaCollection;
-    }
-
-    public void setPiezaCollection(Collection<Pieza> piezaCollection) {
-        this.piezaCollection = piezaCollection;
     }
 
     @Override

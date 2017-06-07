@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -36,9 +37,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Taller.findByDireccion", query = "SELECT t FROM Taller t WHERE t.direccion = :direccion")})
 public class Taller implements Serializable {
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tallerIdTaller")
-    private Collection<Siniestro> siniestroCollection;
-
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -54,11 +52,13 @@ public class Taller implements Serializable {
     @Column(name = "DIRECCION")
     private String direccion;
     @JoinColumn(name = "EMPLEADO_ID_EMPLEADO", referencedColumnName = "ID_EMPLEADO")
-    @ManyToOne(optional = false)
+    @OneToOne(optional = false)
     private Empleado empleadoIdEmpleado;
     @JoinColumn(name = "CIUDAD_ID_CIUDAD", referencedColumnName = "ID_CIUDAD")
     @ManyToOne(optional = false)
     private Ciudad ciudadIdCiudad;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tallerIdTaller")
+    private Collection<Siniestro> siniestroCollection;
 
     public Taller() {
     }
@@ -78,44 +78,32 @@ public class Taller implements Serializable {
         return idTaller;
     }
 
-    public void setIdTaller(String idTaller) throws Exception {
-        if(idTaller.length() > 10)
-            throw new Exception("Id no puede superar el largo 10");
-        else
-            this.idTaller = idTaller;
+    public void setIdTaller(String idTaller) {
+        this.idTaller = idTaller;
     }
 
     public String getNombre() {
         return nombre;
     }
 
-    public void setNombre(String nombre) throws Exception {
-        if(nombre.length() > 50)
-            throw new Exception("Nombre no puede superar el largo 50");
-        else
-            this.nombre = nombre;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     public String getFono() {
         return fono;
     }
 
-    public void setFono(String fono) throws Exception {
-        if(fono.length() > 15)
-            throw new Exception("Fono no puede superar el largo 15");
-        else
-            this.fono = fono;
+    public void setFono(String fono) {
+        this.fono = fono;
     }
 
     public String getDireccion() {
         return direccion;
     }
 
-    public void setDireccion(String direccion) throws Exception {
-        if(direccion.length() > 50)
-            throw new Exception("Direccion no puede superar el largo 50");
-        else
-            this.direccion = direccion;
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
     }
 
     public Empleado getEmpleadoIdEmpleado() {
@@ -132,6 +120,15 @@ public class Taller implements Serializable {
 
     public void setCiudadIdCiudad(Ciudad ciudadIdCiudad) {
         this.ciudadIdCiudad = ciudadIdCiudad;
+    }
+
+    @XmlTransient
+    public Collection<Siniestro> getSiniestroCollection() {
+        return siniestroCollection;
+    }
+
+    public void setSiniestroCollection(Collection<Siniestro> siniestroCollection) {
+        this.siniestroCollection = siniestroCollection;
     }
 
     @Override
@@ -157,15 +154,6 @@ public class Taller implements Serializable {
     @Override
     public String toString() {
         return "Entidades.Taller[ idTaller=" + idTaller + " ]";
-    }
-
-    @XmlTransient
-    public Collection<Siniestro> getSiniestroCollection() {
-        return siniestroCollection;
-    }
-
-    public void setSiniestroCollection(Collection<Siniestro> siniestroCollection) {
-        this.siniestroCollection = siniestroCollection;
     }
     
 }

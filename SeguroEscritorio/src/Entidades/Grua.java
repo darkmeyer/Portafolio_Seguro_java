@@ -38,9 +38,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Grua.findByDireccion", query = "SELECT g FROM Grua g WHERE g.direccion = :direccion")})
 public class Grua implements Serializable {
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gruaIdGrua")
-    private Collection<Siniestro> siniestroCollection;
-
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -64,6 +61,8 @@ public class Grua implements Serializable {
     @JoinColumn(name = "CIUDAD_ID_CIUDAD", referencedColumnName = "ID_CIUDAD")
     @ManyToOne(optional = false)
     private Ciudad ciudadIdCiudad;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gruaIdGrua")
+    private Collection<Siniestro> siniestroCollection;
 
     public Grua() {
     }
@@ -93,57 +92,40 @@ public class Grua implements Serializable {
         return rut;
     }
 
-    public void setRut(String rut) throws Exception {
-        rut = rut.replace(".","");
-        rut = rut.replace("-","");
-        if(Validaciones.validarRut(rut) && rut.length() >= 8){
-                this.rut = rut;
-        }else
-            throw new Exception("Rut Invalido.");
+    public void setRut(String rut) {
+        this.rut = rut;
     }
 
     public String getNombre() {
         return nombre;
     }
 
-    public void setNombre(String nombre) throws Exception {
-        if(nombre.length() > 50)
-            throw new Exception("Nombre no puede superar largo 50");
-        else
-            this.nombre = nombre;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     public String getApellido() {
         return apellido;
     }
 
-    public void setApellido(String apellido) throws Exception {
-        if(apellido.length() > 50)
-            throw new Exception("Apallido no puede superar largo 50");
-        else
-            this.apellido = apellido;
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
     }
 
     public String getFono() {
         return fono;
     }
 
-    public void setFono(String fono) throws Exception {
-        if(fono.length() > 15)
-            throw new Exception("Fono no puede superar largo 15");
-        else
-            this.fono = fono;
+    public void setFono(String fono) {
+        this.fono = fono;
     }
 
     public String getDireccion() {
         return direccion;
     }
 
-    public void setDireccion(String direccion) throws Exception {
-        if(direccion.length() > 50)
-            throw new Exception("Direccion no puede superar largo 100");
-        else
-            this.direccion = direccion;
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
     }
 
     public Ciudad getCiudadIdCiudad() {
@@ -152,6 +134,15 @@ public class Grua implements Serializable {
 
     public void setCiudadIdCiudad(Ciudad ciudadIdCiudad) {
         this.ciudadIdCiudad = ciudadIdCiudad;
+    }
+
+    @XmlTransient
+    public Collection<Siniestro> getSiniestroCollection() {
+        return siniestroCollection;
+    }
+
+    public void setSiniestroCollection(Collection<Siniestro> siniestroCollection) {
+        this.siniestroCollection = siniestroCollection;
     }
 
     @Override
@@ -177,15 +168,6 @@ public class Grua implements Serializable {
     @Override
     public String toString() {
         return "Entidades.Grua[ idGrua=" + idGrua + " ]";
-    }
-
-    @XmlTransient
-    public Collection<Siniestro> getSiniestroCollection() {
-        return siniestroCollection;
-    }
-
-    public void setSiniestroCollection(Collection<Siniestro> siniestroCollection) {
-        this.siniestroCollection = siniestroCollection;
     }
     
 }

@@ -37,11 +37,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Vehiculo.findByValorFiscal", query = "SELECT v FROM Vehiculo v WHERE v.valorFiscal = :valorFiscal")})
 public class Vehiculo implements Serializable {
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "vehiculoIdVehiculo")
-    private Collection<Seguro> seguroCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "vehiculoIdVehiculo")
-    private Collection<Cobertura> coberturaCollection;
-
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -61,6 +56,8 @@ public class Vehiculo implements Serializable {
     private int valorFiscal;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "vehiculoIdVehiculo")
     private Collection<Presupuesto> presupuestoCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "vehiculoIdVehiculo")
+    private Collection<Cobertura> coberturaCollection;
     @JoinColumn(name = "MODELO_ID_MODELO", referencedColumnName = "ID_MODELO")
     @ManyToOne(optional = false)
     private Modelo modeloIdModelo;
@@ -132,6 +129,15 @@ public class Vehiculo implements Serializable {
         this.presupuestoCollection = presupuestoCollection;
     }
 
+    @XmlTransient
+    public Collection<Cobertura> getCoberturaCollection() {
+        return coberturaCollection;
+    }
+
+    public void setCoberturaCollection(Collection<Cobertura> coberturaCollection) {
+        this.coberturaCollection = coberturaCollection;
+    }
+
     public Modelo getModeloIdModelo() {
         return modeloIdModelo;
     }
@@ -171,24 +177,6 @@ public class Vehiculo implements Serializable {
     @Override
     public String toString() {
         return "Entidades.Vehiculo[ idVehiculo=" + idVehiculo + " ]";
-    }
-
-    @XmlTransient
-    public Collection<Seguro> getSeguroCollection() {
-        return seguroCollection;
-    }
-
-    public void setSeguroCollection(Collection<Seguro> seguroCollection) {
-        this.seguroCollection = seguroCollection;
-    }
-
-    @XmlTransient
-    public Collection<Cobertura> getCoberturaCollection() {
-        return coberturaCollection;
-    }
-
-    public void setCoberturaCollection(Collection<Cobertura> coberturaCollection) {
-        this.coberturaCollection = coberturaCollection;
     }
     
 }
