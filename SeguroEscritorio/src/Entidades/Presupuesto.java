@@ -6,7 +6,6 @@
 package Entidades;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -16,12 +15,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -41,41 +38,34 @@ public class Presupuesto implements Serializable {
     @Id
     @Basic(optional = false)
     @Column(name = "ID_PRESUPUESTO")
-    private Long idPresupuesto;
+    private String idPresupuesto;
     @Basic(optional = false)
     @Column(name = "FECHA")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
-    @Basic(optional = false)
     @Column(name = "COMENTARIO")
     private String comentario;
-    @OneToMany(mappedBy = "presupuestoIdPresupuesto")
-    private Collection<Pieza> piezaCollection;
     @JoinColumn(name = "VEHICULO_ID_VEHICULO", referencedColumnName = "ID_VEHICULO")
     @ManyToOne(optional = false)
     private Vehiculo vehiculoIdVehiculo;
-    @JoinColumn(name = "EMPLEADO_ID_EMPLEADO", referencedColumnName = "ID_EMPLEADO")
-    @ManyToOne(optional = false)
-    private Empleado empleadoIdEmpleado;
 
     public Presupuesto() {
     }
 
-    public Presupuesto(Long idPresupuesto) {
+    public Presupuesto(String idPresupuesto) {
         this.idPresupuesto = idPresupuesto;
     }
 
-    public Presupuesto(Long idPresupuesto, Date fecha, String comentario) {
+    public Presupuesto(String idPresupuesto, Date fecha) {
         this.idPresupuesto = idPresupuesto;
         this.fecha = fecha;
-        this.comentario = comentario;
     }
 
-    public Long getIdPresupuesto() {
+    public String getIdPresupuesto() {
         return idPresupuesto;
     }
 
-    public void setIdPresupuesto(Long idPresupuesto) {
+    public void setIdPresupuesto(String idPresupuesto) {
         this.idPresupuesto = idPresupuesto;
     }
 
@@ -95,29 +85,12 @@ public class Presupuesto implements Serializable {
         this.comentario = comentario;
     }
 
-    @XmlTransient
-    public Collection<Pieza> getPiezaCollection() {
-        return piezaCollection;
-    }
-
-    public void setPiezaCollection(Collection<Pieza> piezaCollection) {
-        this.piezaCollection = piezaCollection;
-    }
-
     public Vehiculo getVehiculoIdVehiculo() {
         return vehiculoIdVehiculo;
     }
 
     public void setVehiculoIdVehiculo(Vehiculo vehiculoIdVehiculo) {
         this.vehiculoIdVehiculo = vehiculoIdVehiculo;
-    }
-
-    public Empleado getEmpleadoIdEmpleado() {
-        return empleadoIdEmpleado;
-    }
-
-    public void setEmpleadoIdEmpleado(Empleado empleadoIdEmpleado) {
-        this.empleadoIdEmpleado = empleadoIdEmpleado;
     }
 
     @Override

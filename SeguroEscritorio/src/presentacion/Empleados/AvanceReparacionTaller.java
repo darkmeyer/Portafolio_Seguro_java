@@ -5,9 +5,25 @@
  */
 package presentacion.Empleados;
 
+import Datos.FafricaConexion;
+import Entidades.Empleado;
+import Entidades.Movimiento;
+import Entidades.Pieza;
+import Entidades.Presupuesto;
+import Entidades.Siniestro;
+import Entidades.Taller;
+import Entidades.Vehiculo;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.Types;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -18,8 +34,13 @@ public class AvanceReparacionTaller extends javax.swing.JFrame {
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("SeguroEscritorioPU");
     EntityManager em = emf.createEntityManager();
     String mensaje = "";
-    public AvanceReparacionTaller() {
-        initComponents();
+    Empleado adminTaller = null;
+    Siniestro sin = null;
+    List<Siniestro> listaSiniestros = null;
+    public AvanceReparacionTaller(Empleado emp) {
+        initComponents();        
+        adminTaller = emp;
+        llenarcbSiniestros();
     }
 
     /**
@@ -36,25 +57,24 @@ public class AvanceReparacionTaller extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         cbEstadoFiltro = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
         jLabel3 = new javax.swing.JLabel();
-        cbEstado1 = new javax.swing.JComboBox<>();
+        cbEstado = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        txtComentario = new javax.swing.JTextArea();
         jLabel5 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        btnCambiar = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         txtNombrePieza = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        cbPiezas = new javax.swing.JComboBox<>();
         jLabel7 = new javax.swing.JLabel();
         txtCostoPieza = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnAgregarPieza = new javax.swing.JButton();
+        btnEliminarPieza = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
+        cbSiniestros = new javax.swing.JComboBox<>();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         txaMensaje = new javax.swing.JTextArea();
@@ -86,34 +106,42 @@ public class AvanceReparacionTaller extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(153, 153, 153));
 
-        cbEstadoFiltro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Recepcion", "Ingresado", "Evaluacion", "Reparacion", "Retrasado", "Reingresado", "Finalizado", "Entregado" }));
+        cbEstadoFiltro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Recepcion", "Ingresado", "Evaluacion", "Reparacion", "Retrasado", "Reingresado", "Finalizado", "Entregado" }));
+        cbEstadoFiltro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbEstadoFiltroActionPerformed(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Filtrar Estado:");
 
-        jScrollPane1.setViewportView(jList1);
-
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Resultados:");
 
-        cbEstado1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Recepcion", "Ingresado", "Evaluacion", "Reparacion", "Retrasado", "Reingresado", "Finalizado", "Entregado" }));
+        cbEstado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Recepcion", "Ingresado", "Evaluacion", "Reparacion", "Finalizado", "Entregado" }));
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Cambiar Estado:");
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setLineWrap(true);
-        jTextArea1.setRows(5);
-        jScrollPane2.setViewportView(jTextArea1);
+        txtComentario.setColumns(20);
+        txtComentario.setLineWrap(true);
+        txtComentario.setRows(5);
+        jScrollPane2.setViewportView(txtComentario);
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("Comentario:");
 
-        jButton1.setText("CAMBIAR");
+        btnCambiar.setText("CAMBIAR");
+        btnCambiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCambiarActionPerformed(evt);
+            }
+        });
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
@@ -121,7 +149,7 @@ public class AvanceReparacionTaller extends javax.swing.JFrame {
 
         txtNombrePieza.setEnabled(false);
 
-        jComboBox1.setEnabled(false);
+        cbPiezas.setEnabled(false);
 
         jLabel7.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
@@ -133,11 +161,16 @@ public class AvanceReparacionTaller extends javax.swing.JFrame {
         jLabel8.setForeground(new java.awt.Color(255, 255, 255));
         jLabel8.setText("Costo:");
 
-        jButton2.setText("AGREGAR");
-        jButton2.setEnabled(false);
+        btnAgregarPieza.setText("AGREGAR");
+        btnAgregarPieza.setEnabled(false);
+        btnAgregarPieza.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarPiezaActionPerformed(evt);
+            }
+        });
 
-        jButton3.setText("ELIMINAR");
-        jButton3.setEnabled(false);
+        btnEliminarPieza.setText("ELIMINAR");
+        btnEliminarPieza.setEnabled(false);
 
         jLabel9.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(255, 255, 255));
@@ -148,6 +181,12 @@ public class AvanceReparacionTaller extends javax.swing.JFrame {
         jLabel10.setForeground(new java.awt.Color(255, 255, 255));
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel10.setText("PIEZAS:");
+
+        cbSiniestros.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbSiniestrosActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -164,7 +203,7 @@ public class AvanceReparacionTaller extends javax.swing.JFrame {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(cbEstado1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(cbEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -174,14 +213,14 @@ public class AvanceReparacionTaller extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(txtNombrePieza)
-                                    .addComponent(jComboBox1, 0, 141, Short.MAX_VALUE)
+                                    .addComponent(cbPiezas, 0, 141, Short.MAX_VALUE)
                                     .addComponent(txtCostoPieza)))
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jButton1)
+                                .addComponent(btnCambiar)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton2)
+                                .addComponent(btnAgregarPieza)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton3)))
+                                .addComponent(btnEliminarPieza)))
                         .addGap(115, 115, 115))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(0, 75, Short.MAX_VALUE)
@@ -194,11 +233,11 @@ public class AvanceReparacionTaller extends javax.swing.JFrame {
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbEstadoFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(cbEstadoFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cbSiniestros, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -209,10 +248,10 @@ public class AvanceReparacionTaller extends javax.swing.JFrame {
                     .addComponent(cbEstadoFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3))
-                .addGap(23, 23, 23)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(cbSiniestros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(85, 85, 85)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
                     .addComponent(jLabel9))
@@ -220,7 +259,7 @@ public class AvanceReparacionTaller extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cbEstado1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cbEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel4))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -229,7 +268,7 @@ public class AvanceReparacionTaller extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel6)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(cbPiezas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtNombrePieza, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -240,9 +279,9 @@ public class AvanceReparacionTaller extends javax.swing.JFrame {
                             .addComponent(jLabel8))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(btnCambiar)
+                    .addComponent(btnAgregarPieza)
+                    .addComponent(btnEliminarPieza))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -290,9 +329,8 @@ public class AvanceReparacionTaller extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -315,50 +353,258 @@ public class AvanceReparacionTaller extends javax.swing.JFrame {
         txaMensaje.setText(mensaje);
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+    private void cbEstadoFiltroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbEstadoFiltroActionPerformed
+        llenarcbSiniestros();
+    }//GEN-LAST:event_cbEstadoFiltroActionPerformed
+
+    private void btnCambiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCambiarActionPerformed
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
+            sin.setEstado(cbEstado.getSelectedItem().toString());
+            Movimiento mov = new Movimiento();
+            mov.setDescripcion(txtComentario.getText());
+            SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
+            Calendar calNow = Calendar.getInstance();
+            calNow.add(Calendar.MONTH, +1);
+            Date date1 = calNow.getTime();
+            String fechaActual = sdf.format(date1);
+            mov.setFecha(sdf.parse(fechaActual));
+            mov.setSiniestroIdSiniestro(sin);
+            
+            em.getTransaction().begin();
+            em.merge(sin);
+            em.getTransaction().commit();
+            
+            Connection cn = new FafricaConexion().Conectar();
+            CallableStatement cs = cn.prepareCall("{call ? := F_INSERT_MOVIMIENTO(?,?,?)}");
+            cs.registerOutParameter(1, Types.VARCHAR);
+            
+            java.sql.Date sqlDate = new java.sql.Date(mov.getFecha().getTime());
+            cs.setDate(2, sqlDate);
+            cs.setString(3, mov.getDescripcion());
+            cs.setString(4, mov.getSiniestroIdSiniestro().getIdSiniestro());
+            cs.executeUpdate();
+            String mensaje2 = cs.getString(1);
+            mensaje += mensaje2+" \n";
+            txaMensaje.setText(mensaje);
+        } catch (Exception e) {
+            mensaje += e.getMessage()+" \n";
+            txaMensaje.setText(mensaje);
+        }
+    }//GEN-LAST:event_btnCambiarActionPerformed
+
+    private void cbSiniestrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbSiniestrosActionPerformed
+        try {
+            sin = null;
+            String[] itemSplit = cbSiniestros.getSelectedItem().toString().split("\\s+");
+            for (Siniestro listaSiniestro : listaSiniestros) {
+                if(listaSiniestro.getPatente().equals(itemSplit[1]))
+                    sin = listaSiniestro;
+            }
+            if(sin != null)
+            {
+                cbEstado.setSelectedItem(sin.getEstado());
+                if(sin.getEstado().equals("Evaluacion"))
+                {
+                    cbPiezas.setEnabled(true);
+                    txtNombrePieza.setEnabled(true);
+                    txtCostoPieza.setEnabled(true);
+                    btnAgregarPieza.setEnabled(true);
+                    btnEliminarPieza.setEnabled(true);
+                    llenarcbpiezas(buscarPiezas());
+                }
+                else
+                {
+                    cbPiezas.setEnabled(false);
+                    txtNombrePieza.setEnabled(false);
+                    txtCostoPieza.setEnabled(false);
+                    btnAgregarPieza.setEnabled(false);
+                    btnEliminarPieza.setEnabled(false);
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AvanceReparacionTaller.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AvanceReparacionTaller.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AvanceReparacionTaller.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AvanceReparacionTaller.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AvanceReparacionTaller().setVisible(true);
+            else
+            {
+                cbPiezas.setEnabled(false);
+                txtNombrePieza.setEnabled(false);
+                txtCostoPieza.setEnabled(false);
+                btnAgregarPieza.setEnabled(false);
+                btnEliminarPieza.setEnabled(false);
             }
-        });
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_cbSiniestrosActionPerformed
+
+    private void btnAgregarPiezaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarPiezaActionPerformed
+        try {
+            String idpresupuesto = sin.getClienteIdCliente().getIdCliente()+"-"+sin.getIdSiniestro();
+            SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
+            Calendar calNow = Calendar.getInstance();
+            calNow.add(Calendar.MONTH, +1);
+            Date date1 = calNow.getTime();
+            String fechaActual = sdf.format(date1);
+            
+            Presupuesto pre = new Presupuesto();
+            pre.setIdPresupuesto(idpresupuesto);
+            pre.setFecha(sdf.parse(fechaActual));
+            pre.setVehiculoIdVehiculo(buscarPatente(sin.getPatente()).get(0));
+            
+            Pieza pieza = new Pieza();
+            pieza.setNombre(txtNombrePieza.getText());
+            pieza.setValor(Integer.parseInt(txtCostoPieza.getText()));
+            pieza.setPresupuestoIdPresupuesto(pre);
+            
+            Connection cn = new FafricaConexion().Conectar();
+            CallableStatement cs = cn.prepareCall("{call ? := F_INSERT_PRESUPUESTO(?,?,?,?,?,?)}");
+            cs.registerOutParameter(1, Types.VARCHAR);            
+            java.sql.Date sqlDate = new java.sql.Date(pre.getFecha().getTime());
+            
+            cs.setString(2, pre.getIdPresupuesto());
+            cs.setString(3, pre.getVehiculoIdVehiculo().getIdVehiculo());
+            cs.setDate(4, sqlDate);
+            cs.setString(5, "");
+            cs.setString(6, pieza.getNombre());
+            cs.setInt(7, (int)pieza.getValor());
+            cs.executeUpdate();
+            llenarcbpiezas(buscarPiezas());
+            String mensaje2 = cs.getString(1);
+            mensaje += mensaje2+" \n";
+            txaMensaje.setText(mensaje);
+        } catch (Exception e) {
+            mensaje += e.getMessage()+" \n";
+            txaMensaje.setText(mensaje);
+        }
+    }//GEN-LAST:event_btnAgregarPiezaActionPerformed
+    
+    private List<Pieza> buscarPiezas()
+    {
+        try {
+            TypedQuery consulta = em.createNamedQuery("Pieza.findAll", Vehiculo.class);
+            List<Pieza> listPieza = consulta.getResultList();
+            
+            if(listPieza.size() > 0)
+            {
+                return listPieza;
+            }
+            else
+            {
+                return null;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    private void llenarcbpiezas(List<Pieza> lista)
+    {
+        try {
+            cbPiezas.removeAllItems();
+            for (Pieza pieza : lista) {
+                if(pieza.getPresupuestoIdPresupuesto().getIdPresupuesto().equals(sin.getClienteIdCliente().getIdCliente()+"-"+sin.getIdSiniestro()))
+                    cbPiezas.addItem(pieza.getNombre());
+            }
+        } catch (Exception e) {
+        }
+    }
+    private List<Vehiculo> buscarPatente(String patente)
+    {
+        try {
+            TypedQuery consulta = em.createNamedQuery("Vehiculo.findByPatente", Vehiculo.class);
+            List<Vehiculo> listVehiculo = consulta.setParameter("patente", patente).getResultList();
+            
+            if(listVehiculo.size() > 0)
+            {
+                return listVehiculo;
+            }
+            else
+            {
+                return null;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    private void llenarcbSiniestros()
+    {
+        cbSiniestros.removeAllItems();
+        List<Siniestro> listaSiniestro = buscarSiniestros(adminTaller);
+        if(listaSiniestro != null)
+        {
+            if(cbEstadoFiltro.getSelectedItem().toString().equals("Todos"))
+            {       
+                for (Siniestro siniestro : listaSiniestro) {
+                    cbSiniestros.addItem("Patente: "+siniestro.getPatente()+" Rut: "+siniestro.getClienteIdCliente().getRut());
+                }
+            }
+            else
+            {
+                if(listaSiniestro != null)
+                {
+                    for (Siniestro siniestro : listaSiniestro) {
+                        if(siniestro.getEstado().equals(cbEstadoFiltro.getSelectedItem().toString()))
+                            cbSiniestros.addItem("Patente: "+siniestro.getPatente()+" Rut: "+siniestro.getClienteIdCliente().getRut());
+                    }
+                    if(cbSiniestros.getItemCount() == 0)
+                        cbSiniestros.addItem("Sin Vehiculos");
+                }
+            }
+        }
+        else
+            cbSiniestros.addItem("Sin Vehiculos"); 
+    }
+    
+    public List<Siniestro> buscarSiniestroxTaller(Taller taller)
+    {
+        try {
+            TypedQuery consulta = em.createNamedQuery("Siniestro.findByTaller", Siniestro.class);
+            List<Siniestro> listSiniestros = consulta.setParameter("tallerIdTaller", taller).getResultList();
+            
+            if(listSiniestros.size() > 0)
+            {
+                return listSiniestros;
+            }
+            else
+            {
+                return null;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    public List<Taller> buscarTallerxEmpleado(Empleado emp)
+    {
+        try {
+            TypedQuery consulta = em.createNamedQuery("Taller.findByEmpleado", Taller.class);
+            List<Taller> listTaller = consulta.setParameter("empleadoIdEmpleado", emp).getResultList();
+            
+            if(listTaller.size() > 0)
+            {
+                return listTaller;
+            }
+            else
+            {
+                return null;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    public List<Siniestro> buscarSiniestros(Empleado emp)
+    {
+        listaSiniestros = buscarSiniestroxTaller(buscarTallerxEmpleado(emp).get(0));
+        return listaSiniestros;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAgregarPieza;
+    private javax.swing.JButton btnCambiar;
+    private javax.swing.JButton btnEliminarPieza;
     private javax.swing.JButton btnLimpiar;
-    private javax.swing.JComboBox<String> cbEstado1;
+    private javax.swing.JComboBox<String> cbEstado;
     private javax.swing.JComboBox<String> cbEstadoFiltro;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> cbPiezas;
+    private javax.swing.JComboBox<String> cbSiniestros;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
@@ -369,15 +615,13 @@ public class AvanceReparacionTaller extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JList<String> jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextArea txaMensaje;
+    private javax.swing.JTextArea txtComentario;
     private javax.swing.JTextField txtCostoPieza;
     private javax.swing.JTextField txtNombrePieza;
     // End of variables declaration//GEN-END:variables

@@ -77,8 +77,6 @@ public class Empleado implements Serializable {
     @JoinColumn(name = "CARGO_ID_CARGO", referencedColumnName = "ID_CARGO")
     @ManyToOne(optional = false)
     private Cargo cargoIdCargo;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "empleadoIdEmpleado")
-    private Collection<Presupuesto> presupuestoCollection;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "empleadoIdEmpleado")
     private Taller taller;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "empleadoIdEmpleado")
@@ -191,14 +189,7 @@ public class Empleado implements Serializable {
         this.cargoIdCargo = cargoIdCargo;
     }
 
-    @XmlTransient
-    public Collection<Presupuesto> getPresupuestoCollection() {
-        return presupuestoCollection;
-    }
-
-    public void setPresupuestoCollection(Collection<Presupuesto> presupuestoCollection) {
-        this.presupuestoCollection = presupuestoCollection;
-    }
+    @XmlTransient    
 
     public Taller getTaller() {
         return taller;

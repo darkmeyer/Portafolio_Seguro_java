@@ -58,8 +58,6 @@ public class GenerarPoliza extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         txaDocumento = new javax.swing.JTextArea();
-        txtRuta = new javax.swing.JTextField();
-        btnBuscar = new javax.swing.JButton();
         btnGenerar = new javax.swing.JButton();
         txtRut = new javax.swing.JTextField();
         lblMensaje = new javax.swing.JLabel();
@@ -71,13 +69,6 @@ public class GenerarPoliza extends javax.swing.JFrame {
         txaDocumento.setColumns(20);
         txaDocumento.setRows(5);
         jScrollPane1.setViewportView(txaDocumento);
-
-        btnBuscar.setText("Buscar");
-        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscarActionPerformed(evt);
-            }
-        });
 
         btnGenerar.setText("Generar");
         btnGenerar.addActionListener(new java.awt.event.ActionListener() {
@@ -96,16 +87,10 @@ public class GenerarPoliza extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(txtRuta, javax.swing.GroupLayout.PREFERRED_SIZE, 590, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnBuscar)
-                        .addGap(0, 64, Short.MAX_VALUE)))
+                .addComponent(jScrollPane1)
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(245, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtRut, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -124,11 +109,7 @@ public class GenerarPoliza extends javax.swing.JFrame {
                     .addComponent(txtRut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblMensaje)
                     .addComponent(jLabel1))
-                .addGap(24, 24, 24)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtRuta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnBuscar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(53, 53, 53)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 503, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -136,116 +117,98 @@ public class GenerarPoliza extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        JFileChooser dlg = new JFileChooser();
-        int option = dlg.showSaveDialog(this);
-        if(option == JFileChooser.APPROVE_OPTION)
-        {
-            File f = dlg.getSelectedFile();
-            txtRuta.setText(f.toString());
-        }
-    }//GEN-LAST:event_btnBuscarActionPerformed
-
     private void btnGenerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarActionPerformed
         
         try {
             if(!txtRut.getText().isEmpty())
             {
-                if(!txtRuta.getText().isEmpty())
+                String rut = txtRut.getText();
+                List<Cliente> listCliente = buscarClienteRut(rut);
+                if(listCliente != null)
                 {
-                    String rut = txtRut.getText();
-                    List<Cliente> listCliente = buscarClienteRut(rut);
-                    if(listCliente != null)
+                    Poliza poliza = new Poliza();
+                    poliza.setIdPoliza(Long.parseLong(listCliente.get(0).getIdCliente().substring(0, listCliente.get(0).getIdCliente().length()-1)));
+                    poliza.setIdCliente(listCliente.get(0).getIdCliente());
+
+                    SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
+                    Calendar calNow = Calendar.getInstance();
+                    calNow.add(Calendar.MONTH, +1);
+                    Date date1 = calNow.getTime();
+                    String fechaActual = sdf.format(date1);
+                    poliza.setFechaVencimiento(sdf.parse(fechaActual));
+
+                    poliza.setAlDia("t");
+                    List<Vehiculo> listVehiculos = buscarVehiculosRut(rut);                
+                    if(listVehiculos != null)
                     {
-                        Poliza poliza = new Poliza();
-                        poliza.setIdPoliza(Long.parseLong(listCliente.get(0).getIdCliente().substring(0, listCliente.get(0).getIdCliente().length()-1)));
-                        poliza.setIdCliente(listCliente.get(0).getIdCliente());
-                        
-                        SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
-                        Calendar calNow = Calendar.getInstance();
-                        calNow.add(Calendar.MONTH, +1);
-                        Date date1 = calNow.getTime();
-                        String fechaActual = sdf.format(date1);
-                        poliza.setFechaVencimiento(sdf.parse(fechaActual));
-                        
-                        poliza.setAlDia("t");
-                        List<Vehiculo> listVehiculos = buscarVehiculosRut(rut);                
-                        if(listVehiculos != null)
+                        int total = 0;
+                        listCliente.get(0).setVehiculoCollection(listVehiculos);
+                        Cliente cli = listCliente.get(0);
+                        String activo = cli.getActivo().equals("t") ? "Si" : "No";
+                        String doc = "";
+                        doc += "*******************************POLIZA DE SEGURO AUTOMOTRIZ**********************************\n";
+                        doc += "                                                                                                       \n";
+                        doc += "NOMBRE: "+cli.getNombres()+" "+cli.getApellidos()+"          \t \t Direccion: "+cli.getDireccion()+"\n";
+                        doc += "Activo: "+activo+"                                           \t Correo: "+cli.getCorreo()+"\n";
+                        doc += "Vencimiento Pago: "+fechaActual+"\n";
+                        doc += "                                                                                                      \n";
+                        doc += "*******************************************************************************************************\n";
+                        doc += "*******************************************VEHICULOS**********************************************\n";
+                        for (Vehiculo ve : cli.getVehiculoCollection()) 
                         {
-                            int total = 0;
-                            listCliente.get(0).setVehiculoCollection(listVehiculos);
-                            Cliente cli = listCliente.get(0);
-                            String activo = cli.getActivo().equals("t") ? "Si" : "No";
-                            String doc = "";
-                            doc += "*******************************POLIZA DE SEGURO AUTOMOTRIZ**********************************\n";
-                            doc += "                                                                                                       \n";
-                            doc += "NOMBRE: "+cli.getNombres()+" "+cli.getApellidos()+"          \t \t Direccion: "+cli.getDireccion()+"\n";
-                            doc += "Activo: "+activo+"                                           \t Correo: "+cli.getCorreo()+"\n";
-                            doc += "Vencimiento Pago: "+fechaActual+"\n";
-                            doc += "                                                                                                      \n";
-                            doc += "*******************************************************************************************************\n";
-                            doc += "*******************************************VEHICULOS**********************************************\n";
-                            for (Vehiculo ve : cli.getVehiculoCollection()) 
-                            {
-                            doc += "Marca: "+ve.getModeloIdModelo().getMarcaIdMarca().getNombre()+"                            \t \t Modelo: "+ve.getModeloIdModelo().getNombre()+" \n";
-                            doc += "Patente: "+ve.getPatente()+"                             \t \t Año: "+ve.getAno()+" \n";
-                            doc += "Valor Fiscal : $"+ve.getValorFiscal()+"                             \n";
-                            doc += "-----------------------------------------------------COBERTURAS----------------------------------------------------\n";
-                                int subtotal = 0;
-                                for (Cobertura cobertura : ve.getCoberturaCollection()) {
-                                    subtotal += cobertura.getPrima();
-                                    doc += cobertura.getNombre()+": $"+ve.getValorFiscal()+" \t Deducible: "+cobertura.getDeducible()+"%\t Prima: $"+cobertura.getPrima()+"\n";                                    
-                                }
-                                total += subtotal;
-                                doc += "SUBTOTAL: $"+subtotal+"\n";
-                                doc += "IVA: $"+subtotal*0.19+"\n";
-                                doc += "TOTAL: $"+(subtotal+(subtotal*0.19))+"\n";
-                                doc += "******************************************************************************************************\n";
-                            }    
-                            doc += "                                                                                                              \n";
-                            total += total * 0.19;
-                            doc += "\t\t TOTAL A PAGAR: $"+total+"\n";
-                            poliza.setTotalPagar(total);
-                            doc += "                                                                                                              \n";
-                            doc += "                                                                                                              \n";
-                            doc += "******************************************************************************************************\n";
-                            doc += "******************************************************************************************************\n";
-
-                            doc += "                                                                                                              \n";
-                            doc += "                                                                                                              \n";
-                            doc += "                                                                                                              \n";
-                            String indented = doc.replaceAll("(?m)^", "\t");
-                            txaDocumento.setText(indented);
-                            
-                            Insertarpoliza(poliza);
-                            
-
-                            try {
-                                String ruta=txtRuta.getText();
-                                String contenido=txaDocumento.getText();
-                                FileOutputStream archivo = new FileOutputStream(ruta+".pdf");
-                                Document docu = new Document();
-                                PdfWriter.getInstance(docu, archivo);
-                                docu.open();
-                                docu.add(new Paragraph(contenido));
-
-                                docu.close();
-
-                                JOptionPane.showMessageDialog(null, "PDF Creado");                                
-                            } catch (Exception e) {
-                                JOptionPane.showMessageDialog(null, e.getMessage(),"ERROR",0);
+                        doc += "Marca: "+ve.getModeloIdModelo().getMarcaIdMarca().getNombre()+"                            \t \t Modelo: "+ve.getModeloIdModelo().getNombre()+" \n";
+                        doc += "Patente: "+ve.getPatente()+"                             \t \t Año: "+ve.getAno()+" \n";
+                        doc += "Valor Fiscal : $"+ve.getValorFiscal()+"                             \n";
+                        doc += "-----------------------------------------------------COBERTURAS----------------------------------------------------\n";
+                            int subtotal = 0;
+                            for (Cobertura cobertura : ve.getCoberturaCollection()) {
+                                subtotal += cobertura.getPrima();
+                                doc += cobertura.getNombre()+": $"+ve.getValorFiscal()+" \t Deducible: "+cobertura.getDeducible()+"%\t Prima: $"+cobertura.getPrima()+"\n";                                    
                             }
+                            total += subtotal;
+                            doc += "SUBTOTAL: $"+subtotal+"\n";
+                            doc += "IVA: $"+subtotal*0.19+"\n";
+                            doc += "TOTAL: $"+(subtotal+(subtotal*0.19))+"\n";
+                            doc += "******************************************************************************************************\n";
+                        }    
+                        doc += "                                                                                                              \n";
+                        total += total * 0.19;
+                        doc += "\t\t TOTAL A PAGAR: $"+total+"\n";
+                        poliza.setTotalPagar(total);
+                        doc += "                                                                                                              \n";
+                        doc += "                                                                                                              \n";
+                        doc += "******************************************************************************************************\n";
+                        doc += "******************************************************************************************************\n";
+
+                        doc += "                                                                                                              \n";
+                        doc += "                                                                                                              \n";
+                        doc += "                                                                                                              \n";
+                        String indented = doc.replaceAll("(?m)^", "\t");
+                        txaDocumento.setText(indented);
+
+                        Insertarpoliza(poliza);
+
+
+                        try {
+                            String contenido=txaDocumento.getText();
+                            FileOutputStream archivo = new FileOutputStream("C:\\poliza"+cli.getIdCliente()+".pdf");
+                            Document docu = new Document();
+                            PdfWriter.getInstance(docu, archivo);
+                            docu.open();
+                            docu.add(new Paragraph(contenido));
+
+                            docu.close();
+
+                            JOptionPane.showMessageDialog(null, "PDF Creado");                                
+                        } catch (Exception e) {
+                            JOptionPane.showMessageDialog(null, e.getMessage(),"ERROR",0);
                         }
-                    }
-                    else
-                    {
-                        JOptionPane.showMessageDialog(null, "Cliente No registrado","",2);
                     }
                 }
                 else
                 {
-                    JOptionPane.showMessageDialog(null, "Selecciona la Ruta Para Guardar","",2);
-                }
+                    JOptionPane.showMessageDialog(null, "Cliente No registrado","",2);
+                }                
             }
             else
             {
@@ -391,14 +354,12 @@ public class GenerarPoliza extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnGenerar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblMensaje;
     private javax.swing.JTextArea txaDocumento;
     private javax.swing.JTextField txtRut;
-    private javax.swing.JTextField txtRuta;
     // End of variables declaration//GEN-END:variables
 
     

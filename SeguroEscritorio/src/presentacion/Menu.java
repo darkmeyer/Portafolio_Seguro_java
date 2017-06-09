@@ -11,6 +11,7 @@ import presentacion.Admin.EmpleadoMantenedor;
 import presentacion.Admin.GruaMantenedor;
 import presentacion.Admin.RegionCiudadMantenedor;
 import presentacion.Admin.TallerMantenedor;
+import presentacion.Empleados.AvanceReparacionTaller;
 import presentacion.Empleados.ClienteMantenedor;
 import presentacion.Empleados.GenerarPoliza;
 import presentacion.Empleados.SiniestroMantenedor;
@@ -51,6 +52,7 @@ public class Menu extends javax.swing.JFrame {
         itemCliente = new javax.swing.JMenuItem();
         itemSiniestro = new javax.swing.JMenuItem();
         itemMovimientos = new javax.swing.JMenuItem();
+        itemAvanceTaller = new javax.swing.JMenuItem();
         itemPoliza = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
 
@@ -60,7 +62,7 @@ public class Menu extends javax.swing.JFrame {
         lblBienvenida.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         lblBienvenida.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
-        jMenu1.setText("Menu Mantenedores");
+        jMenu1.setText("Menu");
 
         itemEmpleado.setText("Empleado");
         itemEmpleado.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -117,6 +119,14 @@ public class Menu extends javax.swing.JFrame {
 
         itemMovimientos.setText("Movimientos");
         jMenu1.add(itemMovimientos);
+
+        itemAvanceTaller.setText("Avance Taller");
+        itemAvanceTaller.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemAvanceTallerActionPerformed(evt);
+            }
+        });
+        jMenu1.add(itemAvanceTaller);
 
         jMenuBar1.add(jMenu1);
 
@@ -184,6 +194,10 @@ public class Menu extends javax.swing.JFrame {
         new GenerarPoliza().setVisible(true);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
+    private void itemAvanceTallerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAvanceTallerActionPerformed
+        new AvanceReparacionTaller(emp).setVisible(true);
+    }//GEN-LAST:event_itemAvanceTallerActionPerformed
+
     private void bienvenida(String nombre) {
         
         lblBienvenida.setText("Bienvenid@ "+nombre);
@@ -211,15 +225,17 @@ public class Menu extends javax.swing.JFrame {
                 itemCliente.setVisible(true);
             break;
             case "Liquidador":
-                
+                itemSiniestro.setVisible(true);
+                itemCliente.setVisible(true);
             break;
-            case "Encargado Taller":
-                
+            case "Admin Taller":
+                itemAvanceTaller.setVisible(true);
             break;
         }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem itemAvanceTaller;
     private javax.swing.JMenuItem itemCliente;
     private javax.swing.JMenuItem itemEmpleado;
     private javax.swing.JMenuItem itemGrua;

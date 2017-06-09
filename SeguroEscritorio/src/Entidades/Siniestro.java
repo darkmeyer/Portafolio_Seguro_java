@@ -36,6 +36,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Siniestro.findByDireccion", query = "SELECT s FROM Siniestro s WHERE s.direccion = :direccion"),
     @NamedQuery(name = "Siniestro.findByEstado", query = "SELECT s FROM Siniestro s WHERE s.estado = :estado"),
     @NamedQuery(name = "Siniestro.findByCosteReparacion", query = "SELECT s FROM Siniestro s WHERE s.costeReparacion = :costeReparacion"),
+    @NamedQuery(name = "Siniestro.findByTaller", query = "SELECT s FROM Siniestro s WHERE s.tallerIdTaller = :tallerIdTaller"),
     @NamedQuery(name = "Siniestro.findByPatente", query = "SELECT s FROM Siniestro s WHERE s.patente = :patente")})
 public class Siniestro implements Serializable {
 
