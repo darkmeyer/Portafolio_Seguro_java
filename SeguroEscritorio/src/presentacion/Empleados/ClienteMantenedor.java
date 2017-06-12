@@ -11,14 +11,24 @@ import Entidades.Cliente;
 import Entidades.Cobertura;
 import Entidades.Marca;
 import Entidades.Modelo;
+import Entidades.Poliza;
 import Entidades.Region;
 import Validaciones.Validaciones;
 import Entidades.Vehiculo;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.event.KeyEvent;
+import java.io.FileOutputStream;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Types;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -755,18 +765,7 @@ public class ClienteMantenedor extends javax.swing.JFrame {
                         cbRegion.setSelectedItem(listCliente.get(0).getCiudadIdCiudad().getRegionIdRegion().getIdRegion()+ " " + listCliente.get(0).getCiudadIdCiudad().getRegionIdRegion().getNombre());
                         cbCiudad.setSelectedItem(listCliente.get(0).getCiudadIdCiudad().getIdCiudad()+" "+listCliente.get(0).getCiudadIdCiudad().getNombre());
                         
-                        cbVehiculo.removeAllItems();
-                        List<Vehiculo> listVehiculo = buscarVehiculosRut(rut); 
-                        if(listVehiculo != null)
-                        {
-                            for (Vehiculo vehiculo : listVehiculo) {
-                                cbVehiculo.addItem(vehiculo.getIdVehiculo()+" "+vehiculo.getPatente()+" "+vehiculo.getModeloIdModelo().getMarcaIdMarca().getNombre());
-                            }
-                        }
-                        else
-                        {
-                            cbVehiculo.addItem("Sin Vehiculos");
-                        }
+                        llenarcbVehiculos(rut);
                         lblBuscarRut.setText("Rut encontrado");
                     }
                     else
@@ -809,7 +808,7 @@ public class ClienteMantenedor extends javax.swing.JFrame {
                     cbRegion.setSelectedItem(listCliente.get(0).getCiudadIdCiudad().getRegionIdRegion().getIdRegion()+ " " + listCliente.get(0).getCiudadIdCiudad().getRegionIdRegion().getNombre());
                     cbCiudad.setSelectedItem(listCliente.get(0).getCiudadIdCiudad().getIdCiudad()+" "+listCliente.get(0).getCiudadIdCiudad().getNombre());
 
-
+                    llenarcbVehiculos(listCliente.get(0).getRut());
                     lblBuscarId.setText("ID encontrada");
                 }
                 else
@@ -1090,10 +1089,12 @@ public class ClienteMantenedor extends javax.swing.JFrame {
                                 if(idVehiculo.substring(idVehiculo.length()-1, idVehiculo.length()).equals("v"))
                                 {
                                     for (Cobertura cobertura : coberturas) {
-                                        mensaje += InsertarCoberturas(cobertura, idVehiculo)+"\n";
+                                        InsertarCoberturas(cobertura, idVehiculo);
                                     }
                                 }
                                 
+                                GenerarPoliza(rut);                                
+                                llenarcbVehiculos(rut);
                                 txaMensaje.setText(mensaje);
                                 
                                 
@@ -1141,13 +1142,15 @@ public class ClienteMantenedor extends javax.swing.JFrame {
             if(!txtPatente.getText().isEmpty())
             {     
                 List<Vehiculo> listVehiculo = buscarPatente(txtPatente.getText());
-                if(listVehiculo!= null)
+                if(listVehiculo != null)
                 {
                     em.getTransaction().begin();
                     em.remove(listVehiculo.get(0));
                     em.getTransaction().commit();
+                    llenarcbVehiculos(listVehiculo.get(0).getClienteIdCliente().getRut());
                     mensaje += "Vehiculo Eliminado \n";
                     txaMensaje.setText(mensaje);
+                    GenerarPoliza(listVehiculo.get(0).getClienteIdCliente().getRut());
                 }
                 else
                 {
@@ -1160,10 +1163,11 @@ public class ClienteMantenedor extends javax.swing.JFrame {
                 mensaje += "Ingrese la Patente \n";
                 txaMensaje.setText(mensaje);
             }
-        }
+            
+        }        
         catch(Exception e)
         {
-            mensaje += "Error \n";
+            mensaje += "No puede Eliminar un Vehiculo Con Procesos en Curso. (Cierre esos procesos Primero.) \n";
             txaMensaje.setText(mensaje);
         }
     }//GEN-LAST:event_btnEliminarVehiculoActionPerformed
@@ -1460,6 +1464,25 @@ public class ClienteMantenedor extends javax.swing.JFrame {
         }
     }
     
+    private List<Poliza> buscarPolizaId(long id)
+    {
+        try {
+            TypedQuery consulta = em.createNamedQuery("Poliza.findByIdPoliza", Poliza.class);
+            List<Poliza> listPoliza = consulta.setParameter("idPoliza", id).getResultList();
+            
+            if(listPoliza.size() > 0)
+            {
+                return listPoliza;
+            }
+            else
+            {
+                return null;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
     private void llenarComboBoxRegiones()
     {
         TypedQuery consulta = em.createNamedQuery("Region.findAll", Region.class);
@@ -1528,6 +1551,132 @@ public class ClienteMantenedor extends javax.swing.JFrame {
         }
     }
     
+    private void GenerarPoliza(String rut) throws ParseException, SQLException {
+        List<Cliente> listCliente = buscarClienteRut(rut);
+                if(listCliente != null)
+                {
+                    Poliza poliza = new Poliza();
+                    poliza.setIdPoliza(Long.parseLong(listCliente.get(0).getIdCliente().substring(0, listCliente.get(0).getIdCliente().length()-1)));
+                    List<Poliza> listaPoliza = buscarPolizaId(poliza.getIdPoliza());
+                    SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
+                    if(listaPoliza == null)
+                    {
+                        poliza.setIdCliente(listCliente.get(0).getIdCliente());                        
+                        Calendar calNow = Calendar.getInstance();
+                        calNow.add(Calendar.MONTH, +1);
+                        Date date1 = calNow.getTime();
+                        String fechaActual = sdf.format(date1);
+                        poliza.setFechaVencimiento(sdf.parse(fechaActual));
+
+                        poliza.setAlDia("t");
+                    }
+                    else
+                    {
+                        poliza = listaPoliza.get(0);
+                    }
+                    List<Vehiculo> listVehiculos = buscarVehiculosRut(rut);                
+                    if(listVehiculos != null)
+                    {
+                        int total = 0;
+                        listCliente.get(0).setVehiculoCollection(listVehiculos);
+                        Cliente cli = listCliente.get(0);
+                        String activo = cli.getActivo().equals("t") ? "Si" : "No";
+                        String doc = "";
+                        doc += "*******************************POLIZA DE SEGURO AUTOMOTRIZ**********************************\n";
+                        doc += "                                                                                                       \n";
+                        doc += "NOMBRE: "+cli.getNombres()+" "+cli.getApellidos()+"          \t \t Direccion: "+cli.getDireccion()+"\n";
+                        doc += "Activo: "+activo+"                                           \t Correo: "+cli.getCorreo()+"\n";
+                        doc += "Vencimiento Pago: "+sdf.format(poliza.getFechaVencimiento())+"\n";
+                        doc += "                                                                                                      \n";
+                        doc += "*******************************************************************************************************\n";
+                        doc += "*******************************************VEHICULOS**********************************************\n";
+                        for (Vehiculo ve : cli.getVehiculoCollection()) 
+                        {
+                        doc += "Marca: "+ve.getModeloIdModelo().getMarcaIdMarca().getNombre()+"                            \t \t Modelo: "+ve.getModeloIdModelo().getNombre()+" \n";
+                        doc += "Patente: "+ve.getPatente()+"                             \t \t Año: "+ve.getAno()+" \n";
+                        doc += "Valor Fiscal : $"+ve.getValorFiscal()+"                             \n";
+                        doc += "-----------------------------------------------------COBERTURAS----------------------------------------------------\n";
+                            int subtotal = 0;
+                            for (Cobertura cobertura : ve.getCoberturaCollection()) {
+                                subtotal += cobertura.getPrima();
+                                doc += cobertura.getNombre()+": $"+ve.getValorFiscal()+" \t Deducible: "+cobertura.getDeducible()+"%\t Prima: $"+cobertura.getPrima()+"\n";                                    
+                            }
+                            total += subtotal;
+                            doc += "SUBTOTAL: $"+subtotal+"\n";
+                            doc += "IVA: $"+subtotal*0.19+"\n";
+                            doc += "TOTAL: $"+(subtotal+(subtotal*0.19))+"\n";
+                            doc += "******************************************************************************************************\n";
+                        }    
+                        doc += "                                                                                                              \n";
+                        total += total * 0.19;
+                        doc += "\t\t TOTAL A PAGAR: $"+total+"\n";
+                        poliza.setTotalPagar(total);
+                        doc += "                                                                                                              \n";
+                        doc += "                                                                                                              \n";
+                        doc += "******************************************************************************************************\n";
+                        doc += "******************************************************************************************************\n";
+
+                        doc += "                                                                                                              \n";
+                        doc += "                                                                                                              \n";
+                        doc += "                                                                                                              \n";
+                        String indented = doc.replaceAll("(?m)^", "\t");
+
+                        Insertarpoliza(poliza);
+
+
+                        try {
+                            String contenido=indented;
+                            FileOutputStream archivo = new FileOutputStream("C:\\poliza"+cli.getIdCliente()+".pdf");
+                            Document docu = new Document();
+                            PdfWriter.getInstance(docu, archivo);
+                            docu.open();
+                            docu.add(new Paragraph(contenido));
+
+                            docu.close();
+
+                            mensaje += "Pdf Poliza Generada/Actualizada: poliza"+cli.getIdCliente()+".pdf \n";
+                            txaMensaje.setText(mensaje);
+                        } catch (Exception e) {
+                            JOptionPane.showMessageDialog(null, e.getMessage(),"ERROR",0);
+                        }
+                    }
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(null, "Cliente No registrado","",2);
+                }
+    }
+
+    private String Insertarpoliza(Poliza poliza) throws SQLException {
+        Connection cn = new FafricaConexion().Conectar();
+        java.sql.Date sqlDate = new java.sql.Date(poliza.getFechaVencimiento().getTime());
+
+        CallableStatement cs = cn.prepareCall("{call ? := F_INSERT_POLIZA(?,?,?,?,?)}");
+        cs.registerOutParameter(1, Types.VARCHAR);
+
+        cs.setLong(2, poliza.getIdPoliza());
+        cs.setString(3, poliza.getAlDia());
+        cs.setDate(4, sqlDate);
+        cs.setLong(5, poliza.getTotalPagar());
+        cs.setString(6, poliza.getIdCliente());
+        cs.executeUpdate();
+        return cs.getString(1);
+    }
+    
+    private void llenarcbVehiculos(String rut) {
+        cbVehiculo.removeAllItems();
+        List<Vehiculo> listVehiculo = buscarVehiculosRut(rut); 
+        if(listVehiculo != null)
+        {
+            for (Vehiculo vehiculo : listVehiculo) {
+                cbVehiculo.addItem(vehiculo.getIdVehiculo()+" "+vehiculo.getPatente()+" "+vehiculo.getModeloIdModelo().getMarcaIdMarca().getNombre());
+            }
+        }
+        else
+        {
+            cbVehiculo.addItem("Sin Vehiculos");
+        }
+    }
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -1630,5 +1779,4 @@ public class ClienteMantenedor extends javax.swing.JFrame {
     private javax.swing.JTextField txtValorFiscal;
     // End of variables declaration//GEN-END:variables
 
-    
 }

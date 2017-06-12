@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Pieza.findAll", query = "SELECT p FROM Pieza p"),
     @NamedQuery(name = "Pieza.findByIdPieza", query = "SELECT p FROM Pieza p WHERE p.idPieza = :idPieza"),
     @NamedQuery(name = "Pieza.findByNombre", query = "SELECT p FROM Pieza p WHERE p.nombre = :nombre"),
+    @NamedQuery(name = "Pieza.findByPresupuesto", query = "SELECT p FROM Pieza p WHERE p.presupuestoIdPresupuesto = :presupuestoIdPresupuesto"),
     @NamedQuery(name = "Pieza.findByValor", query = "SELECT p FROM Pieza p WHERE p.valor = :valor")})
 public class Pieza implements Serializable {
 

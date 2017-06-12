@@ -492,7 +492,7 @@ public class SiniestroMantenedor extends javax.swing.JFrame {
                         em.getTransaction().begin();
                         em.merge(sin);
                         em.getTransaction().commit();
-
+                        buscarSiniestrosRut(txtRut.getText());
                         mensaje += "Siniestro Actualizado \n";
                         txaMensaje.setText(mensaje);
                     }
@@ -527,6 +527,7 @@ public class SiniestroMantenedor extends javax.swing.JFrame {
                     em.getTransaction().begin();
                     em.remove(listSiniestro.get(0));
                     em.getTransaction().commit();
+                    buscarSiniestrosRut(txtRut.getText());
                     mensaje += "Siniestro Eliminado \n";
                     txaMensaje.setText(mensaje);
                 }
@@ -568,8 +569,8 @@ public class SiniestroMantenedor extends javax.swing.JFrame {
             List<Cliente> listCliente = buscarClienteRut(txtRut.getText());
             if(listCliente != null)
             {
-                Cliente cli = listCliente.get(0);
-                for (Vehiculo vehiculo : cli.getVehiculoCollection()) {
+                List<Vehiculo> listVehiculo = buscarVehiculoCliente(listCliente.get(0));
+                for (Vehiculo vehiculo : listVehiculo) {
                     cbPatente.addItem(vehiculo.getPatente());
                 }
             }
@@ -610,6 +611,7 @@ public class SiniestroMantenedor extends javax.swing.JFrame {
         List<Siniestro> listSiniestro = buscarSiniestroId(id);
         if(listSiniestro != null)
         {
+            txtId.setText(listSiniestro.get(0).getIdSiniestro());
             cbRegion.setSelectedItem(listSiniestro.get(0).getCiudadIdCiudad().getRegionIdRegion().getIdRegion()+" "+listSiniestro.get(0).getCiudadIdCiudad().getRegionIdRegion().getNombre());
             cbCiudad.setSelectedItem(listSiniestro.get(0).getCiudadIdCiudad()+" "+listSiniestro.get(0).getCiudadIdCiudad().getNombre()); 
             cbGrua.setSelectedItem(listSiniestro.get(0).getGruaIdGrua().getIdGrua()+ " rut:" +listSiniestro.get(0).getGruaIdGrua().getRut());
@@ -683,6 +685,7 @@ public class SiniestroMantenedor extends javax.swing.JFrame {
                     cs.setString(10, sin.getPatente());
                     cs.executeUpdate();
                     String mensaje2 = cs.getString(1);
+                    buscarSiniestrosRut(txtRut.getText());
                     mensaje += mensaje2+" \n";
                     txaMensaje.setText(mensaje);
 
@@ -719,6 +722,24 @@ public class SiniestroMantenedor extends javax.swing.JFrame {
         }
     }
     
+    private List<Vehiculo> buscarVehiculoCliente(Cliente cli) {
+        try {
+            TypedQuery consulta = em.createNamedQuery("Vehiculo.findByCliente", Vehiculo.class);
+            List<Vehiculo> listVehiculo = consulta.setParameter("clienteIdCliente", cli).getResultList();
+            
+            if(listVehiculo.size() > 0)
+            {
+                return listVehiculo;
+            }
+            else
+            {
+                return null;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
     private void buscarSiniestrosRut(String rut)
     {
         try {
@@ -730,9 +751,11 @@ public class SiniestroMantenedor extends javax.swing.JFrame {
             
             if(listCliente.size() > 0)
             {
-                if(listCliente.get(0).getSiniestroCollection().size() > 0)
+                consulta = em.createNamedQuery("Siniestro.findByCliente", Siniestro.class);
+                List<Siniestro> listSiniestro = consulta.setParameter("clienteIdCliente", listCliente.get(0)).getResultList();
+                if(listSiniestro.size() > 0)
                 {
-                    for (Siniestro sin : listCliente.get(0).getSiniestroCollection()) {
+                    for (Siniestro sin : listSiniestro) {
                         cbResultado.addItem(sin.getIdSiniestro()+" "+sin.getFecha());
                     }
                     
@@ -936,4 +959,6 @@ public class SiniestroMantenedor extends javax.swing.JFrame {
     private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtRut;
     // End of variables declaration//GEN-END:variables
+
+    
 }

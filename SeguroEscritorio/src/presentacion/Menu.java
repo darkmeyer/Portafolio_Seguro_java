@@ -13,7 +13,6 @@ import presentacion.Admin.RegionCiudadMantenedor;
 import presentacion.Admin.TallerMantenedor;
 import presentacion.Empleados.AvanceReparacionTaller;
 import presentacion.Empleados.ClienteMantenedor;
-import presentacion.Empleados.GenerarPoliza;
 import presentacion.Empleados.SiniestroMantenedor;
 import presentacion.Login;
 
@@ -53,8 +52,6 @@ public class Menu extends javax.swing.JFrame {
         itemSiniestro = new javax.swing.JMenuItem();
         itemMovimientos = new javax.swing.JMenuItem();
         itemAvanceTaller = new javax.swing.JMenuItem();
-        itemPoliza = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Menu Mantenedores");
@@ -130,18 +127,6 @@ public class Menu extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu1);
 
-        itemPoliza.setText("Documentos");
-
-        jMenuItem1.setText("Generar Poliza Cliente");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
-            }
-        });
-        itemPoliza.add(jMenuItem1);
-
-        jMenuBar1.add(itemPoliza);
-
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -190,10 +175,6 @@ public class Menu extends javax.swing.JFrame {
         new SiniestroMantenedor().setVisible(true);
     }//GEN-LAST:event_itemSiniestroActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        new GenerarPoliza().setVisible(true);
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
-
     private void itemAvanceTallerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAvanceTallerActionPerformed
         new AvanceReparacionTaller(emp).setVisible(true);
     }//GEN-LAST:event_itemAvanceTallerActionPerformed
@@ -240,13 +221,11 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JMenuItem itemEmpleado;
     private javax.swing.JMenuItem itemGrua;
     private javax.swing.JMenuItem itemMovimientos;
-    private javax.swing.JMenu itemPoliza;
     private javax.swing.JMenuItem itemRegionCiudad;
     private javax.swing.JMenuItem itemSiniestro;
     private javax.swing.JMenuItem itemTaller;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JLabel lblBienvenida;
     // End of variables declaration//GEN-END:variables
 

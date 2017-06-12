@@ -13,6 +13,10 @@ import Entidades.Presupuesto;
 import Entidades.Siniestro;
 import Entidades.Taller;
 import Entidades.Vehiculo;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Types;
@@ -24,6 +28,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -37,6 +42,7 @@ public class AvanceReparacionTaller extends javax.swing.JFrame {
     Empleado adminTaller = null;
     Siniestro sin = null;
     List<Siniestro> listaSiniestros = null;
+    String idpresupuesto = "";
     public AvanceReparacionTaller(Empleado emp) {
         initComponents();        
         adminTaller = emp;
@@ -171,6 +177,11 @@ public class AvanceReparacionTaller extends javax.swing.JFrame {
 
         btnEliminarPieza.setText("ELIMINAR");
         btnEliminarPieza.setEnabled(false);
+        btnEliminarPieza.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarPiezaActionPerformed(evt);
+            }
+        });
 
         jLabel9.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(255, 255, 255));
@@ -359,33 +370,41 @@ public class AvanceReparacionTaller extends javax.swing.JFrame {
 
     private void btnCambiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCambiarActionPerformed
         try {
-            sin.setEstado(cbEstado.getSelectedItem().toString());
-            Movimiento mov = new Movimiento();
-            mov.setDescripcion(txtComentario.getText());
-            SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
-            Calendar calNow = Calendar.getInstance();
-            calNow.add(Calendar.MONTH, +1);
-            Date date1 = calNow.getTime();
-            String fechaActual = sdf.format(date1);
-            mov.setFecha(sdf.parse(fechaActual));
-            mov.setSiniestroIdSiniestro(sin);
-            
-            em.getTransaction().begin();
-            em.merge(sin);
-            em.getTransaction().commit();
-            
-            Connection cn = new FafricaConexion().Conectar();
-            CallableStatement cs = cn.prepareCall("{call ? := F_INSERT_MOVIMIENTO(?,?,?)}");
-            cs.registerOutParameter(1, Types.VARCHAR);
-            
-            java.sql.Date sqlDate = new java.sql.Date(mov.getFecha().getTime());
-            cs.setDate(2, sqlDate);
-            cs.setString(3, mov.getDescripcion());
-            cs.setString(4, mov.getSiniestroIdSiniestro().getIdSiniestro());
-            cs.executeUpdate();
-            String mensaje2 = cs.getString(1);
-            mensaje += mensaje2+" \n";
-            txaMensaje.setText(mensaje);
+            if(!txtComentario.getText().isEmpty())
+            {
+                sin.setEstado(cbEstado.getSelectedItem().toString());
+                Movimiento mov = new Movimiento();
+                mov.setDescripcion(txtComentario.getText());
+                SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
+                Calendar calNow = Calendar.getInstance();
+                calNow.add(Calendar.MONTH, +1);
+                Date date1 = calNow.getTime();
+                String fechaActual = sdf.format(date1);
+                mov.setFecha(sdf.parse(fechaActual));
+                mov.setSiniestroIdSiniestro(sin);
+
+                em.getTransaction().begin();
+                em.merge(sin);
+                em.getTransaction().commit();
+
+                Connection cn = new FafricaConexion().Conectar();
+                CallableStatement cs = cn.prepareCall("{call ? := F_INSERT_MOVIMIENTO(?,?,?)}");
+                cs.registerOutParameter(1, Types.VARCHAR);
+
+                java.sql.Date sqlDate = new java.sql.Date(mov.getFecha().getTime());
+                cs.setDate(2, sqlDate);
+                cs.setString(3, mov.getDescripcion());
+                cs.setString(4, mov.getSiniestroIdSiniestro().getIdSiniestro());
+                cs.executeUpdate();
+                String mensaje2 = cs.getString(1);
+                mensaje += mensaje2+" \n";
+                txaMensaje.setText(mensaje);
+            }
+            else
+            {
+                mensaje += "Escriba Su Comentario \n";
+                txaMensaje.setText(mensaje); 
+            }
         } catch (Exception e) {
             mensaje += e.getMessage()+" \n";
             txaMensaje.setText(mensaje);
@@ -403,6 +422,7 @@ public class AvanceReparacionTaller extends javax.swing.JFrame {
             if(sin != null)
             {
                 cbEstado.setSelectedItem(sin.getEstado());
+                idpresupuesto = sin.getClienteIdCliente().getIdCliente()+"-"+sin.getIdSiniestro();
                 if(sin.getEstado().equals("Evaluacion"))
                 {
                     cbPiezas.setEnabled(true);
@@ -435,44 +455,74 @@ public class AvanceReparacionTaller extends javax.swing.JFrame {
 
     private void btnAgregarPiezaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarPiezaActionPerformed
         try {
-            String idpresupuesto = sin.getClienteIdCliente().getIdCliente()+"-"+sin.getIdSiniestro();
-            SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
-            Calendar calNow = Calendar.getInstance();
-            calNow.add(Calendar.MONTH, +1);
-            Date date1 = calNow.getTime();
-            String fechaActual = sdf.format(date1);
-            
-            Presupuesto pre = new Presupuesto();
-            pre.setIdPresupuesto(idpresupuesto);
-            pre.setFecha(sdf.parse(fechaActual));
-            pre.setVehiculoIdVehiculo(buscarPatente(sin.getPatente()).get(0));
-            
-            Pieza pieza = new Pieza();
-            pieza.setNombre(txtNombrePieza.getText());
-            pieza.setValor(Integer.parseInt(txtCostoPieza.getText()));
-            pieza.setPresupuestoIdPresupuesto(pre);
-            
-            Connection cn = new FafricaConexion().Conectar();
-            CallableStatement cs = cn.prepareCall("{call ? := F_INSERT_PRESUPUESTO(?,?,?,?,?,?)}");
-            cs.registerOutParameter(1, Types.VARCHAR);            
-            java.sql.Date sqlDate = new java.sql.Date(pre.getFecha().getTime());
-            
-            cs.setString(2, pre.getIdPresupuesto());
-            cs.setString(3, pre.getVehiculoIdVehiculo().getIdVehiculo());
-            cs.setDate(4, sqlDate);
-            cs.setString(5, "");
-            cs.setString(6, pieza.getNombre());
-            cs.setInt(7, (int)pieza.getValor());
-            cs.executeUpdate();
-            llenarcbpiezas(buscarPiezas());
-            String mensaje2 = cs.getString(1);
-            mensaje += mensaje2+" \n";
-            txaMensaje.setText(mensaje);
+            if(!txtNombrePieza.getText().isEmpty() || !txtCostoPieza.getText().isEmpty())
+            {
+                SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
+                Calendar calNow = Calendar.getInstance();
+                calNow.add(Calendar.MONTH, +1);
+                Date date1 = calNow.getTime();
+                String fechaActual = sdf.format(date1);
+
+                Presupuesto pre = new Presupuesto();
+                pre.setIdPresupuesto(idpresupuesto);
+                pre.setFecha(sdf.parse(fechaActual));
+                pre.setVehiculoIdVehiculo(buscarPatente(sin.getPatente()).get(0));
+
+                Pieza pieza = new Pieza();
+                pieza.setNombre(txtNombrePieza.getText());
+                pieza.setValor(Integer.parseInt(txtCostoPieza.getText()));
+                pieza.setPresupuestoIdPresupuesto(pre);
+
+                Connection cn = new FafricaConexion().Conectar();
+                CallableStatement cs = cn.prepareCall("{call ? := F_INSERT_PRESUPUESTO(?,?,?,?,?,?)}");
+                cs.registerOutParameter(1, Types.VARCHAR);            
+                java.sql.Date sqlDate = new java.sql.Date(pre.getFecha().getTime());
+
+                cs.setString(2, pre.getIdPresupuesto());
+                cs.setString(3, pre.getVehiculoIdVehiculo().getIdVehiculo());
+                cs.setDate(4, sqlDate);
+                cs.setString(5, "");
+                cs.setString(6, pieza.getNombre());
+                cs.setInt(7, (int)pieza.getValor());
+                cs.executeUpdate();
+                llenarcbpiezas(buscarPiezas());
+                String mensaje2 = cs.getString(1);           
+
+                mensaje += mensaje2+" \n";
+                txaMensaje.setText(mensaje);
+                GenerarPresupuesto(idpresupuesto);
+            }
+            else
+            {
+                mensaje += "Llene todos los Campos \n";
+                txaMensaje.setText(mensaje);
+            }
         } catch (Exception e) {
             mensaje += e.getMessage()+" \n";
             txaMensaje.setText(mensaje);
         }
     }//GEN-LAST:event_btnAgregarPiezaActionPerformed
+
+    private void btnEliminarPiezaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarPiezaActionPerformed
+        try {
+            if(cbPiezas.getItemCount() > 0)
+            {
+                String[] itemSplit = cbPiezas.getSelectedItem().toString().split("\\s+");
+                long idPieza = Long.parseLong(itemSplit[0]);
+                Pieza pieza = buscarPiezaId(idPieza).get(0);
+
+                em.getTransaction().begin();
+                em.remove(pieza);
+                em.getTransaction().commit();
+                llenarcbpiezas(buscarPiezas());
+                mensaje += "Pieza Eliminada \n";
+                txaMensaje.setText(mensaje);
+                GenerarPresupuesto(idpresupuesto);
+            }
+        } catch (Exception e) {
+            txaMensaje.setText(e.getMessage()); 
+        }
+    }//GEN-LAST:event_btnEliminarPiezaActionPerformed
     
     private List<Pieza> buscarPiezas()
     {
@@ -499,7 +549,7 @@ public class AvanceReparacionTaller extends javax.swing.JFrame {
             cbPiezas.removeAllItems();
             for (Pieza pieza : lista) {
                 if(pieza.getPresupuestoIdPresupuesto().getIdPresupuesto().equals(sin.getClienteIdCliente().getIdCliente()+"-"+sin.getIdSiniestro()))
-                    cbPiezas.addItem(pieza.getNombre());
+                    cbPiezas.addItem(pieza.getIdPieza()+" "+pieza.getNombre());
             }
         } catch (Exception e) {
         }
@@ -590,10 +640,114 @@ public class AvanceReparacionTaller extends javax.swing.JFrame {
         }
     }
     
+    public List<Presupuesto> buscarPresupuestoId(String id)
+    {
+        try {
+            TypedQuery consulta = em.createNamedQuery("Presupuesto.findByIdPresupuesto", Presupuesto.class);
+            List<Presupuesto> listPresupuesto = consulta.setParameter("idPresupuesto", id).getResultList();
+            
+            if(listPresupuesto.size() > 0)
+            {
+                return listPresupuesto;
+            }
+            else
+            {
+                return null;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    private List<Pieza> buscarPiezaId(long idPieza) {
+        try {
+            TypedQuery consulta = em.createNamedQuery("Pieza.findByIdPieza", Pieza.class);
+            List<Pieza> listPieza = consulta.setParameter("idPieza", idPieza).getResultList();
+            
+            if(listPieza.size() > 0)
+            {
+                return listPieza;
+            }
+            else
+            {
+                return null;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    public List<Pieza> buscarPiezaPresupuesto(Presupuesto pre)
+    {
+        try {
+            TypedQuery consulta = em.createNamedQuery("Pieza.findByPresupuesto", Pieza.class);
+            List<Pieza> listPieza = consulta.setParameter("presupuestoIdPresupuesto", pre).getResultList();
+            
+            if(listPieza.size() > 0)
+            {
+                return listPieza;
+            }
+            else
+            {
+                return null;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
     public List<Siniestro> buscarSiniestros(Empleado emp)
     {
         listaSiniestros = buscarSiniestroxTaller(buscarTallerxEmpleado(emp).get(0));
         return listaSiniestros;
+    }
+    
+    private void GenerarPresupuesto(String idpresupuesto) {
+        Presupuesto pre = buscarPresupuestoId(idpresupuesto).get(0);
+        List<Pieza> listPieza = buscarPiezaPresupuesto(pre);
+        List<Siniestro> listSiniestro = buscarSiniestros(adminTaller);
+        Siniestro siniestro = null;
+        for (Siniestro aux : listSiniestro) {
+            if(aux.getPatente().equals(pre.getVehiculoIdVehiculo().getPatente()))
+                siniestro = aux;
+        }
+        String doc = "";
+        doc += "******************************************PRESUPUESTO********************************************\n";
+        doc += "                                                                                                       \n";
+        doc += "Nombre: "+pre.getVehiculoIdVehiculo().getClienteIdCliente().getNombres()+" "+pre.getVehiculoIdVehiculo().getClienteIdCliente().getApellidos()+"          \t \t Direccion: "+pre.getVehiculoIdVehiculo().getClienteIdCliente().getDireccion()+"\n";
+        doc += "Rut: "+pre.getVehiculoIdVehiculo().getClienteIdCliente().getRut()+"                                           \t Correo: "+pre.getVehiculoIdVehiculo().getClienteIdCliente().getCorreo()+"\n";
+        doc += "                                                                                                      \n";
+        doc += "********************************************TALLER*****************************************************\n";
+        doc += "Taller:"+siniestro.getTallerIdTaller().getNombre()+" \t Fono: "+siniestro.getTallerIdTaller().getFono() +"\n";
+        doc += "Direccion: "+siniestro.getTallerIdTaller().getDireccion()+" \t Admin Taller: "+siniestro.getTallerIdTaller().getEmpleadoIdEmpleado().getNombres()+" "+siniestro.getTallerIdTaller().getEmpleadoIdEmpleado().getApellidos()+"\n";
+        doc += "Ciudad: "+siniestro.getTallerIdTaller().getCiudadIdCiudad().getNombre() +"\n";
+        doc += "                                                                                                              \n";
+        doc += "*******************************************VEHICULO**********************************************\n";
+        doc += "Marca: "+pre.getVehiculoIdVehiculo().getModeloIdModelo().getMarcaIdMarca().getNombre()+"                            \t \t Modelo: "+pre.getVehiculoIdVehiculo().getModeloIdModelo().getNombre()+" \n";
+                        doc += "Patente: "+pre.getVehiculoIdVehiculo().getPatente()+"                             \t \t Año: "+pre.getVehiculoIdVehiculo().getAno()+" \n";
+                        doc += "Valor Fiscal : $"+pre.getVehiculoIdVehiculo().getValorFiscal()+"                             \n";
+        doc += "                                                                                                              \n";
+        doc += "********************************************PIEZAS****************************************************\n";
+        for (Pieza pieza : listPieza) {
+            doc += pieza.getNombre()+" \t\t"+pieza.getValor()+"\n";
+        }
+        doc += "********************************************PIEZAS****************************************************\n";
+        String indented = doc.replaceAll("(?m)^", "\t");
+        
+        try {
+            String contenido=indented;
+            FileOutputStream archivo = new FileOutputStream("C:\\pre"+pre.getIdPresupuesto()+".pdf");
+            Document docu = new Document();
+            PdfWriter.getInstance(docu, archivo);
+            docu.open();
+            docu.add(new Paragraph(contenido));
+
+            docu.close();
+            mensaje += "pdf presupuesto Generado/Actualizado: pre"+pre.getIdPresupuesto()+".pdf \n";
+            txaMensaje.setText(mensaje);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(),"ERROR",0);
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -625,4 +779,8 @@ public class AvanceReparacionTaller extends javax.swing.JFrame {
     private javax.swing.JTextField txtCostoPieza;
     private javax.swing.JTextField txtNombrePieza;
     // End of variables declaration//GEN-END:variables
+
+    
+
+    
 }
