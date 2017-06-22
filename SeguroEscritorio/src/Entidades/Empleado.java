@@ -21,6 +21,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  *
@@ -105,56 +106,79 @@ public class Empleado implements Serializable {
         return idEmpleado;
     }
 
-    public void setIdEmpleado(String idEmpleado) {
-        this.idEmpleado = idEmpleado;
+    public void setIdEmpleado(String idEmpleado) throws Exception {
+        if(idEmpleado.length() > 10)
+            throw new Exception("Id no puede superar Largo 10");
+        else
+            this.idEmpleado = idEmpleado;
     }
 
     public String getRut() {
         return rut;
     }
 
-    public void setRut(String rut) {
-        this.rut = rut;
+    public void setRut(String rut) throws Exception {
+        rut = rut.replace(".", "");
+        rut = rut.replace("-", "");
+        if(rut.length() > 10)
+            throw new Exception("Rut Supera el largo permitido");
+        else
+            this.rut = rut;
     }
 
     public String getPass() {
         return pass;
     }
 
-    public void setPass(String pass) {
-        this.pass = pass;
+    public void setPass(String pass) throws Exception {
+        if(pass.length() > 8)
+            throw new Exception("Contraseña no puede superar los 8 caracteres");
+        else
+            this.pass = BCrypt.hashpw(pass, BCrypt.gensalt());
     }
 
     public String getNombres() {
         return nombres;
     }
 
-    public void setNombres(String nombres) {
-        this.nombres = nombres;
+    public void setNombres(String nombres) throws Exception {
+        if(nombres.length() > 50)
+            throw new Exception("Nombre No puede Superar Largo de 50");
+        else
+            this.nombres = nombres;
     }
 
     public String getApellidos() {
         return apellidos;
     }
 
-    public void setApellidos(String apellidos) {
-        this.apellidos = apellidos;
+    public void setApellidos(String apellidos) throws Exception {
+        if(apellidos.length() > 50)
+            throw new Exception("Apellidos No puede Superar Largo de 50");
+        else
+            this.apellidos = apellidos;
     }
 
     public String getCorreo() {
         return correo;
     }
 
-    public void setCorreo(String correo) {
-        this.correo = correo;
+    public void setCorreo(String correo) throws Exception {
+        if(correo.length() > 50)
+            throw new Exception("Correo No puede Superar Largo de 50");
+        else
+            this.correo = correo;
     }
 
     public String getFono() {
         return fono;
     }
 
-    public void setFono(String fono) {
-        this.fono = fono;
+    public void setFono(String fono) throws Exception {
+        if(fono.length() > 20)
+            throw new Exception("Fono No puede Superar Largo de 20");
+        else
+            this.fono = fono;
     }
 
     public String getFechaNacimiento() {
@@ -169,8 +193,11 @@ public class Empleado implements Serializable {
         return direccion;
     }
 
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
+    public void setDireccion(String direccion) throws Exception {
+        if(direccion.length() > 100)
+            throw new Exception("Direccion No puede Superar Largo de 100");
+        else
+            this.direccion = direccion;
     }
 
     public Ciudad getCiudadIdCiudad() {

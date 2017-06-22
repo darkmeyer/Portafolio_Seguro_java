@@ -27,7 +27,7 @@ public class Menu extends javax.swing.JFrame {
     public Menu(Empleado emp) {
         initComponents();
         MenuCargo(emp.getCargoIdCargo().getNombre());
-        bienvenida(emp.getNombres()+" "+emp.getApellidos());
+        bienvenida(emp.getNombres()+" "+emp.getApellidos(), emp.getCargoIdCargo().getNombre());
         this.emp = emp;
         setLocationRelativeTo(null);
     }
@@ -41,17 +41,22 @@ public class Menu extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jMenu2 = new javax.swing.JMenu();
         lblBienvenida = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
+        jmMantenedores = new javax.swing.JMenu();
         itemEmpleado = new javax.swing.JMenuItem();
         itemRegionCiudad = new javax.swing.JMenuItem();
         itemTaller = new javax.swing.JMenuItem();
         itemGrua = new javax.swing.JMenuItem();
+        jmCliente = new javax.swing.JMenu();
         itemCliente = new javax.swing.JMenuItem();
+        jmSiniestro = new javax.swing.JMenu();
         itemSiniestro = new javax.swing.JMenuItem();
-        itemMovimientos = new javax.swing.JMenuItem();
+        jmTaller = new javax.swing.JMenu();
         itemAvanceTaller = new javax.swing.JMenuItem();
+
+        jMenu2.setText("jMenu2");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Menu Mantenedores");
@@ -59,7 +64,7 @@ public class Menu extends javax.swing.JFrame {
         lblBienvenida.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         lblBienvenida.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
-        jMenu1.setText("Menu");
+        jmMantenedores.setText("Mantenedores");
 
         itemEmpleado.setText("Empleado");
         itemEmpleado.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -72,7 +77,7 @@ public class Menu extends javax.swing.JFrame {
                 itemEmpleadoActionPerformed(evt);
             }
         });
-        jMenu1.add(itemEmpleado);
+        jmMantenedores.add(itemEmpleado);
 
         itemRegionCiudad.setText("Region/Ciudad");
         itemRegionCiudad.addActionListener(new java.awt.event.ActionListener() {
@@ -80,7 +85,7 @@ public class Menu extends javax.swing.JFrame {
                 itemRegionCiudadActionPerformed(evt);
             }
         });
-        jMenu1.add(itemRegionCiudad);
+        jmMantenedores.add(itemRegionCiudad);
 
         itemTaller.setText("Taller");
         itemTaller.addActionListener(new java.awt.event.ActionListener() {
@@ -88,7 +93,7 @@ public class Menu extends javax.swing.JFrame {
                 itemTallerActionPerformed(evt);
             }
         });
-        jMenu1.add(itemTaller);
+        jmMantenedores.add(itemTaller);
 
         itemGrua.setText("Grua");
         itemGrua.addActionListener(new java.awt.event.ActionListener() {
@@ -96,7 +101,11 @@ public class Menu extends javax.swing.JFrame {
                 itemGruaActionPerformed(evt);
             }
         });
-        jMenu1.add(itemGrua);
+        jmMantenedores.add(itemGrua);
+
+        jMenuBar1.add(jmMantenedores);
+
+        jmCliente.setText("Cliente");
 
         itemCliente.setText("Cliente");
         itemCliente.addActionListener(new java.awt.event.ActionListener() {
@@ -104,18 +113,23 @@ public class Menu extends javax.swing.JFrame {
                 itemClienteActionPerformed(evt);
             }
         });
-        jMenu1.add(itemCliente);
+        jmCliente.add(itemCliente);
 
-        itemSiniestro.setText("Siniestro");
+        jMenuBar1.add(jmCliente);
+
+        jmSiniestro.setText("Siniestro");
+
+        itemSiniestro.setText("Registro Siniestro");
         itemSiniestro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 itemSiniestroActionPerformed(evt);
             }
         });
-        jMenu1.add(itemSiniestro);
+        jmSiniestro.add(itemSiniestro);
 
-        itemMovimientos.setText("Movimientos");
-        jMenu1.add(itemMovimientos);
+        jMenuBar1.add(jmSiniestro);
+
+        jmTaller.setText("Taller");
 
         itemAvanceTaller.setText("Avance Taller");
         itemAvanceTaller.addActionListener(new java.awt.event.ActionListener() {
@@ -123,9 +137,9 @@ public class Menu extends javax.swing.JFrame {
                 itemAvanceTallerActionPerformed(evt);
             }
         });
-        jMenu1.add(itemAvanceTaller);
+        jmTaller.add(itemAvanceTaller);
 
-        jMenuBar1.add(jMenu1);
+        jMenuBar1.add(jmTaller);
 
         setJMenuBar(jMenuBar1);
 
@@ -139,8 +153,8 @@ public class Menu extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(47, 47, 47)
-                .addComponent(lblBienvenida, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(532, Short.MAX_VALUE))
+                .addComponent(lblBienvenida, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(456, Short.MAX_VALUE))
         );
 
         pack();
@@ -179,38 +193,37 @@ public class Menu extends javax.swing.JFrame {
         new AvanceReparacionTaller(emp).setVisible(true);
     }//GEN-LAST:event_itemAvanceTallerActionPerformed
 
-    private void bienvenida(String nombre) {
+    private void bienvenida(String nombre, String cargo) {
         
-        lblBienvenida.setText("Bienvenid@ "+nombre);
+        lblBienvenida.setText("Bienvenid@ "+nombre+" : "+cargo);
     }
     
     private void MenuCargo(String cargo)
     {
-        itemCliente.setVisible(false);
-        itemEmpleado.setVisible(false);
-        itemGrua.setVisible(false);
-        itemMovimientos.setVisible(false);
-        itemRegionCiudad.setVisible(false);
-        itemSiniestro.setVisible(false);
-        itemTaller.setVisible(false);
+        jmMantenedores.setVisible(false);
+        jmSiniestro.setVisible(false);
+        jmTaller.setVisible(false);
         
         switch (cargo) {
             case "Administrador":
-                itemEmpleado.setVisible(true);
-                itemGrua.setVisible(true);
-                itemRegionCiudad.setVisible(true);
-                itemTaller.setVisible(true);
+                jmMantenedores.setVisible(true);
             break;
-            case "Ejecutivo":
-                itemSiniestro.setVisible(true);
-                itemCliente.setVisible(true);
+            case "Analista Negocio":
+                
+            break;
+            case "Analista Siniestro":
+                jmSiniestro.setVisible(true);
             break;
             case "Liquidador":
-                itemSiniestro.setVisible(true);
-                itemCliente.setVisible(true);
+                jmSiniestro.setVisible(true);
+                jmTaller.setVisible(true);
             break;
             case "Admin Taller":
-                itemAvanceTaller.setVisible(true);
+                jmSiniestro.setVisible(true);
+                jmTaller.setVisible(true);
+            break;
+            case "Call Center":
+                jmSiniestro.setVisible(true);
             break;
         }
     }
@@ -220,12 +233,15 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JMenuItem itemCliente;
     private javax.swing.JMenuItem itemEmpleado;
     private javax.swing.JMenuItem itemGrua;
-    private javax.swing.JMenuItem itemMovimientos;
     private javax.swing.JMenuItem itemRegionCiudad;
     private javax.swing.JMenuItem itemSiniestro;
     private javax.swing.JMenuItem itemTaller;
-    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenu jmCliente;
+    private javax.swing.JMenu jmMantenedores;
+    private javax.swing.JMenu jmSiniestro;
+    private javax.swing.JMenu jmTaller;
     private javax.swing.JLabel lblBienvenida;
     // End of variables declaration//GEN-END:variables
 

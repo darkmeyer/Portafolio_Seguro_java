@@ -284,16 +284,15 @@ public class SiniestroMantenedor extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel3Layout.createSequentialGroup()
-                                        .addComponent(btnBuscarId)
-                                        .addGap(34, 34, 34)
-                                        .addComponent(jLabel13))
-                                    .addGroup(jPanel3Layout.createSequentialGroup()
                                         .addComponent(btnBuscarRut)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(cbResultado, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(409, 409, 409)
-                                .addComponent(lblRes))
+                                        .addComponent(cbResultado, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel3Layout.createSequentialGroup()
+                                        .addComponent(btnBuscarId)
+                                        .addGap(34, 34, 34)
+                                        .addComponent(jLabel13)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(lblRes))))
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(136, 136, 136)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -347,7 +346,8 @@ public class SiniestroMantenedor extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnBuscarId)
-                        .addComponent(jLabel13))
+                        .addComponent(jLabel13)
+                        .addComponent(lblRes))
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel2)
                         .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -357,9 +357,7 @@ public class SiniestroMantenedor extends javax.swing.JFrame {
                     .addComponent(txtRut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnBuscarRut)
                     .addComponent(cbResultado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(12, 12, 12)
-                .addComponent(lblRes)
-                .addGap(18, 18, 18)
+                .addGap(47, 47, 47)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -395,7 +393,7 @@ public class SiniestroMantenedor extends javax.swing.JFrame {
                             .addComponent(cbPatente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(46, 46, 46)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -488,7 +486,7 @@ public class SiniestroMantenedor extends javax.swing.JFrame {
                         sin.setTallerIdTaller(taller);
                         sin.setFecha(txtFecha.getText());
                         sin.setPatente(cbPatente.getSelectedItem().toString());
-
+                        sin.setEstado(listSiniestro.get(0).getEstado());
                         em.getTransaction().begin();
                         em.merge(sin);
                         em.getTransaction().commit();
@@ -570,6 +568,7 @@ public class SiniestroMantenedor extends javax.swing.JFrame {
             if(listCliente != null)
             {
                 List<Vehiculo> listVehiculo = buscarVehiculoCliente(listCliente.get(0));
+                cbPatente.removeAllItems();
                 for (Vehiculo vehiculo : listVehiculo) {
                     cbPatente.addItem(vehiculo.getPatente());
                 }

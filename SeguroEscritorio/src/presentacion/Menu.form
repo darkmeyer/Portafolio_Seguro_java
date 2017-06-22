@@ -2,11 +2,20 @@
 
 <Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
+    <Container class="javax.swing.JMenu" name="jMenu2">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="jMenu2"/>
+      </Properties>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
+        <Property name="useNullLayout" type="boolean" value="true"/>
+      </Layout>
+    </Container>
     <Menu class="javax.swing.JMenuBar" name="jMenuBar1">
       <SubComponents>
-        <Menu class="javax.swing.JMenu" name="jMenu1">
+        <Menu class="javax.swing.JMenu" name="jmMantenedores">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Menu"/>
+            <Property name="text" type="java.lang.String" value="Mantenedores"/>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="itemEmpleado">
@@ -42,6 +51,13 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemGruaActionPerformed"/>
               </Events>
             </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="jmCliente">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Cliente"/>
+          </Properties>
+          <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="itemCliente">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Cliente"/>
@@ -50,19 +66,28 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemClienteActionPerformed"/>
               </Events>
             </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="jmSiniestro">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Siniestro"/>
+          </Properties>
+          <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="itemSiniestro">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Siniestro"/>
+                <Property name="text" type="java.lang.String" value="Registro Siniestro"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemSiniestroActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="itemMovimientos">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Movimientos"/>
-              </Properties>
-            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="jmTaller">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Taller"/>
+          </Properties>
+          <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="itemAvanceTaller">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Avance Taller"/>
@@ -107,8 +132,8 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="47" max="-2" attributes="0"/>
-              <Component id="lblBienvenida" min="-2" pref="46" max="-2" attributes="0"/>
-              <EmptySpace pref="532" max="32767" attributes="0"/>
+              <Component id="lblBienvenida" min="-2" pref="122" max="-2" attributes="0"/>
+              <EmptySpace pref="456" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>

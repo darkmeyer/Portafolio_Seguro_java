@@ -375,7 +375,7 @@ public class AvanceReparacionTaller extends javax.swing.JFrame {
                 sin.setEstado(cbEstado.getSelectedItem().toString());
                 Movimiento mov = new Movimiento();
                 mov.setDescripcion(txtComentario.getText());
-                SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
+                SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 Calendar calNow = Calendar.getInstance();
                 calNow.add(Calendar.MONTH, +1);
                 Date date1 = calNow.getTime();
