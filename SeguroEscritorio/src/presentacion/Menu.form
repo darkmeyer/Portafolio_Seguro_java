@@ -131,11 +131,17 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Poliza"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemPolizaActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="itemPresupuesto">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Presupuesto"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemPresupuestoActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>

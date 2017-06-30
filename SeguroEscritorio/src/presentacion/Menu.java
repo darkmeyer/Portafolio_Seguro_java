@@ -13,6 +13,8 @@ import presentacion.Admin.RegionCiudadMantenedor;
 import presentacion.Admin.TallerMantenedor;
 import presentacion.Empleados.AvanceReparacionTaller;
 import presentacion.Empleados.ClienteMantenedor;
+import presentacion.Empleados.Poliza;
+import presentacion.Empleados.Presupuesto;
 import presentacion.Empleados.Reportes;
 import presentacion.Empleados.SiniestroMantenedor;
 import presentacion.Login;
@@ -165,9 +167,19 @@ public class Menu extends javax.swing.JFrame {
         jmDocumentos.setText("Documentos");
 
         itemPoliza.setText("Poliza");
+        itemPoliza.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemPolizaActionPerformed(evt);
+            }
+        });
         jmDocumentos.add(itemPoliza);
 
         itemPresupuesto.setText("Presupuesto");
+        itemPresupuesto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemPresupuestoActionPerformed(evt);
+            }
+        });
         jmDocumentos.add(itemPresupuesto);
 
         jMenuBar1.add(jmDocumentos);
@@ -228,6 +240,14 @@ public class Menu extends javax.swing.JFrame {
         new Reportes().setVisible(true);
     }//GEN-LAST:event_itemReportesActionPerformed
 
+    private void itemPolizaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemPolizaActionPerformed
+        new Poliza().setVisible(true);
+    }//GEN-LAST:event_itemPolizaActionPerformed
+
+    private void itemPresupuestoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemPresupuestoActionPerformed
+        new Presupuesto().setVisible(true);
+    }//GEN-LAST:event_itemPresupuestoActionPerformed
+
     private void bienvenida(String nombre, String cargo) {
         
         lblBienvenida.setText("Bienvenid@ "+nombre+" : "+cargo);
@@ -260,10 +280,12 @@ public class Menu extends javax.swing.JFrame {
                 jmDocumentos.setVisible(true);
             break;
             case "Liquidador":
+                jmDocumentos.setVisible(true);
                 jmSiniestro.setVisible(true);
-                jmTaller.setVisible(true);
             break;
             case "Admin Taller":
+                jmDocumentos.setVisible(true);
+                itemPoliza.setVisible(false);
                 jmSiniestro.setVisible(true);
                 jmTaller.setVisible(true);
             break;

@@ -43,7 +43,8 @@ public class Poliza extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         lblMsj = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Poliza");
 
         jLabel1.setText("RUT:");
 

@@ -87,7 +87,8 @@ public class AvanceReparacionTaller extends javax.swing.JFrame {
         txaMensaje = new javax.swing.JTextArea();
         btnLimpiar = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Avance Taller");
 
         jPanel1.setBackground(new java.awt.Color(153, 153, 153));
         jPanel1.setToolTipText("");
