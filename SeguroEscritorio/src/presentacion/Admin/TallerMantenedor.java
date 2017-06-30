@@ -618,7 +618,7 @@ public class TallerMantenedor extends javax.swing.JFrame {
     
     }//GEN-LAST:event_txtIdTallerKeyTyped
     
-    private String buscarTallerRut(String rut) throws SQLException
+    private String buscarTallerRut(String rut) throws SQLException, Exception
     {
         Connection cn = new FafricaConexion().Conectar();
         CallableStatement cs = cn.prepareCall("{call ? := F_BUSCAR_TALLER_RUT(?)}");

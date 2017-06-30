@@ -7,6 +7,7 @@ package Entidades;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,6 +19,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -48,9 +51,11 @@ public class Siniestro implements Serializable {
     private String idSiniestro;
     @Basic(optional = false)
     @Column(name = "FECHA")
-    private String fecha;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fecha;
     @Column(name = "FECHA_TERMINO")
-    private String fechaTermino;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaTermino;
     @Basic(optional = false)
     @Column(name = "DIRECCION")
     private String direccion;
@@ -87,7 +92,7 @@ public class Siniestro implements Serializable {
         this.idSiniestro = idSiniestro;
     }
 
-    public Siniestro(String idSiniestro, String fecha, String direccion, String estado, String patente) {
+    public Siniestro(String idSiniestro, Date fecha, String direccion, String estado, String patente) {
         this.idSiniestro = idSiniestro;
         this.fecha = fecha;
         this.direccion = direccion;
@@ -103,19 +108,19 @@ public class Siniestro implements Serializable {
         this.idSiniestro = idSiniestro;
     }
 
-    public String getFecha() {
+    public Date getFecha() {
         return fecha;
     }
 
-    public void setFecha(String fecha) {
+    public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
 
-    public String getFechaTermino() {
+    public Date getFechaTermino() {
         return fechaTermino;
     }
 
-    public void setFechaTermino(String fechaTermino) {
+    public void setFechaTermino(Date fechaTermino) {
         this.fechaTermino = fechaTermino;
     }
 

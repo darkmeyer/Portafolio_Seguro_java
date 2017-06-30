@@ -13,6 +13,7 @@ import presentacion.Admin.RegionCiudadMantenedor;
 import presentacion.Admin.TallerMantenedor;
 import presentacion.Empleados.AvanceReparacionTaller;
 import presentacion.Empleados.ClienteMantenedor;
+import presentacion.Empleados.Reportes;
 import presentacion.Empleados.SiniestroMantenedor;
 import presentacion.Login;
 
@@ -42,6 +43,7 @@ public class Menu extends javax.swing.JFrame {
     private void initComponents() {
 
         jMenu2 = new javax.swing.JMenu();
+        jMenu1 = new javax.swing.JMenu();
         lblBienvenida = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jmMantenedores = new javax.swing.JMenu();
@@ -55,8 +57,15 @@ public class Menu extends javax.swing.JFrame {
         itemSiniestro = new javax.swing.JMenuItem();
         jmTaller = new javax.swing.JMenu();
         itemAvanceTaller = new javax.swing.JMenuItem();
+        jmNegocio = new javax.swing.JMenu();
+        itemReportes = new javax.swing.JMenuItem();
+        jmDocumentos = new javax.swing.JMenu();
+        itemPoliza = new javax.swing.JMenuItem();
+        itemPresupuesto = new javax.swing.JMenuItem();
 
         jMenu2.setText("jMenu2");
+
+        jMenu1.setText("jMenu1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Menu Mantenedores");
@@ -141,6 +150,28 @@ public class Menu extends javax.swing.JFrame {
 
         jMenuBar1.add(jmTaller);
 
+        jmNegocio.setText("Negocio");
+
+        itemReportes.setText("Reportes BI");
+        itemReportes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemReportesActionPerformed(evt);
+            }
+        });
+        jmNegocio.add(itemReportes);
+
+        jMenuBar1.add(jmNegocio);
+
+        jmDocumentos.setText("Documentos");
+
+        itemPoliza.setText("Poliza");
+        jmDocumentos.add(itemPoliza);
+
+        itemPresupuesto.setText("Presupuesto");
+        jmDocumentos.add(itemPresupuesto);
+
+        jMenuBar1.add(jmDocumentos);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -193,6 +224,10 @@ public class Menu extends javax.swing.JFrame {
         new AvanceReparacionTaller(emp).setVisible(true);
     }//GEN-LAST:event_itemAvanceTallerActionPerformed
 
+    private void itemReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemReportesActionPerformed
+        new Reportes().setVisible(true);
+    }//GEN-LAST:event_itemReportesActionPerformed
+
     private void bienvenida(String nombre, String cargo) {
         
         lblBienvenida.setText("Bienvenid@ "+nombre+" : "+cargo);
@@ -201,18 +236,28 @@ public class Menu extends javax.swing.JFrame {
     private void MenuCargo(String cargo)
     {
         jmMantenedores.setVisible(false);
+        jmCliente.setVisible(false);
         jmSiniestro.setVisible(false);
         jmTaller.setVisible(false);
+        jmNegocio.setVisible(false);
+        jmDocumentos.setVisible(false);
         
         switch (cargo) {
             case "Administrador":
                 jmMantenedores.setVisible(true);
+                jmCliente.setVisible(true);
+                jmSiniestro.setVisible(true);
+                jmTaller.setVisible(false);
+                jmNegocio.setVisible(true);
+                jmDocumentos.setVisible(true);
             break;
             case "Analista Negocio":
-                
+                jmNegocio.setVisible(true);
+                jmCliente.setVisible(true);
             break;
             case "Analista Siniestro":
                 jmSiniestro.setVisible(true);
+                jmDocumentos.setVisible(true);
             break;
             case "Liquidador":
                 jmSiniestro.setVisible(true);
@@ -233,13 +278,19 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JMenuItem itemCliente;
     private javax.swing.JMenuItem itemEmpleado;
     private javax.swing.JMenuItem itemGrua;
+    private javax.swing.JMenuItem itemPoliza;
+    private javax.swing.JMenuItem itemPresupuesto;
     private javax.swing.JMenuItem itemRegionCiudad;
+    private javax.swing.JMenuItem itemReportes;
     private javax.swing.JMenuItem itemSiniestro;
     private javax.swing.JMenuItem itemTaller;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu jmCliente;
+    private javax.swing.JMenu jmDocumentos;
     private javax.swing.JMenu jmMantenedores;
+    private javax.swing.JMenu jmNegocio;
     private javax.swing.JMenu jmSiniestro;
     private javax.swing.JMenu jmTaller;
     private javax.swing.JLabel lblBienvenida;

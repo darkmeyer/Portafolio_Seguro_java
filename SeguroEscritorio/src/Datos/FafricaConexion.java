@@ -17,34 +17,27 @@ import java.util.logging.Logger;
 
 public class FafricaConexion {
     
-    private Connection conexion;
-
-    public FafricaConexion() {
-    }
-    
-    public Connection getConexion() {
-        return conexion;
-    }
-    
-    public void setConexion(Connection conexion) {
-        this.conexion = conexion;
-    }
-    
-    public Connection Conectar()
+    public static Connection Conectar() throws Exception
     {
-        try{
-        Class.forName("oracle.jdbc.OracleDriver");
-        String BaseDeDatos = "jdbc:oracle:thin:@localhost:1521:XE";
-        conexion= DriverManager.getConnection(BaseDeDatos,"SEGURO","1234");
-        if(conexion!=null)
+        try
         {
-            System.out.println("Conexion exitosa a esquema seguro");
-        }
-            else{System.out.println("Conexion fallida");}
+        String driver = "oracle.jdbc.driver.OracleDriver";
+        String url = "jdbc:oracle:thin:@localhost:1521:xe";
+        String username = "SEGURO";
+        String password = "1234";
+
+        Class.forName(driver); // load Oracle driver
+
+        java.util.Properties info = new java.util.Properties();  
+        info.put ("user", username);  
+        info.put ("password", password);  
+        Connection conn = DriverManager.getConnection(url, info);
+
+        return conn;
         }
         catch(Exception e)
-        {e.printStackTrace();}
-       
-        return conexion;
+        {
+            return null;
+        }
     }
 }
